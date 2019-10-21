@@ -4,9 +4,9 @@ GotGan, Modern stock management system
 
 ## Documents
 
-[Requirement Analysis](https://github.com/LIMECAKE/GotGan/blob/master/요구사항분석서.pptx)  
-[High-level Requirements](https://github.com/LIMECAKE/GotGan/blob/master/상위설계서.pptx)  
-[Low-level Requirements](https://github.com/LIMECAKE/GotGan/blob/master/상세설계서.pptx)  
+[Requirement Analysis](https://github.com/LIMECAKE/GotGan/raw/master/요구사항분석서.pptx)  
+[High-level Requirements](https://github.com/LIMECAKE/GotGan/raw/master/상위설계서.pptx)  
+[Low-level Requirements](https://github.com/LIMECAKE/GotGan/raw/master/상세설계서.pptx)  
 
 ## Platforms
 
