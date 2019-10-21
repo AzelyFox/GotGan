@@ -1,0 +1,149 @@
+CREATE TABLE System
+(
+    `SYSTEM_ON`       INT    NOT NULL    COMMENT 'is system available', 
+    `SYSTEM_LOGIN`    INT    NOT NULL    COMMENT 'is login available', 
+    `SYSTEM_RENT`     INT    NOT NULL    COMMENT 'is rent available', 
+    `SYSTEM_MESSAGE`  INT    NOT NULL    COMMENT 'is messaging available'
+);
+
+ALTER TABLE System COMMENT 'system environment values';
+
+
+CREATE TABLE Users
+(
+    `user_index`    INT            NOT NULL    AUTO_INCREMENT COMMENT 'user index', 
+    `user_id`       VARCHAR(45)    NOT NULL    COMMENT 'user id', 
+    `user_pw`       VARCHAR(100)   NOT NULL    COMMENT 'user password', 
+    `user_level`    INT            NOT NULL    COMMENT 'user level', 
+    `user_name`     VARCHAR(45)    NOT NULL    COMMENT 'user name', 
+    `user_sid`      VARCHAR(45)    NULL    COMMENT 'user student id', 
+    `user_block`    INT            NULL        COMMENT 'user block remain day', 
+    `user_uuid`     VARCHAR(45)    NULL        COMMENT 'user mobile uuid', 
+    `user_group`    INT            NOT NULL    COMMENT 'group index', 
+    `user_email`    VARCHAR(45)    NULL        COMMENT 'user email', 
+    `user_phone`    VARCHAR(45)    NULL        COMMENT 'user phone number',     
+    `user_created`  DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'user created time', 
+    PRIMARY KEY (user_index)
+);
+
+ALTER TABLE Users COMMENT 'Users';
+ALTER TABLE Users ADD UNIQUE(`user_id`);
+
+
+CREATE TABLE Products
+(
+    `product_index`    INT            NOT NULL    AUTO_INCREMENT COMMENT 'product index', 
+    `product_group`    INT            NOT NULL    COMMENT 'product group index', 
+    `product_name`     VARCHAR(45)    NULL        COMMENT 'product name', 
+    `product_status`   INT            NOT NULL    COMMENT 'product status', 
+    `product_owner`    INT            NOT NULL    COMMENT 'group index', 
+    `product_rent`     INT            NULL        COMMENT 'product rend index', 
+    `product_barcode`  INT            NULL        COMMENT 'product barcode', 
+    `product_created`  DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'product created time', 
+    PRIMARY KEY (product_index)
+);
+
+ALTER TABLE Products COMMENT 'Products';
+
+
+CREATE TABLE ProductGroup
+(
+    `product_group_index`     INT            NOT NULL    AUTO_INCREMENT COMMENT 'product type index', 
+    `product_group_name`      VARCHAR(45)    NOT NULL    COMMENT 'product type name', 
+    `product_group_rentable`  INT            NOT NULL    COMMENT 'is product type rentable', 
+    `product_group_priority`  INT            NOT NULL    COMMENT 'product group priority', 
+    PRIMARY KEY (product_group_index)
+);
+
+ALTER TABLE ProductGroup COMMENT 'ProductGroup';
+
+
+CREATE TABLE UserGroup
+(
+    `user_group_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'user group index', 
+    `user_group_name`   VARCHAR(45)    NOT NULL    COMMENT 'user group name', 
+    PRIMARY KEY (user_group_index)
+);
+
+ALTER TABLE UserGroup COMMENT 'UserGroup';
+ALTER TABLE UserGroup ADD UNIQUE(`user_group_name`);
+
+
+CREATE TABLE Rents
+(
+    `rent_index`        INT         NOT NULL    AUTO_INCREMENT COMMENT 'rent index', 
+    `rent_user`         INT         NOT NULL    COMMENT 'rent user', 
+    `rent_product`      INT         NOT NULL    COMMENT 'rent product', 
+    `rent_status`       INT         NOT NULL    COMMENT 'rent status', 
+    `rent_time_start`   DATETIME    NOT NULL    COMMENT 'rent start time', 
+    `rent_time_end`     DATETIME    NOT NULL    COMMENT 'rent end time', 
+    `rent_time_return`  DATETIME    NOT NULL    COMMENT 'rent returned time', 
+    PRIMARY KEY (rent_index)
+);
+
+ALTER TABLE Rents COMMENT 'Rents';
+
+
+CREATE TABLE Logs
+(
+    `log_index`    INT            NOT NULL    AUTO_INCREMENT COMMENT 'product log index', 
+    `log_product`  INT            NOT NULL    COMMENT 'product index', 
+    `log_user`     INT            NOT NULL    COMMENT 'user index', 
+    `log_type`     INT            NOT NULL    COMMENT 'log type', 
+    `log_text`     VARCHAR(45)    NULL        COMMENT 'log text', 
+    `log_time`     DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'log created time', 
+    PRIMARY KEY (log_index)
+);
+
+ALTER TABLE Logs COMMENT 'Logs';
+
+
+CREATE TABLE LogType
+(
+    `type_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'type index', 
+    `type_name`   VARCHAR(45)    NOT NULL    COMMENT 'type name', 
+    `type_level`  INT            NOT NULL    COMMENT 'type level', 
+    PRIMARY KEY (type_index)
+);
+
+ALTER TABLE LogType COMMENT 'LogType';
+
+
+CREATE TABLE UserSession
+(
+    `user_session_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'user session index', 
+    `user_session_user`   INT            NOT NULL    COMMENT 'user session', 
+    `user_session_key`    VARCHAR(45)    NOT NULL    COMMENT 'user session string', 
+    `user_session_time`   DATETIME       NOT NULL    COMMENT 'user session last time', 
+    PRIMARY KEY (user_session_index)
+);
+
+ALTER TABLE UserSession COMMENT 'UserSession';
+ALTER TABLE UserSession ADD UNIQUE(`user_session_user`);
+ALTER TABLE UserSession ADD UNIQUE(`user_session_key`);
+
+
+CREATE TABLE History
+(
+    `history_index`              INT         NOT NULL    AUTO_INCREMENT COMMENT 'history index', 
+    `history_time`               DATETIME    NOT NULL    COMMENT 'history time', 
+    `history_user_total`         INT         NOT NULL    COMMENT 'history user total', 
+    `history_product_total`      INT         NOT NULL    COMMENT 'history product total', 
+    `history_product_available`  INT         NOT NULL    COMMENT 'history product available', 
+    `history_product_rent`       INT         NOT NULL    COMMENT 'history product rent', 
+    PRIMARY KEY (history_index)
+);
+
+ALTER TABLE History COMMENT 'History';
+
+
+CREATE TABLE ProductCheck
+(
+    `product_check_index`   INT            NOT NULL    AUTO_INCREMENT COMMENT 'product check index', 
+    `product_check_time`    DATETIME       NOT NULL    COMMENT 'product check time', 
+    `product_check_user`    INT            NOT NULL    COMMENT 'product check user', 
+    `product_check_target`  VARCHAR(45)    NOT NULL    COMMENT 'product check target', 
+    PRIMARY KEY (product_check_index)
+);
+
+ALTER TABLE ProductCheck COMMENT 'ProductCheck';
