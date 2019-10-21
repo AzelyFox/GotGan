@@ -7,7 +7,6 @@ $user_id = "";
 $user_pw = "";
 $user_level = 0;
 $user_name = "";
-$user_group = 0;
 
 # initialize user id
 if (isset($_REQUEST["user_id"]))
@@ -66,12 +65,7 @@ if (isset($_REQUEST["user_group"]))
 {
     $user_group = $_REQUEST["user_group"];
 } else {
-    $output = array();
-    $output["result"] = -1;
-    $output["error"] = "user_group IS EMPTY";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
+    $user_group = 0;
 }
 
 # initialize user student id if exist
@@ -123,7 +117,7 @@ if (isset($_REQUEST["session"]))
     # check user level
     if ($validation["user_level"] < 1) {
         $output = array();
-        $output["result"] = -4;
+        $output["result"] = -3;
         $output["error"] = "NOT ALLOWED";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
@@ -133,7 +127,7 @@ if (isset($_REQUEST["session"]))
     # if no auth user try to make manager account
     if ($user_level > 0) {
         $output = array();
-        $output["result"] = -4;
+        $output["result"] = -3;
         $output["error"] = "NOT ALLOWED";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
@@ -159,7 +153,7 @@ try {
     if ($DB_STMT->errno != 0) {
         # user creation query error
         $output = array();
-        $output["result"] = -5;
+        $output["result"] = -4;
         $output["error"] = "ADD USER FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
