@@ -20,7 +20,7 @@ function modifyUser(Mysqli $DB, int $userIndex, string $modifyQuery, string $bin
         if ($DB_STMT->errno != 0) {
             # user modification query error
             $output = array();
-            $output["result"] = -5;
+            $output["result"] = -4;
             $output["error"] = "MODIFY USER FAILURE : ".$DB_STMT->error;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
@@ -65,7 +65,7 @@ if (isset($_REQUEST["session"]))
         # if target user is session user
         if ($validation["user_index"] != $user_index) {
             $output = array();
-            $output["result"] = -4;
+            $output["result"] = -3;
             $output["error"] = "NOT ALLOWED";
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
@@ -104,7 +104,7 @@ if (isset($_REQUEST["user_level"]))
     # if target user level is higher than session user level
     if ($user_level > $validation["user_level"]) {
         $output = array();
-        $output["result"] = -4;
+        $output["result"] = -3;
         $output["error"] = "NOT ALLOWED";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
@@ -129,7 +129,7 @@ if (isset($_REQUEST["user_group"]))
     # if normal user try to change its own group
     if ($validation["user_level"] < 1) {
         $output = array();
-        $output["result"] = -4;
+        $output["result"] = -3;
         $output["error"] = "NOT ALLOWED";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
