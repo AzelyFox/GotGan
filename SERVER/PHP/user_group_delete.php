@@ -93,7 +93,7 @@ try {
 }
 
 # user group deletion log
-newLog($DB, LogTypes::TYPE_USER_GROUP_DELETE, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_USER_GROUP_DELETE, 0, $validation["user_index"], NULL);
 
 # user group deletion success
 $output = array();

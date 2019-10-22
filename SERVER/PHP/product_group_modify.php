@@ -146,7 +146,7 @@ if (isset($_REQUEST["product_group_priority"]))
 }
 
 # product group modification log
-newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_MODIFY, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_MODIFY, 0, $validation["user_index"], NULL);
 
 # product modification success
 $output = array();

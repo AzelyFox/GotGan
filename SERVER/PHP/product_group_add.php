@@ -133,7 +133,7 @@ try {
 }
 
 # product group creation log
-newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_ADD, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_ADD, 0, $validation["user_index"], NULL);
 
 # product group creation success
 $output = array();

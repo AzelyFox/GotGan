@@ -146,9 +146,15 @@ class LogTypes {
     const TYPE_PRODUCT_GROUP_ADD= 14;
     const TYPE_PRODUCT_GROUP_MODIFY = 15;
     const TYPE_PRODUCT_GROUP_DELETE = 16;
+    const TYPE_RENT_ADD = 17;
+    const TYPE_RENT_ALLOW = 18;
+    const TYPE_RENT_RETURN = 19;
+    const TYPE_RENT_MODIFY = 20;
+    const TYPE_RENT_DELETE = 21;
 }
 
-function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logText) {
+function newLog(Mysqli $DB, $logType, $logProduct, $logUser, $logText) {
+    if (!isset($logType) || !isset($logProduct) || !isset($logUser)) return -1;
     # execute log query
     try {
         $DB_SQL_LOG = "INSERT INTO `Logs` (`log_product`, `log_user`, `log_type`, `log_text`) VALUES (?, ?, ?, ?)";

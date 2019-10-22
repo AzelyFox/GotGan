@@ -77,8 +77,8 @@ CREATE TABLE Rents
     `rent_product`      INT         NOT NULL    COMMENT 'rent product', 
     `rent_status`       INT         NOT NULL    COMMENT 'rent status', 
     `rent_time_start`   DATETIME    NOT NULL    COMMENT 'rent start time', 
-    `rent_time_end`     DATETIME    NOT NULL    COMMENT 'rent end time', 
-    `rent_time_return`  DATETIME    NOT NULL    COMMENT 'rent returned time', 
+    `rent_time_end`     DATETIME    NULL        COMMENT 'rent end time', 
+    `rent_time_return`  DATETIME    NULL        COMMENT 'rent returned time', 
     PRIMARY KEY (rent_index)
 );
 

@@ -110,7 +110,7 @@ if (isset($_REQUEST["user_group_name"]))
 }
 
 # user group modification log
-newLog($DB, LogTypes::TYPE_USER_GROUP_MODIFY, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_USER_GROUP_MODIFY, 0, $validation["user_index"], NULL);
 
 # user modification success
 $output = array();

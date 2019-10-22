@@ -93,7 +93,7 @@ try {
 }
 
 # product group deletion log
-newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_DELETE, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_PRODUCT_GROUP_DELETE, 0, $validation["user_index"], NULL);
 
 # product group deletion success
 $output = array();

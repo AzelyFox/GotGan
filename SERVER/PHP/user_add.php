@@ -262,9 +262,9 @@ try {
 
 # user creation log
 if (isset($session)) {
-    newLog($DB, LogTypes::TYPE_USER_ADD, -1, $validation["user_index"], NULL);
+    newLog($DB, LogTypes::TYPE_USER_ADD, 0, $validation["user_index"], NULL);
 } else {
-    newLog($DB, LogTypes::TYPE_USER_ADD, -1, $TEMP_INSERTED_ROW, NULL);
+    newLog($DB, LogTypes::TYPE_USER_ADD, 0, $TEMP_INSERTED_ROW, NULL);
 }
 
 # user creation success

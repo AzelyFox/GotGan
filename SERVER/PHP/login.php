@@ -73,35 +73,21 @@ if (isset($_REQUEST["user_uuid"]))
     }
 }
 
-if (!isset($session)) {
-    # execute login query
-    try {
-        $DB_SQL = "SELECT `user_index`, `user_id`, `user_pw`, `user_level`, `user_name`, `user_sid`, `user_block`, `user_group`, `user_email`, `user_phone`, `user_created` FROM `Users` WHERE `user_id` = ?";
-        $DB_STMT = $DB->prepare($DB_SQL);
-        # database query not ready
-        if (!$DB_STMT) {
-            $output = array();
-            $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
-            $outputJson = json_encode($output);
-            echo urldecode($outputJson);
-            exit();
-        }
-        $DB_STMT->bind_param("s", $user_id);
-        $DB_STMT->execute();
-        if ($DB_STMT->errno != 0) {
-            $output = array();
-            $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : " . $DB->error;
-            $outputJson = json_encode($output);
-            echo urldecode($outputJson);
-            exit();
-        }
-        $DB_STMT->store_result();
-        $DB_STMT->bind_result($TEMP_USER_INDEX, $TEMP_USER_ID, $TEMP_USER_PW, $TEMP_USER_LEVEL, $TEMP_USER_NAME, $TEMP_USER_SID, $TEMP_USER_BLOCK, $TEMP_USER_GROUP_INDEX, $TEMP_USER_EMAIL, $TEMP_USER_PHONE, $TEMP_USER_CREATED);
-        $DB_STMT->fetch();
-    } catch(Exception $e) {
-        # login query error
+if (!isset($user_id)) {
+    $user_id = NULL;
+}
+
+# execute login query
+try {
+    $DB_SQL = "SELECT `U`.`user_index`, `U`.`user_id`, `U`.`user_pw`, 
+`U`.`user_level`, `U`.`user_name`, `U`.`user_sid`, `U`.`user_block`, 
+`U`.`user_group` as `user_group_index`, `UG`.`user_group_name`, 
+`U`.`user_email`, `U`.`user_phone`, `U`.`user_created` 
+FROM `Users` AS `U` LEFT OUTER JOIN `UserGroup` AS `UG` ON (`U`.`user_group` = `UG`.`user_group_index`) 
+WHERE `user_id` = ? or `user_index` = ?";
+    $DB_STMT = $DB->prepare($DB_SQL);
+    # database query not ready
+    if (!$DB_STMT) {
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -109,60 +95,49 @@ if (!isset($session)) {
         echo urldecode($outputJson);
         exit();
     }
-
-    # login failed
-    if ($DB_STMT->num_rows != 1) {
+    $DB_STMT->bind_param("si", $user_id, $validation["user_index"]);
+    $DB_STMT->execute();
+    if ($DB_STMT->errno != 0) {
         $output = array();
-        $output["result"] = -3;
-        $output["error"] = "LOGIN FAILURE";
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : " . $DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
-
-    # password matching
-    if (!password_verify($user_pw, $TEMP_USER_PW)) {
-        echo $TEMP_USER_PW;
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "LOGIN FAILURE";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-
-    # login success
-    $DB_STMT->close();
-
-    # execute user group query
-    try {
-        $DB_SQL = "SELECT `user_group_index`, `user_group_name` FROM `UserGroup` WHERE `user_group_index` = ?";
-        $DB_STMT = $DB->prepare($DB_SQL);
-        # database query not ready
-        if (!$DB_STMT) {
-            $TEMP_USER_GROUP_NAME = "";
-        }
-        $DB_STMT->bind_param("i", $TEMP_USER_GROUP_INDEX);
-        $DB_STMT->execute();
-        if ($DB_STMT->errno != 0) {
-            $TEMP_USER_GROUP_NAME = "";
-        }
-        $DB_STMT->bind_result($TEMP_USER_GROUP_INDEX, $TEMP_USER_GROUP_NAME);
-        $DB_STMT->store_result();
-    } catch (Exception $e) {
-        # user group query error
-        $TEMP_USER_GROUP_NAME = "";
-    }
-
-    # user group find failed
-    if ($DB_STMT->num_rows != 1) {
-        $TEMP_USER_GROUP_NAME = "";
-    }
-
-    # user group query success
+    $DB_STMT->bind_result($TEMP_USER_INDEX, $TEMP_USER_ID, $TEMP_USER_PW, $TEMP_USER_LEVEL, $TEMP_USER_NAME, $TEMP_USER_SID, $TEMP_USER_BLOCK, $TEMP_USER_GROUP_INDEX, $TEMP_USER_GROUP_NAME, $TEMP_USER_EMAIL, $TEMP_USER_PHONE, $TEMP_USER_CREATED);
     $DB_STMT->fetch();
     $DB_STMT->close();
+} catch(Exception $e) {
+    # login query error
+    $output = array();
+    $output["result"] = -2;
+    $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
 
+# password matching
+if (!isset($session) && !password_verify($user_pw, $TEMP_USER_PW)) {
+    $output = array();
+    $output["result"] = -3;
+    $output["error"] = "LOGIN FAILURE";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+if ($TEMP_USER_BLOCK > 0) {
+    $output = array();
+    $output["result"] = -3;
+    $output["error"] = "LOGIN FAILURE : BANNED ".$TEMP_USER_BLOCK." DAYS";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+if (!isset($session)) {
     # generate session key
     $GENERATOR_CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $GENERATOR_CHARACTERS_LENGTH = strlen($GENERATOR_CHARACTERS);
@@ -171,62 +146,12 @@ if (!isset($session)) {
     for ($i = 0; $i < $GENERATOR_LENGTH; $i++) {
         $GENERATOR_RESULT .= $GENERATOR_CHARACTERS[rand(0, $GENERATOR_CHARACTERS_LENGTH - 1)];
     }
-
-    if ($TEMP_USER_BLOCK == 0) {
-        # execute user session creation query for not blocked user
-        try {
-            $DB_SQL = "INSERT INTO `UserSession` (`user_session_user`, `user_session_key`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_session_key` = ?, `user_session_time` = now()";
-            $DB_STMT = $DB->prepare($DB_SQL);
-            # database query not ready
-            if (!$DB_STMT) {
-                $output = array();
-                $output["result"] = -2;
-                $output["error"] = "DB QUERY FAILURE : " . $DB->error;
-                $outputJson = json_encode($output);
-                echo urldecode($outputJson);
-                exit();
-            }
-            $DB_STMT->bind_param("iss", $TEMP_USER_INDEX, $GENERATOR_RESULT, $GENERATOR_RESULT);
-            $DB_STMT->execute();
-            if ($DB_STMT->errno != 0) {
-                $output = array();
-                $output["result"] = -2;
-                $output["error"] = "DB QUERY FAILURE : " . $DB->error;
-                $outputJson = json_encode($output);
-                echo urldecode($outputJson);
-                exit();
-            }
-            $DB_STMT->close();
-        } catch (Exception $e) {
-            # user session query error
-            $output = array();
-            $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
-            $outputJson = json_encode($output);
-            echo urldecode($outputJson);
-            exit();
-        }
-    } else {
-        # no session key for blocked user
-        $GENERATOR_RESULT = "";
-    }
-} else {
-    # execute session login query
+    # execute user session creation query for not blocked user
     try {
-        $DB_SQL = "SELECT `user_index`, `user_id`, `user_pw`, `user_level`, `user_name`, `user_sid`, `user_block`, `user_group`, `user_email`, `user_phone`, `user_created` FROM `Users` WHERE `user_index` = ?";
+        $DB_SQL = "INSERT INTO `UserSession` (`user_session_user`, `user_session_key`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_session_key` = ?, `user_session_time` = now()";
         $DB_STMT = $DB->prepare($DB_SQL);
         # database query not ready
         if (!$DB_STMT) {
-            $output = array();
-            $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
-            $outputJson = json_encode($output);
-            echo urldecode($outputJson);
-            exit();
-        }
-        $DB_STMT->bind_param("i", $validation["user_index"]);
-        $DB_STMT->execute();
-        if ($DB_STMT->errno != 0) {
             $output = array();
             $output["result"] = -2;
             $output["error"] = "DB QUERY FAILURE : " . $DB->error;
@@ -234,11 +159,19 @@ if (!isset($session)) {
             echo urldecode($outputJson);
             exit();
         }
-        $DB_STMT->store_result();
-        $DB_STMT->bind_result($TEMP_USER_INDEX, $TEMP_USER_ID, $TEMP_USER_PW, $TEMP_USER_LEVEL, $TEMP_USER_NAME, $TEMP_USER_SID, $TEMP_USER_BLOCK, $TEMP_USER_GROUP_INDEX, $TEMP_USER_EMAIL, $TEMP_USER_PHONE, $TEMP_USER_CREATED);
-        $DB_STMT->fetch();
-    } catch(Exception $e) {
-        # login query error
+        $DB_STMT->bind_param("iss", $TEMP_USER_INDEX, $GENERATOR_RESULT, $GENERATOR_RESULT);
+        $DB_STMT->execute();
+        if ($DB_STMT->errno != 0) {
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : " . $DB_STMT->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT->close();
+    } catch (Exception $e) {
+        # user session query error
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -246,92 +179,13 @@ if (!isset($session)) {
         echo urldecode($outputJson);
         exit();
     }
-
-    # login failed
-    if ($DB_STMT->num_rows != 1) {
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "LOGIN FAILURE";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-
-    # login success
-    $DB_STMT->close();
-
-    # execute user group query
-    try {
-        $DB_SQL = "SELECT `user_group_index`, `user_group_name` FROM `UserGroup` WHERE `user_group_index` = ?";
-        $DB_STMT = $DB->prepare($DB_SQL);
-        # database query not ready
-        if (!$DB_STMT) {
-            $TEMP_USER_GROUP_NAME = "";
-        }
-        $DB_STMT->bind_param("i", $TEMP_USER_GROUP_INDEX);
-        $DB_STMT->execute();
-        if ($DB_STMT->errno != 0) {
-            $TEMP_USER_GROUP_NAME = "";
-        }
-        $DB_STMT->bind_result($TEMP_USER_GROUP_INDEX, $TEMP_USER_GROUP_NAME);
-        $DB_STMT->store_result();
-    } catch (Exception $e) {
-        # user group query error
-        $TEMP_USER_GROUP_NAME = "";
-    }
-
-    # user group find failed
-    if ($DB_STMT->num_rows != 1) {
-        $TEMP_USER_GROUP_NAME = "";
-    }
-
-    # user group query success
-    $DB_STMT->fetch();
-    $DB_STMT->close();
-
-    if ($TEMP_USER_BLOCK == 0) {
-        # execute user session creation query for not blocked user
-        try {
-            $DB_SQL = "UPDATE `UserSession` SET `user_session_time` = now() WHERE `user_session_key` = ?";
-            $DB_STMT = $DB->prepare($DB_SQL);
-            # database query not ready
-            if (!$DB_STMT) {
-                $output = array();
-                $output["result"] = -2;
-                $output["error"] = "DB QUERY FAILURE : " . $DB->error;
-                $outputJson = json_encode($output);
-                echo urldecode($outputJson);
-                exit();
-            }
-            $DB_STMT->bind_param("s", $session);
-            $DB_STMT->execute();
-            if ($DB_STMT->errno != 0) {
-                $output = array();
-                $output["result"] = -2;
-                $output["error"] = "DB QUERY FAILURE : " . $DB->error;
-                $outputJson = json_encode($output);
-                echo urldecode($outputJson);
-                exit();
-            }
-            $DB_STMT->close();
-        } catch (Exception $e) {
-            # user session query error
-            $output = array();
-            $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
-            $outputJson = json_encode($output);
-            echo urldecode($outputJson);
-            exit();
-        }
-        $GENERATOR_RESULT = $session;
-    } else {
-        # no session key for blocked user
-        $GENERATOR_RESULT = "";
-    }
+} else {
+    $GENERATOR_RESULT = $session;
+    $TEMP_USER_INDEX = $validation["user_index"];
 }
 
 # user login log
-newLog($DB, LogTypes::TYPE_LOGIN, -1, $TEMP_USER_INDEX, NULL);
+newLog($DB, LogTypes::TYPE_LOGIN, 0, $TEMP_USER_INDEX, NULL);
 
 # user login success
 $output = array();

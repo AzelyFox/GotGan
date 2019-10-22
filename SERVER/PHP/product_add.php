@@ -129,13 +129,13 @@ for ($i = 0; $i < count($productArray); $i++) {
         $productArray[$i]["product_status"] = 0;
     }
     if (!isset($productArray[$i]["product_owner"])) {
-        $productArray[$i]["product_owner"] = -1;
+        $productArray[$i]["product_owner"] = 0;
     }
     if (!isset($productArray[$i]["product_rent"])) {
-        $productArray[$i]["product_rent"] = -1;
+        $productArray[$i]["product_rent"] = 0;
     }
     if (!isset($productArray[$i]["product_barcode"])) {
-        $productArray[$i]["product_barcode"] = -1;
+        $productArray[$i]["product_barcode"] = 0;
     }
 }
 

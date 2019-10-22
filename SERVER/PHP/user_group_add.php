@@ -92,7 +92,7 @@ try {
 }
 
 # user group creation log
-newLog($DB, LogTypes::TYPE_USER_GROUP_ADD, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_USER_GROUP_ADD, 0, $validation["user_index"], NULL);
 
 # user group creation success
 $output = array();
