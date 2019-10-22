@@ -347,18 +347,18 @@ $output["user_index"] = $TEMP_USER_INDEX;
 $output["user_id"] = $TEMP_USER_ID;
 $output["user_level"] = $TEMP_USER_LEVEL;
 $output["user_name"] = $TEMP_USER_NAME;
-if ($TEMP_USER_SID !== null) {
+if (isset($TEMP_USER_SID)) {
     $output["user_sid"] = $TEMP_USER_SID;
 }
-if ($TEMP_USER_BLOCK !== null) {
+if (isset($TEMP_USER_BLOCK)) {
     $output["user_block"] = $TEMP_USER_BLOCK;
 }
 $output["user_group_index"] = $TEMP_USER_GROUP_INDEX;
 $output["user_group_name"] = $TEMP_USER_GROUP_NAME;
-if ($TEMP_USER_EMAIL !== null) {
+if (isset($TEMP_USER_EMAIL)) {
     $output["user_email"] = $TEMP_USER_EMAIL;
 }
-if ($TEMP_USER_PHONE !== null) {
+if (isset($TEMP_USER_PHONE)) {
     $output["user_phone"] = $TEMP_USER_PHONE;
 }
 $output["user_created"] = $TEMP_USER_CREATED;

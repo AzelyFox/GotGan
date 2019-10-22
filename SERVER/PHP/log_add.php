@@ -6,6 +6,14 @@ require_once "./inc.php";
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
     if ($validation["user_level"] < 1) {
         $output = array();
@@ -28,13 +36,15 @@ if (isset($_REQUEST["session"]))
 if (isset($_REQUEST["log_product"]))
 {
     $log_product = $_REQUEST["log_product"];
-    if (!is_int($log_product)) {
+    if (!is_numeric($log_product)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "log_product MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $log_product = intval($log_product);
     }
 } else {
     $log_product = -1;
@@ -44,13 +54,15 @@ if (isset($_REQUEST["log_product"]))
 if (isset($_REQUEST["log_user"]))
 {
     $log_user = $_REQUEST["log_user"];
-    if (!is_int($log_user)) {
+    if (!is_numeric($log_user)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "log_user MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $log_user = intval($log_user);
     }
 } else {
     $log_user = -1;
@@ -60,13 +72,15 @@ if (isset($_REQUEST["log_user"]))
 if (isset($_REQUEST["log_type"]))
 {
     $log_type = $_REQUEST["log_type"];
-    if (!is_int($log_type)) {
+    if (!is_numeric($log_type)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "log_type MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $log_type = intval($log_type);
     }
 } else {
     $output = array();

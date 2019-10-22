@@ -45,13 +45,15 @@ $user_index = 0;
 if (isset($_REQUEST["user_index"]))
 {
     $user_index = $_REQUEST["user_index"];
-    if (!is_int($user_index)) {
+    if (!is_numeric($user_index)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_index MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_index = intval($user_index);
     }
 } else {
     $output = array();
@@ -134,13 +136,15 @@ if (isset($_REQUEST["user_pw"]))
 if (isset($_REQUEST["user_level"]))
 {
     $user_level = $_REQUEST["user_level"];
-    if (!is_int($user_level)) {
+    if (!is_numeric($user_level)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_level MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_level = intval($user_level);
     }
     # if target user level is higher than session user level
     if ($user_level > $validation["user_level"]) {
@@ -175,13 +179,15 @@ if (isset($_REQUEST["user_name"]))
 if (isset($_REQUEST["user_group"]))
 {
     $user_group = $_REQUEST["user_group"];
-    if (!is_int($user_group)) {
+    if (!is_numeric($user_group)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_group MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_group = intval($user_group);
     }
     # if normal user try to change its own group
     if ($validation["user_level"] < 1) {
@@ -216,13 +222,15 @@ if (isset($_REQUEST["user_sid"]))
 if (isset($_REQUEST["user_block"]))
 {
     $user_block = $_REQUEST["user_block"];
-    if (!is_int($user_block)) {
+    if (!is_numeric($user_block)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_block MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_block = intval($user_block);
     }
     $blockModifyQuery = "UPDATE `Users` SET `user_block` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $blockModifyQuery, "ii", $user_block);
