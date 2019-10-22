@@ -2,9 +2,6 @@
 
 require_once "./inc.php";
 
-$session = "";
-$user_group_index = 0;
-
 # initialize user group index
 if (isset($_REQUEST["user_group_index"]))
 {
@@ -95,7 +92,7 @@ try {
     exit();
 }
 
-# user group creation log
+# user group deletion log
 newLog($DB, LogTypes::TYPE_USER_GROUP_DELETE, -1, $validation["user_index"], NULL);
 
 # user group deletion success

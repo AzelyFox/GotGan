@@ -2,9 +2,6 @@
 
 require_once "./inc.php";
 
-$session = "";
-$user_group_name = "";
-
 # initialize group name
 if (isset($_REQUEST["user_group_name"]))
 {

@@ -2,12 +2,6 @@
 
 require_once "./inc.php";
 
-$session = "";
-$user_id = "";
-$user_pw = "";
-$user_level = 0;
-$user_name = "";
-
 # initialize user id
 if (isset($_REQUEST["user_id"]))
 {

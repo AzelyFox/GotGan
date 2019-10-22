@@ -144,6 +144,12 @@ class LogTypes {
     const TYPE_USER_GROUP_ADD = 8;
     const TYPE_USER_GROUP_MODIFY = 9;
     const TYPE_USER_GROUP_DELETE = 10;
+    const TYPE_PRODUCT_ADD = 11;
+    const TYPE_PRODUCT_MODIFY = 12;
+    const TYPE_PRODUCT_DELETE = 13;
+    const TYPE_PRODUCT_GROUP_ADD= 14;
+    const TYPE_PRODUCT_GROUP_MODIFY = 15;
+    const TYPE_PRODUCT_GROUP_DELETE = 16;
 }
 
 function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logText) {

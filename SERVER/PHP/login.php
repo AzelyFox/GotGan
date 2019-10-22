@@ -2,11 +2,6 @@
 
 require_once "./inc.php";
 
-$user_id = "";
-$user_pw = "";
-$user_sid = "";
-$user_uuid = "";
-
 # session auth
 if (isset($_REQUEST["session"]))
 {

@@ -2,9 +2,6 @@
 
 require_once "./inc.php";
 
-$session = "";
-$user_index = 0;
-
 # initialize user index
 if (isset($_REQUEST["user_index"]))
 {

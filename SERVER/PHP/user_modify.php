@@ -38,9 +38,6 @@ function modifyUser(Mysqli $DB, int $userIndex, string $modifyQuery, string $bin
     }
 }
 
-$session = "";
-$user_index = 0;
-
 # initialize user index
 if (isset($_REQUEST["user_index"]))
 {

@@ -102,7 +102,18 @@ $logJsonResult = array();
 
 # execute log list query
 try {
-    $DB_SQL = "SELECT `L`.`log_index`, `L`.`log_product` as `log_product_index`, `P`.`product_name` as `log_product_name`, `L`.`log_user` as `log_user_index`, `U`.`user_name` as `log_user_name`, `U`.`user_id` as `log_user_id`, `L`.`log_type`, `L`.`log_text`, `L`.`log_time` FROM `Logs` AS `L` LEFT OUTER JOIN `Users` AS `U` ON (`L`.`log_user` = `U`.`user_index`) LEFT OUTER JOIN `Products` AS `P` ON (`L`.`log_product` = `P`.`product_index`) WHERE 1=1";
+    $DB_SQL = "
+    SELECT `L`.`log_index`,
+       `L`.`log_product` as `log_product_index`,
+       `P`.`product_name` as `log_product_name`, 
+       `L`.`log_user` as `log_user_index`, 
+       `U`.`user_name` as `log_user_name`, 
+       `U`.`user_id` as `log_user_id`, 
+       `L`.`log_type`, `L`.`log_text`, `L`.`log_time` 
+    FROM `Logs` AS `L` 
+        LEFT OUTER JOIN `Users` AS `U` ON (`L`.`log_user` = `U`.`user_index`) 
+        LEFT OUTER JOIN `Products` AS `P` ON (`L`.`log_product` = `P`.`product_index`) 
+    WHERE 1=1";
     if (isset($log_index)) {
         $DB_SQL .= " AND `log_index` = $log_index";
     }
