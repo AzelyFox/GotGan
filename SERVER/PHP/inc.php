@@ -7,11 +7,7 @@ header("Access-Control-Allow-Headers: *");
 header('Access-Control-Allow-Methods: GET, POST');
 header('Content-Type: text/html; charset=UTF-8');
 
-$DB_HOST = "localhost";
-$DB_ID = "gotgan";
-$DB_PW = "tfGjdp1wrihk0Y8z";
-$DB_NAME = "gotgan";
-$DB_PORT = "3306";
+require_once "constants.php";
 
 # connects to local database
 $DB = mysqli_connect($DB_HOST, $DB_ID, $DB_PW, $DB_NAME);

@@ -5,4 +5,4 @@ out
 gen
 
 # Security ignored files
-/inc.php
+/constants.php
