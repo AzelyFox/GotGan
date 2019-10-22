@@ -34,11 +34,11 @@ CREATE TABLE Products
 (
     `product_index`    INT            NOT NULL    AUTO_INCREMENT COMMENT 'product index', 
     `product_group`    INT            NOT NULL    COMMENT 'product group index', 
-    `product_name`     VARCHAR(45)    NULL        COMMENT 'product name', 
+    `product_name`     VARCHAR(45)    NOT NULL    COMMENT 'product name', 
     `product_status`   INT            NOT NULL    COMMENT 'product status', 
     `product_owner`    INT            NOT NULL    COMMENT 'group index', 
-    `product_rent`     INT            NULL        COMMENT 'product rend index', 
-    `product_barcode`  INT            NULL        COMMENT 'product barcode', 
+    `product_rent`     INT            NOT NULL    COMMENT 'product rend index', 
+    `product_barcode`  INT            NOT NULL    COMMENT 'product barcode', 
     `product_created`  DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'product created time', 
     PRIMARY KEY (product_index)
 );
@@ -56,6 +56,7 @@ CREATE TABLE ProductGroup
 );
 
 ALTER TABLE ProductGroup COMMENT 'ProductGroup';
+ALTER TABLE ProductGroup ADD UNIQUE(`product_group_name`);
 
 
 CREATE TABLE UserGroup
@@ -76,8 +77,8 @@ CREATE TABLE Rents
     `rent_product`      INT         NOT NULL    COMMENT 'rent product', 
     `rent_status`       INT         NOT NULL    COMMENT 'rent status', 
     `rent_time_start`   DATETIME    NOT NULL    COMMENT 'rent start time', 
-    `rent_time_end`     DATETIME    NOT NULL    COMMENT 'rent end time', 
-    `rent_time_return`  DATETIME    NOT NULL    COMMENT 'rent returned time', 
+    `rent_time_end`     DATETIME    NULL        COMMENT 'rent end time', 
+    `rent_time_return`  DATETIME    NULL        COMMENT 'rent returned time', 
     PRIMARY KEY (rent_index)
 );
 

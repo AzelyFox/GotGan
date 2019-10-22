@@ -38,10 +38,6 @@ function modifyUserGroup(Mysqli $DB, int $groupIndex, string $modifyQuery, strin
     }
 }
 
-$session = "";
-$user_group_index = 0;
-$user_group_name = "";
-
 # initialize user group index
 if (isset($_REQUEST["user_group_index"]))
 {
@@ -113,8 +109,8 @@ if (isset($_REQUEST["user_group_name"]))
     modifyUserGroup($DB, $user_group_index, $nameModifyQuery, "si", $user_group_name);
 }
 
-# user group creation log
-newLog($DB, LogTypes::TYPE_USER_GROUP_MODIFY, -1, $validation["user_index"], NULL);
+# user group modification log
+newLog($DB, LogTypes::TYPE_USER_GROUP_MODIFY, 0, $validation["user_index"], NULL);
 
 # user modification success
 $output = array();

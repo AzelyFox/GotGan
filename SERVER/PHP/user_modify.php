@@ -38,9 +38,6 @@ function modifyUser(Mysqli $DB, int $userIndex, string $modifyQuery, string $bin
     }
 }
 
-$session = "";
-$user_index = 0;
-
 # initialize user index
 if (isset($_REQUEST["user_index"]))
 {
@@ -287,7 +284,7 @@ if (isset($_REQUEST["user_phone"]))
 }
 
 # user creation log
-newLog($DB, LogTypes::TYPE_USER_MODIFY, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_USER_MODIFY, 0, $validation["user_index"], NULL);
 
 # user modification success
 $output = array();

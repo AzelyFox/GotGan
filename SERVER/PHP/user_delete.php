@@ -2,9 +2,6 @@
 
 require_once "./inc.php";
 
-$session = "";
-$user_index = 0;
-
 # initialize user index
 if (isset($_REQUEST["user_index"]))
 {
@@ -99,7 +96,7 @@ try {
 }
 
 # user deletion log
-newLog($DB, LogTypes::TYPE_USER_DELETE, -1, $validation["user_index"], NULL);
+newLog($DB, LogTypes::TYPE_USER_DELETE, 0, $validation["user_index"], NULL);
 
 # user deletion success
 $output = array();

@@ -7,11 +7,7 @@ header("Access-Control-Allow-Headers: *");
 header('Access-Control-Allow-Methods: GET, POST');
 header('Content-Type: text/html; charset=UTF-8');
 
-$DB_HOST = "localhost";
-$DB_ID = "gotgan";
-$DB_PW = "tfGjdp1wrihk0Y8z";
-$DB_NAME = "gotgan";
-$DB_PORT = "3306";
+require_once "constants.php";
 
 # connects to local database
 $DB = mysqli_connect($DB_HOST, $DB_ID, $DB_PW, $DB_NAME);
@@ -144,9 +140,21 @@ class LogTypes {
     const TYPE_USER_GROUP_ADD = 8;
     const TYPE_USER_GROUP_MODIFY = 9;
     const TYPE_USER_GROUP_DELETE = 10;
+    const TYPE_PRODUCT_ADD = 11;
+    const TYPE_PRODUCT_MODIFY = 12;
+    const TYPE_PRODUCT_DELETE = 13;
+    const TYPE_PRODUCT_GROUP_ADD= 14;
+    const TYPE_PRODUCT_GROUP_MODIFY = 15;
+    const TYPE_PRODUCT_GROUP_DELETE = 16;
+    const TYPE_RENT_ADD = 17;
+    const TYPE_RENT_ALLOW = 18;
+    const TYPE_RENT_RETURN = 19;
+    const TYPE_RENT_MODIFY = 20;
+    const TYPE_RENT_DELETE = 21;
 }
 
-function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logText) {
+function newLog(Mysqli $DB, $logType, $logProduct, $logUser, $logText) {
+    if (!isset($logType) || !isset($logProduct) || !isset($logUser)) return -1;
     # execute log query
     try {
         $DB_SQL_LOG = "INSERT INTO `Logs` (`log_product`, `log_user`, `log_type`, `log_text`) VALUES (?, ?, ?, ?)";
