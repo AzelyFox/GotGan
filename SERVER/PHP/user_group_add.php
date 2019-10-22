@@ -94,6 +94,9 @@ try {
     exit();
 }
 
+# user group creation log
+newLog($DB, LogTypes::TYPE_USER_GROUP_ADD, -1, $validation["user_index"], NULL);
+
 # user group creation success
 $output = array();
 $output["result"] = 0;

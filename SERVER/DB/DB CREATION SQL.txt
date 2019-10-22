@@ -100,10 +100,10 @@ ALTER TABLE Logs COMMENT 'Logs';
 
 CREATE TABLE LogType
 (
-    `type_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'type index', 
-    `type_name`   VARCHAR(45)    NOT NULL    COMMENT 'type name', 
-    `type_level`  INT            NOT NULL    COMMENT 'type level', 
-    PRIMARY KEY (type_index)
+    `log_type_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'log type index', 
+    `log_type_name`   VARCHAR(45)    NOT NULL    COMMENT 'log type name', 
+    `log_type_level`  INT            NOT NULL    COMMENT 'log type level', 
+    PRIMARY KEY (log_type_index)
 );
 
 ALTER TABLE LogType COMMENT 'LogType';

@@ -278,6 +278,9 @@ if (isset($_REQUEST["user_phone"]))
     modifyUser($DB, $user_index, $phoneModifyQuery, "si", $user_phone);
 }
 
+# user creation log
+newLog($DB, LogTypes::TYPE_USER_MODIFY, -1, $validation["user_index"], NULL);
+
 # user modification success
 $output = array();
 $output["result"] = 0;

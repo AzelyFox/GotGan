@@ -335,7 +335,10 @@ if (!isset($session)) {
     }
 }
 
-# user session query success
+# user login log
+newLog($DB, LogTypes::TYPE_LOGIN, -1, $TEMP_USER_INDEX, NULL);
+
+# user login success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";

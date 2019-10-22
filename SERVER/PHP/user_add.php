@@ -260,6 +260,13 @@ try {
     exit();
 }
 
+# user creation log
+if (isset($session)) {
+    newLog($DB, LogTypes::TYPE_USER_ADD, -1, $validation["user_index"], NULL);
+} else {
+    newLog($DB, LogTypes::TYPE_USER_ADD, -1, $TEMP_INSERTED_ROW, NULL);
+}
+
 # user creation success
 $output = array();
 $output["result"] = 0;

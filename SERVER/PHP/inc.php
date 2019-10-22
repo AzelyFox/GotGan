@@ -28,9 +28,12 @@ function validateSession(Mysqli $DB, string $session) {
     $_validation = array();
     $_validation["user_index"] = -1;
     $_validation["user_level"] = -1;
+    $_validation["user_id"] = "";
+    $_validation["user_name"] = "";
+
     # execute session validate query
     try {
-        $DB_SQL_SESSION = "SELECT user_session_user FROM UserSession WHERE UserSession.user_session_key = ?";
+        $DB_SQL_SESSION = "SELECT `user_session_user` FROM `UserSession` WHERE `user_session_key` = ?";
         $DB_STMT_SESSION = $DB->prepare($DB_SQL_SESSION);
         # database query not ready
         if (!$DB_STMT_SESSION) {
@@ -80,7 +83,7 @@ function validateSession(Mysqli $DB, string $session) {
 
     # execute user level query
     try {
-        $DB_SQL_SESSION = "SELECT user_level FROM Users WHERE Users.user_index = ?";
+        $DB_SQL_SESSION = "SELECT `user_id`, `user_name`, `user_level` FROM `Users` WHERE `user_index` = ?";
         $DB_STMT_SESSION = $DB->prepare($DB_SQL_SESSION);
         # database query not ready
         if (!$DB_STMT_SESSION) {
@@ -101,7 +104,7 @@ function validateSession(Mysqli $DB, string $session) {
             echo urldecode($outputJson);
             exit();
         }
-        $DB_STMT_SESSION->bind_result($_validation["user_level"]);
+        $DB_STMT_SESSION->bind_result($_validation["user_id"], $_validation["user_name"], $_validation["user_level"]);
         $DB_STMT_SESSION->store_result();
     } catch (Exception $e) {
         # user session query error
@@ -130,6 +133,19 @@ function validateSession(Mysqli $DB, string $session) {
     return $_validation;
 }
 
+class LogTypes {
+    const TYPE_LOG_NORMAL = 1;
+    const TYPE_LOG_IMPORTANT = 2;
+    const TYPE_LOG_CRITICAL = 3;
+    const TYPE_LOGIN = 4;
+    const TYPE_USER_ADD = 5;
+    const TYPE_USER_MODIFY = 6;
+    const TYPE_USER_DELETE = 7;
+    const TYPE_USER_GROUP_ADD = 8;
+    const TYPE_USER_GROUP_MODIFY = 9;
+    const TYPE_USER_GROUP_DELETE = 10;
+}
+
 function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logText) {
     # execute log query
     try {
@@ -155,6 +171,8 @@ function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logTex
             echo urldecode($outputJson);
             exit();
         }
+        $TEMP_LOG_INSERTED = $DB_STMT_LOG->insert_id;
+        $DB_STMT_LOG->close();
     } catch (Exception $e) {
         # log query error
         $output = array();
@@ -164,6 +182,7 @@ function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logTex
         echo urldecode($outputJson);
         exit();
     }
+    return $TEMP_LOG_INSERTED;
 }
 
 ?>
