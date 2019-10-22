@@ -64,7 +64,7 @@ if (isset($_REQUEST["product_barcode"]))
         }
         $DB_STMT->bind_result($TEMP_PRODUCT_INDEX, $TEMP_PRODUCT_STATUS, $TEMP_PRODUCT_RENT, $TEMP_PRODUCT_RENTABLE);
         $DB_STMT->fetch();
-        if ($TEMP_PRODUCT_STATUS != 0 || $TEMP_PRODUCT_RENT != 0 || $TEMP_PRODUCT_RENTABLE != 0) {
+        if ($TEMP_PRODUCT_STATUS != 0 || $TEMP_PRODUCT_RENT != 0 || $TEMP_PRODUCT_RENTABLE == 0) {
             # product is on rent
             $output = array();
             $output["result"] = -3;
@@ -151,7 +151,7 @@ if (isset($_REQUEST["rent_product"]))
         }
         $DB_STMT->bind_result($TEMP_PRODUCT_INDEX, $TEMP_PRODUCT_STATUS, $TEMP_PRODUCT_RENT, $TEMP_PRODUCT_RENTABLE);
         $DB_STMT->fetch();
-        if ($TEMP_PRODUCT_STATUS != 0 || $TEMP_PRODUCT_RENT != 0 || $TEMP_PRODUCT_RENTABLE != 0) {
+        if ($TEMP_PRODUCT_STATUS != 0 || $TEMP_PRODUCT_RENT != 0 || $TEMP_PRODUCT_RENTABLE == 0) {
             # product is on rent
             $output = array();
             $output["result"] = -3;
