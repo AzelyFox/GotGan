@@ -43,6 +43,15 @@ function validateSession(Mysqli $DB, string $session) {
         }
         $DB_STMT_SESSION->bind_param("s", $session);
         $DB_STMT_SESSION->execute();
+        if ($DB_STMT_SESSION->errno != 0) {
+            # user session query error
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : ".$DB_STMT_SESSION->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
         $DB_STMT_SESSION->bind_result($_validation["user_index"]);
         $DB_STMT_SESSION->store_result();
     } catch (Exception $e) {
@@ -119,6 +128,42 @@ function validateSession(Mysqli $DB, string $session) {
     $DB_STMT_SESSION->close();
 
     return $_validation;
+}
+
+function newLog(Mysqli $DB, int $logType, int $logProduct, int $logUser, $logText) {
+    # execute log query
+    try {
+        $DB_SQL_LOG = "INSERT INTO `Logs` (`log_product`, `log_user`, `log_type`, `log_text`) VALUES (?, ?, ?, ?)";
+        $DB_STMT_LOG = $DB->prepare($DB_SQL_LOG);
+        # database query not ready
+        if (!$DB_STMT_LOG) {
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : " . $DB->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT_LOG->bind_param("iiis", $logProduct, $logUser, $logType, $logText);
+        $DB_STMT_LOG->execute();
+        if ($DB_STMT_LOG->errno != 0) {
+            # log query error
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : ".$DB_STMT_LOG->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    } catch (Exception $e) {
+        # log query error
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 }
 
 ?>

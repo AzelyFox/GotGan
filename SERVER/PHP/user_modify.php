@@ -45,6 +45,14 @@ $user_index = 0;
 if (isset($_REQUEST["user_index"]))
 {
     $user_index = $_REQUEST["user_index"];
+    if (!is_int($user_index)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_index MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -58,6 +66,14 @@ if (isset($_REQUEST["user_index"]))
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
 
     # check user level
@@ -85,6 +101,14 @@ if (isset($_REQUEST["session"]))
 if (isset($_REQUEST["user_id"]))
 {
     $user_id = $_REQUEST["user_id"];
+    if (!is_string($user_id)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_id MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $idModifyQuery = "UPDATE `Users` SET `user_id` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $idModifyQuery, "si", $user_id);
 }
@@ -92,6 +116,15 @@ if (isset($_REQUEST["user_id"]))
 # initialize user pw
 if (isset($_REQUEST["user_pw"]))
 {
+    $user_pw = $_REQUEST["user_pw"];
+    if (!is_string($user_pw)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_pw MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $user_pw = password_hash($_REQUEST["user_pw"], PASSWORD_BCRYPT);
     $pwModifyQuery = "UPDATE `Users` SET `user_pw` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $pwModifyQuery, "si", $user_pw);
@@ -101,6 +134,14 @@ if (isset($_REQUEST["user_pw"]))
 if (isset($_REQUEST["user_level"]))
 {
     $user_level = $_REQUEST["user_level"];
+    if (!is_int($user_level)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_level MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     # if target user level is higher than session user level
     if ($user_level > $validation["user_level"]) {
         $output = array();
@@ -118,6 +159,14 @@ if (isset($_REQUEST["user_level"]))
 if (isset($_REQUEST["user_name"]))
 {
     $user_name = $_REQUEST["user_name"];
+    if (!is_string($user_name)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_name MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $nameModifyQuery = "UPDATE `Users` SET `user_name` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $nameModifyQuery, "si", $user_name);
 }
@@ -126,6 +175,14 @@ if (isset($_REQUEST["user_name"]))
 if (isset($_REQUEST["user_group"]))
 {
     $user_group = $_REQUEST["user_group"];
+    if (!is_int($user_group)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_group MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     # if normal user try to change its own group
     if ($validation["user_level"] < 1) {
         $output = array();
@@ -143,6 +200,14 @@ if (isset($_REQUEST["user_group"]))
 if (isset($_REQUEST["user_sid"]))
 {
     $user_sid = $_REQUEST["user_sid"];
+    if (!is_string($user_sid)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_sid MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $sidModifyQuery = "UPDATE `Users` SET `user_sid` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $sidModifyQuery, "si", $user_sid);
 }
@@ -151,6 +216,14 @@ if (isset($_REQUEST["user_sid"]))
 if (isset($_REQUEST["user_block"]))
 {
     $user_block = $_REQUEST["user_block"];
+    if (!is_int($user_block)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_block MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $blockModifyQuery = "UPDATE `Users` SET `user_block` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $blockModifyQuery, "ii", $user_block);
 } else {
@@ -161,6 +234,14 @@ if (isset($_REQUEST["user_block"]))
 if (isset($_REQUEST["user_uuid"]))
 {
     $user_uuid = $_REQUEST["user_uuid"];
+    if (!is_string($user_uuid)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_uuid MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $uuidModifyQuery = "UPDATE `Users` SET `user_uuid` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $uuidModifyQuery, "si", $user_uuid);
 }
@@ -169,6 +250,14 @@ if (isset($_REQUEST["user_uuid"]))
 if (isset($_REQUEST["user_email"]))
 {
     $user_email = $_REQUEST["user_email"];
+    if (!is_string($user_email)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_email MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $emailModifyQuery = "UPDATE `Users` SET `user_email` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $emailModifyQuery, "si", $user_email);
 }
@@ -177,6 +266,14 @@ if (isset($_REQUEST["user_email"]))
 if (isset($_REQUEST["user_phone"]))
 {
     $user_phone = $_REQUEST["user_phone"];
+    if (!is_string($user_phone)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_phone MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $phoneModifyQuery = "UPDATE `Users` SET `user_phone` = ? WHERE `user_index` = ?";
     modifyUser($DB, $user_index, $phoneModifyQuery, "si", $user_phone);
 }

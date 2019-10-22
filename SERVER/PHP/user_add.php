@@ -12,6 +12,14 @@ $user_name = "";
 if (isset($_REQUEST["user_id"]))
 {
     $user_id = $_REQUEST["user_id"];
+    if (!is_string($user_id)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_id MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -24,6 +32,15 @@ if (isset($_REQUEST["user_id"]))
 # initialize user pw
 if (isset($_REQUEST["user_pw"]))
 {
+    $user_pw = $_REQUEST["user_pw"];
+    if (!is_string($user_pw)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_pw MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $user_pw = password_hash($_REQUEST["user_pw"], PASSWORD_BCRYPT);
 } else {
     $output = array();
@@ -38,6 +55,14 @@ if (isset($_REQUEST["user_pw"]))
 if (isset($_REQUEST["user_level"]))
 {
     $user_level = $_REQUEST["user_level"];
+    if (!is_int($user_level)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_level MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -51,6 +76,14 @@ if (isset($_REQUEST["user_level"]))
 if (isset($_REQUEST["user_name"]))
 {
     $user_name = $_REQUEST["user_name"];
+    if (!is_string($user_name)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_name MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -64,6 +97,14 @@ if (isset($_REQUEST["user_name"]))
 if (isset($_REQUEST["user_group"]))
 {
     $user_group = $_REQUEST["user_group"];
+    if (!is_int($user_group)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_group MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_group = 0;
 }
@@ -72,6 +113,14 @@ if (isset($_REQUEST["user_group"]))
 if (isset($_REQUEST["user_sid"]))
 {
     $user_sid = $_REQUEST["user_sid"];
+    if (!is_string($user_sid)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_sid MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_sid = NULL;
 }
@@ -80,6 +129,14 @@ if (isset($_REQUEST["user_sid"]))
 if (isset($_REQUEST["user_block"]))
 {
     $user_block = $_REQUEST["user_block"];
+    if (!is_int($user_block)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_block MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_block = 0;
 }
@@ -88,6 +145,14 @@ if (isset($_REQUEST["user_block"]))
 if (isset($_REQUEST["user_uuid"]))
 {
     $user_uuid = $_REQUEST["user_uuid"];
+    if (!is_string($user_uuid)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_uuid MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_uuid = NULL;
 }
@@ -96,6 +161,14 @@ if (isset($_REQUEST["user_uuid"]))
 if (isset($_REQUEST["user_email"]))
 {
     $user_email = $_REQUEST["user_email"];
+    if (!is_string($user_email)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_email MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_email = NULL;
 }
@@ -104,6 +177,14 @@ if (isset($_REQUEST["user_email"]))
 if (isset($_REQUEST["user_phone"]))
 {
     $user_phone = $_REQUEST["user_phone"];
+    if (!is_string($user_phone)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_phone MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $user_phone = NULL;
 }
@@ -112,6 +193,14 @@ if (isset($_REQUEST["user_phone"]))
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
 
     # check user level
