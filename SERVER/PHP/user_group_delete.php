@@ -9,13 +9,15 @@ $user_group_index = 0;
 if (isset($_REQUEST["user_group_index"]))
 {
     $user_group_index = $_REQUEST["user_group_index"];
-    if (!is_int($user_group_index)) {
+    if (!is_numeric($user_group_index)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_group_index MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_group_index = intval($user_group_index);
     }
 } else {
     $output = array();

@@ -6,6 +6,14 @@ require_once "./inc.php";
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
     if ($validation["user_level"] < 1) {
         $output = array();

@@ -55,13 +55,15 @@ if (isset($_REQUEST["user_pw"]))
 if (isset($_REQUEST["user_level"]))
 {
     $user_level = $_REQUEST["user_level"];
-    if (!is_int($user_level)) {
+    if (!is_numeric($user_level)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_level MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_level = intval($user_level);
     }
 } else {
     $output = array();
@@ -97,13 +99,15 @@ if (isset($_REQUEST["user_name"]))
 if (isset($_REQUEST["user_group"]))
 {
     $user_group = $_REQUEST["user_group"];
-    if (!is_int($user_group)) {
+    if (!is_numeric($user_group)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_group MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_group = intval($user_group);
     }
 } else {
     $user_group = 0;
@@ -129,13 +133,15 @@ if (isset($_REQUEST["user_sid"]))
 if (isset($_REQUEST["user_block"]))
 {
     $user_block = $_REQUEST["user_block"];
-    if (!is_int($user_block)) {
+    if (!is_numeric($user_block)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_block MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_block = intval($user_block);
     }
 } else {
     $user_block = 0;

@@ -9,13 +9,15 @@ $user_index = 0;
 if (isset($_REQUEST["user_index"]))
 {
     $user_index = $_REQUEST["user_index"];
-    if (!is_int($user_index)) {
+    if (!is_numeric($user_index)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_index MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $user_index = intval($user_index);
     }
 } else {
     $output = array();
