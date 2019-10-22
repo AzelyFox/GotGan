@@ -11,12 +11,28 @@ $user_uuid = "";
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
 } else {
     # initialize user id
     if (isset($_REQUEST["user_id"]))
     {
         $user_id = $_REQUEST["user_id"];
+        if (!is_string($user_id)) {
+            $output = array();
+            $output["result"] = -1;
+            $output["error"] = "user_id MUST BE STRING";
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
     } else {
         $output = array();
         $output["result"] = -1;
@@ -30,6 +46,14 @@ if (isset($_REQUEST["session"]))
     if (isset($_REQUEST["user_pw"]))
     {
         $user_pw = $_REQUEST["user_pw"];
+        if (!is_string($user_pw)) {
+            $output = array();
+            $output["result"] = -1;
+            $output["error"] = "user_pw MUST BE STRING";
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
     } else {
         $output = array();
         $output["result"] = -1;
@@ -44,6 +68,14 @@ if (isset($_REQUEST["session"]))
 if (isset($_REQUEST["user_uuid"]))
 {
     $user_uuid = $_REQUEST["user_uuid"];
+    if (!is_string($user_uuid)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_uuid MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 }
 
 if (!isset($session)) {
@@ -303,7 +335,10 @@ if (!isset($session)) {
     }
 }
 
-# user session query success
+# user login log
+newLog($DB, LogTypes::TYPE_LOGIN, -1, $TEMP_USER_INDEX, NULL);
+
+# user login success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";

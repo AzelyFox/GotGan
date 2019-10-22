@@ -9,6 +9,14 @@ $user_group_name = "";
 if (isset($_REQUEST["user_group_name"]))
 {
     $user_group_name = $_REQUEST["user_group_name"];
+    if (!is_string($user_group_name)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_group_name MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -22,12 +30,20 @@ if (isset($_REQUEST["user_group_name"]))
 if (isset($_REQUEST["session"]))
 {
     $session = $_REQUEST["session"];
+    if (!is_string($session)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "session MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $validation = validateSession($DB, $session);
 
     # check user level
     if ($validation["user_level"] < 1) {
         $output = array();
-        $output["result"] = -4;
+        $output["result"] = -3;
         $output["error"] = "NOT ALLOWED";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
@@ -60,7 +76,7 @@ try {
     if ($DB_STMT->errno != 0) {
         # user group creation query error
         $output = array();
-        $output["result"] = -5;
+        $output["result"] = -4;
         $output["error"] = "ADD USER GROUP FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
@@ -77,6 +93,9 @@ try {
     echo urldecode($outputJson);
     exit();
 }
+
+# user group creation log
+newLog($DB, LogTypes::TYPE_USER_GROUP_ADD, -1, $validation["user_index"], NULL);
 
 # user group creation success
 $output = array();
