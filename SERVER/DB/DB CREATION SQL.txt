@@ -22,8 +22,8 @@ CREATE TABLE Users
     `user_group`    INT            NOT NULL    COMMENT 'group index', 
     `user_email`    VARCHAR(45)    NULL        COMMENT 'user email', 
     `user_phone`    VARCHAR(45)    NULL        COMMENT 'user phone number',     
-    `user_created`  DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'user created time', 
-    PRIMARY KEY (user_index)
+    `user_created`  DATETIME       NOT NULL    DEFAULT CURRENT_TIMESTAMP    COMMENT 'user created time', 
+    PRIMARY KEY (`user_index`)
 );
 
 ALTER TABLE Users COMMENT 'Users';
@@ -39,8 +39,8 @@ CREATE TABLE Products
     `product_owner`    INT            NOT NULL    COMMENT 'group index', 
     `product_rent`     INT            NOT NULL    COMMENT 'product rend index', 
     `product_barcode`  INT            NOT NULL    COMMENT 'product barcode', 
-    `product_created`  DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'product created time', 
-    PRIMARY KEY (product_index)
+    `product_created`  DATETIME       NOT NULL    DEFAULT CURRENT_TIMESTAMP    COMMENT 'product created time', 
+    PRIMARY KEY (`product_index`)
 );
 
 ALTER TABLE Products COMMENT 'Products';
@@ -52,7 +52,7 @@ CREATE TABLE ProductGroup
     `product_group_name`      VARCHAR(45)    NOT NULL    COMMENT 'product type name', 
     `product_group_rentable`  INT            NOT NULL    COMMENT 'is product type rentable', 
     `product_group_priority`  INT            NOT NULL    COMMENT 'product group priority', 
-    PRIMARY KEY (product_group_index)
+    PRIMARY KEY (`product_group_index`)
 );
 
 ALTER TABLE ProductGroup COMMENT 'ProductGroup';
@@ -63,7 +63,7 @@ CREATE TABLE UserGroup
 (
     `user_group_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'user group index', 
     `user_group_name`   VARCHAR(45)    NOT NULL    COMMENT 'user group name', 
-    PRIMARY KEY (user_group_index)
+    PRIMARY KEY (`user_group_index`)
 );
 
 ALTER TABLE UserGroup COMMENT 'UserGroup';
@@ -79,7 +79,7 @@ CREATE TABLE Rents
     `rent_time_start`   DATETIME    NOT NULL    COMMENT 'rent start time', 
     `rent_time_end`     DATETIME    NULL        COMMENT 'rent end time', 
     `rent_time_return`  DATETIME    NULL        COMMENT 'rent returned time', 
-    PRIMARY KEY (rent_index)
+    PRIMARY KEY (`rent_index`)
 );
 
 ALTER TABLE Rents COMMENT 'Rents';
@@ -91,9 +91,9 @@ CREATE TABLE Logs
     `log_product`  INT            NOT NULL    COMMENT 'product index', 
     `log_user`     INT            NOT NULL    COMMENT 'user index', 
     `log_type`     INT            NOT NULL    COMMENT 'log type', 
-    `log_text`     VARCHAR(45)    NULL        COMMENT 'log text', 
-    `log_time`     DATETIME       NOT NULL    DEFUALT CURRENT_TIMESTAMP    COMMENT 'log created time', 
-    PRIMARY KEY (log_index)
+    `log_text`     VARCHAR(100)   NULL        COMMENT 'log text', 
+    `log_time`     DATETIME       NOT NULL    DEFAULT CURRENT_TIMESTAMP    COMMENT 'log created time', 
+    PRIMARY KEY (`log_index`)
 );
 
 ALTER TABLE Logs COMMENT 'Logs';
@@ -104,7 +104,7 @@ CREATE TABLE LogType
     `log_type_index`  INT            NOT NULL    AUTO_INCREMENT COMMENT 'log type index', 
     `log_type_name`   VARCHAR(45)    NOT NULL    COMMENT 'log type name', 
     `log_type_level`  INT            NOT NULL    COMMENT 'log type level', 
-    PRIMARY KEY (log_type_index)
+    PRIMARY KEY (`log_type_index`)
 );
 
 ALTER TABLE LogType COMMENT 'LogType';
@@ -116,7 +116,7 @@ CREATE TABLE UserSession
     `user_session_user`   INT            NOT NULL    COMMENT 'user session', 
     `user_session_key`    VARCHAR(45)    NOT NULL    COMMENT 'user session string', 
     `user_session_time`   DATETIME       NOT NULL    COMMENT 'user session last time', 
-    PRIMARY KEY (user_session_index)
+    PRIMARY KEY (`user_session_index`)
 );
 
 ALTER TABLE UserSession COMMENT 'UserSession';
@@ -132,10 +132,11 @@ CREATE TABLE History
     `history_product_total`      INT         NOT NULL    COMMENT 'history product total', 
     `history_product_available`  INT         NOT NULL    COMMENT 'history product available', 
     `history_product_rent`       INT         NOT NULL    COMMENT 'history product rent', 
-    PRIMARY KEY (history_index)
+    PRIMARY KEY (`history_index`)
 );
 
 ALTER TABLE History COMMENT 'History';
+ALTER TABLE History ADD UNIQUE(`history_time`);
 
 
 CREATE TABLE ProductCheck
@@ -144,7 +145,7 @@ CREATE TABLE ProductCheck
     `product_check_time`    DATETIME       NOT NULL    COMMENT 'product check time', 
     `product_check_user`    INT            NOT NULL    COMMENT 'product check user', 
     `product_check_target`  VARCHAR(45)    NOT NULL    COMMENT 'product check target', 
-    PRIMARY KEY (product_check_index)
+    PRIMARY KEY (`product_check_index`)
 );
 
 ALTER TABLE ProductCheck COMMENT 'ProductCheck';

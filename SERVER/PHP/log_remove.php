@@ -2,6 +2,15 @@
 
 require_once "./inc.php";
 
+if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
+    $output = array();
+    $output["result"] = -3;
+    $output["error"] = "SYSTEM SWITCH IS OFF";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 # session auth
 if (isset($_REQUEST["session"]))
 {
@@ -36,13 +45,15 @@ if (isset($_REQUEST["session"]))
 if (isset($_REQUEST["log_index"]))
 {
     $log_index = $_REQUEST["log_index"];
-    if (!is_int($log_index)) {
+    if (!is_numeric($log_index)) {
         $output = array();
         $output["result"] = -1;
         $output["error"] = "log_index MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
+    } else {
+        $log_index = intval($log_index);
     }
 } else {
     $output = array();

@@ -53,6 +53,17 @@ function validateSession(Mysqli $DB, string $session) {
         }
         $DB_STMT_SESSION->bind_result($_validation["user_index"]);
         $DB_STMT_SESSION->store_result();
+        # session is not valid
+        if ($DB_STMT_SESSION->num_rows != 1) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "USER SESSION NOT VALID";
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT_SESSION->fetch();
+        $DB_STMT_SESSION->close();
     } catch (Exception $e) {
         # user session query error
         $output = array();
@@ -62,20 +73,6 @@ function validateSession(Mysqli $DB, string $session) {
         echo urldecode($outputJson);
         exit();
     }
-
-    # session is not valid
-    if ($DB_STMT_SESSION->num_rows != 1) {
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "USER SESSION NOT VALID";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-
-    # session is valid
-    $DB_STMT_SESSION->fetch();
-    $DB_STMT_SESSION->close();
 
     # execute user level query
     try {
@@ -102,6 +99,16 @@ function validateSession(Mysqli $DB, string $session) {
         }
         $DB_STMT_SESSION->bind_result($_validation["user_id"], $_validation["user_name"], $_validation["user_level"]);
         $DB_STMT_SESSION->store_result();
+        if ($DB_STMT_SESSION->num_rows != 1) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "USER QUERY FAILURE";
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT_SESSION->fetch();
+        $DB_STMT_SESSION->close();
     } catch (Exception $e) {
         # user session query error
         $output = array();
@@ -111,20 +118,6 @@ function validateSession(Mysqli $DB, string $session) {
         echo urldecode($outputJson);
         exit();
     }
-
-    # query result is not valid
-    if ($DB_STMT_SESSION->num_rows != 1) {
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "USER SESSION INDEX NOT VALID";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-
-    # query result is valid
-    $DB_STMT_SESSION->fetch();
-    $DB_STMT_SESSION->close();
 
     return $_validation;
 }
@@ -149,8 +142,9 @@ class LogTypes {
     const TYPE_RENT_ADD = 17;
     const TYPE_RENT_ALLOW = 18;
     const TYPE_RENT_RETURN = 19;
-    const TYPE_RENT_MODIFY = 20;
-    const TYPE_RENT_DELETE = 21;
+    const TYPE_RENT_DELETE = 20;
+    const TYPE_SEND_MAIL = 21;
+    const TYPE_SEND_FCM = 22;
 }
 
 function newLog(Mysqli $DB, $logType, $logProduct, $logUser, $logText) {
@@ -191,6 +185,73 @@ function newLog(Mysqli $DB, $logType, $logProduct, $logUser, $logText) {
         exit();
     }
     return $TEMP_LOG_INSERTED;
+}
+
+class SwitchTypes {
+    const SWITCH_MASTER = 1;
+    const SWITCH_LOGIN = 2;
+    const SWITCH_RENT = 3;
+    const SWITCH_MESSAGE = 4;
+}
+
+function getSystemSwitch(Mysqli $DB, int $switchType) {
+    # execute system switch query
+    try {
+        $DB_SQL = "SELECT `system_on`, `system_login`, `system_rent`, `system_message` FROM `System` LIMIT 1";
+        $DB_STMT = $DB->prepare($DB_SQL);
+        # database query not ready
+        if (!$DB_STMT) {
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT->execute();
+        if ($DB_STMT->errno != 0) {
+            # system switch query error
+            $output = array();
+            $output["result"] = -4;
+            $output["error"] = "SYSTEM SWITCH FAILURE : ".$DB_STMT->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT->bind_result($TEMP_SYSTEM_ON, $TEMP_SYSTEM_LOGIN, $TEMP_SYSTEM_RENT, $TEMP_SYSTEM_MESSAGE);
+        $DB_STMT->fetch();
+        $DB_STMT->close();
+    } catch(Exception $e) {
+        # system switch query error
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+
+    if ($switchType == SwitchTypes::SWITCH_MASTER) {
+        return $TEMP_SYSTEM_ON;
+    }
+    if ($switchType == SwitchTypes::SWITCH_LOGIN) {
+        return $TEMP_SYSTEM_LOGIN;
+    }
+    if ($switchType == SwitchTypes::SWITCH_RENT) {
+        return $TEMP_SYSTEM_RENT;
+    }
+    if ($switchType == SwitchTypes::SWITCH_MESSAGE) {
+        return $TEMP_SYSTEM_MESSAGE;
+    }
+    return -1;
+}
+
+function sendEmail($USER_EMAILS, $MESSAGE) {
+
+}
+
+function sendFCM($USER_UUIDS, $MESSAGE) {
+
 }
 
 ?>

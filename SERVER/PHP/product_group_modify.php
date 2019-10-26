@@ -2,6 +2,15 @@
 
 require_once "./inc.php";
 
+if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
+    $output = array();
+    $output["result"] = -3;
+    $output["error"] = "SYSTEM SWITCH IS OFF";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 function modifyProductGroup(Mysqli $DB, int $groupIndex, string $modifyQuery, string $bindType, $bindValue) {
     # execute product group modification query
     try {
