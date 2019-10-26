@@ -2,6 +2,7 @@
 
 require_once "./inc.php";
 
+
 if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
     $output = array();
     $output["result"] = -3;
@@ -15,6 +16,30 @@ if (getSystemSwitch($DB, SwitchTypes::SWITCH_RENT) == 0) {
     $output = array();
     $output["result"] = -3;
     $output["error"] = "RENT SWITCH IS OFF";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+# key auth
+if (isset($_REQUEST["key"]))
+{
+    $key = $_REQUEST["key"];
+    if (!is_string($key)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "key MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    if ($key != $MANAGER_KEY) {
+
+    }
+} else {
+    $output = array();
+    $output["result"] = -1;
+    $output["error"] = "key IS EMPTY";
     $outputJson = json_encode($output);
     echo urldecode($outputJson);
     exit();

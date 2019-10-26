@@ -132,6 +132,7 @@ CREATE TABLE History
     `history_product_total`      INT         NOT NULL    COMMENT 'history product total', 
     `history_product_available`  INT         NOT NULL    COMMENT 'history product available', 
     `history_product_rent`       INT         NOT NULL    COMMENT 'history product rent', 
+    `history_rent_total`         INT         NOT NULL    COMMENT 'history rent total',
     PRIMARY KEY (`history_index`)
 );
 

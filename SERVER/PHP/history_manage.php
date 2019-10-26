@@ -11,6 +11,30 @@ if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
     exit();
 }
 
+# key auth
+if (isset($_REQUEST["key"]))
+{
+    $key = $_REQUEST["key"];
+    if (!is_string($key)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "key MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    if ($key != $MANAGER_KEY) {
+
+    }
+} else {
+    $output = array();
+    $output["result"] = -1;
+    $output["error"] = "key IS EMPTY";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 # execute rent count query
 try {
     $DB_SQL = "SELECT COUNT(*) FROM `Rents` WHERE `rent_status` != 1";
@@ -155,9 +179,9 @@ try {
     exit();
 }
 
-# execute insert history query
+# execute product rent count query
 try {
-    $DB_SQL = "INSERT INTO `History` (`history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent`) VALUES (CAST(NOW() AS DATE), ?, ?, ?, ?)";
+    $DB_SQL = "SELECT COUNT(*) FROM `Products` WHERE `product_rent` != 0";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -168,7 +192,43 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("iiii", $TEMP_USER_COUNT, $TEMP_PRODUCT_TOTAL_COUNT, $TEMP_PRODUCT_AVAILABLE_COUNT, $TEMP_RENT_COUNT);
+    $DB_STMT->execute();
+    if ($DB_STMT->errno != 0) {
+        # product rent count query error
+        $output = array();
+        $output["result"] = -4;
+        $output["error"] = "PRODUCT RENT COUNT FAILURE : ".$DB_STMT->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    $DB_STMT->bind_result($TEMP_PRODUCT_RENT_COUNT);
+    $DB_STMT->fetch();
+    $DB_STMT->close();
+} catch(Exception $e) {
+    # product rent count query error
+    $output = array();
+    $output["result"] = -2;
+    $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+# execute insert history query
+try {
+    $DB_SQL = "INSERT INTO `History` (`history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent`, `history_rent_total`) VALUES (CAST(NOW() AS DATE), ?, ?, ?, ?, ?)";
+    $DB_STMT = $DB->prepare($DB_SQL);
+    # database query not ready
+    if (!$DB_STMT) {
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    $DB_STMT->bind_param("iiiii", $TEMP_USER_COUNT, $TEMP_PRODUCT_TOTAL_COUNT, $TEMP_PRODUCT_AVAILABLE_COUNT, $TEMP_PRODUCT_RENT_COUNT, $TEMP_RENT_COUNT);
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
         if ($DB_STMT->errno == 1062) {
