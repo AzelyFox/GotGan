@@ -43,7 +43,7 @@ if (isset($_REQUEST["session"]))
         exit();
     }
 
-# initialize user pw
+    # initialize user pw
     if (isset($_REQUEST["user_pw"]))
     {
         $user_pw = $_REQUEST["user_pw"];
@@ -83,10 +83,6 @@ if (isset($_REQUEST["user_uuid"]))
         echo urldecode($outputJson);
         exit();
     }
-}
-
-if (!isset($user_id)) {
-    $user_id = NULL;
 }
 
 # execute login query

@@ -24,6 +24,14 @@ if (isset($_REQUEST["session"]))
         exit();
     }
     $validation = validateSession($DB, $session);
+    if ($validation["user_level"] < 1) {
+        $output = array();
+        $output["result"] = -3;
+        $output["error"] = "NOT ALLOWED";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -38,7 +46,7 @@ $historyJsonResult = array();
 
 # execute history list query
 try {
-    $DB_SQL = "SELECT `history_index`, `history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent` FROM `History` ORDER BY `history_time` DESC LIMIT 30";
+    $DB_SQL = "SELECT `history_index`, `history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent`, `history_rent_total` FROM `History` ORDER BY `history_time` DESC LIMIT 30";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -59,7 +67,7 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_result($TEMP_HISTORY_INDEX, $TEMP_HISTORY_TIME, $TEMP_HISTORY_USER_TOTAL, $TEMP_HISTORY_PRODUCT_TOTAL, $TEMP_HISTORY_PRODUCT_AVAILABLE, $TEMP_HISTORY_PRODUCT_RENT);
+    $DB_STMT->bind_result($TEMP_HISTORY_INDEX, $TEMP_HISTORY_TIME, $TEMP_HISTORY_USER_TOTAL, $TEMP_HISTORY_PRODUCT_TOTAL, $TEMP_HISTORY_PRODUCT_AVAILABLE, $TEMP_HISTORY_PRODUCT_RENT, $TEMP_HISTORY_RENT_TOTAL);
     while($DB_STMT->fetch()) {
         $historyJsonObject = array();
         $historyJsonObject["history_index"] = $TEMP_HISTORY_INDEX;
@@ -68,6 +76,7 @@ try {
         $historyJsonObject["history_product_total"] = $TEMP_HISTORY_PRODUCT_TOTAL;
         $historyJsonObject["history_product_available"] = $TEMP_HISTORY_PRODUCT_AVAILABLE;
         $historyJsonObject["history_product_rent"] = $TEMP_HISTORY_PRODUCT_RENT;
+        $historyJsonObject["history_rent_total"] = $TEMP_HISTORY_RENT_TOTAL;
         array_push($historyJsonResult, $historyJsonObject);
     }
     $DB_STMT->close();
