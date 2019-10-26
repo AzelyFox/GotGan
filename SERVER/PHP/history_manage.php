@@ -11,96 +11,9 @@ if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
     exit();
 }
 
-if (getSystemSwitch($DB, SwitchTypes::SWITCH_RENT) == 0) {
-    $output = array();
-    $output["result"] = -3;
-    $output["error"] = "RENT SWITCH IS OFF";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
-}
-
-# session auth
-if (isset($_REQUEST["session"]))
-{
-    $session = $_REQUEST["session"];
-    if (!is_string($session)) {
-        $output = array();
-        $output["result"] = -1;
-        $output["error"] = "session MUST BE STRING";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-    $validation = validateSession($DB, $session);
-    if ($validation["user_level"] < 1) {
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "NOT ALLOWED";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
-} else {
-    $output = array();
-    $output["result"] = -1;
-    $output["error"] = "session IS EMPTY";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
-}
-
-# initialize rent index
-if (isset($_REQUEST["rent_index"]))
-{
-    $rent_index = $_REQUEST["rent_index"];
-    if (!is_numeric($rent_index)) {
-        $output = array();
-        $output["result"] = -1;
-        $output["error"] = "rent_index MUST BE INT";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    } else {
-        $rent_index = intval($rent_index);
-    }
-}
-
-# initialize product barcode
-if (isset($_REQUEST["product_barcode"]))
-{
-    $product_barcode = $_REQUEST["product_barcode"];
-    if (!is_numeric($product_barcode)) {
-        $output = array();
-        $output["result"] = -1;
-        $output["error"] = "product_barcode MUST BE INT";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    } else {
-        $product_barcode = intval($product_barcode);
-    }
-}
-
-if (!isset($rent_index) && !isset($product_barcode)) {
-    $output = array();
-    $output["result"] = -1;
-    $output["error"] = "rent_index OR product_barcode IS NEEDED";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
-}
-
-if (!isset($rent_index)) {
-    $rent_index = -1;
-}
-if (!isset($product_barcode)) {
-    $product_barcode = -1;
-}
-
-# get rent details
+# execute rent count query
 try {
-    $DB_SQL = "SELECT `PG`.`product_group_rentable`, `R`.rent_index, `R`.`rent_product`, `R`.`rent_user` FROM `Rents` as `R` LEFT OUTER JOIN `Products` AS `P` ON (`R`.`rent_product` = `P`.`product_index`) LEFT OUTER JOIN `ProductGroup` AS `PG` ON (`P`.`product_group` = `PG`.`product_group_index`) WHERE `R`.`rent_index` = ? OR `P`.`product_barcode` = ?";
+    $DB_SQL = "SELECT COUNT(*) FROM `Rents` WHERE `rent_status` != 1";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -111,23 +24,21 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("ii", $rent_index, $product_barcode);
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # rent detail query error
+        # rent count query error
         $output = array();
         $output["result"] = -4;
-        $output["error"] = "RENT PRODUCT SEARCH FAILURE : ".$DB_STMT->error;
+        $output["error"] = "RENT COUNT FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_result($TEMP_PRODUCT_RENTABLE, $TEMP_RENT_INDEX, $TEMP_PRODUCT_INDEX, $TEMP_PRODUCT_USER);
+    $DB_STMT->bind_result($TEMP_RENT_COUNT);
     $DB_STMT->fetch();
-    $rent_index = $TEMP_RENT_INDEX;
     $DB_STMT->close();
 } catch(Exception $e) {
-    # rent detail query error
+    # rent count query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -136,9 +47,9 @@ try {
     exit();
 }
 
-# execute rent allow query
+# execute user count query
 try {
-    $DB_SQL = "UPDATE `Rents` SET `rent_status` = 2, `rent_time_start` = NOW(), `rent_time_end` = DATE_ADD(NOW(), INTERVAL ? DAY) WHERE `rent_index` = ?";
+    $DB_SQL = "SELECT COUNT(*) FROM `Users`";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -149,20 +60,21 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("ii", $TEMP_PRODUCT_RENTABLE, $rent_index);
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # rent allow query error
+        # user count query error
         $output = array();
         $output["result"] = -4;
-        $output["error"] = "UPDATE RENT FAILURE : ".$DB_STMT->error;
+        $output["error"] = "USER COUNT FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
+    $DB_STMT->bind_result($TEMP_USER_COUNT);
+    $DB_STMT->fetch();
     $DB_STMT->close();
 } catch(Exception $e) {
-    # rent allow query error
+    # user count query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -171,9 +83,9 @@ try {
     exit();
 }
 
-# execute rent allow query
+# execute product total count query
 try {
-    $DB_SQL = "UPDATE `Products` SET `product_rent` = ? WHERE `product_index` = ?";
+    $DB_SQL = "SELECT COUNT(*) FROM `products`";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -184,20 +96,21 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("ii", $rent_index, $TEMP_PRODUCT_INDEX);
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # rent allow query error
+        # product total count query error
         $output = array();
         $output["result"] = -4;
-        $output["error"] = "UPDATE RENT FAILURE : ".$DB_STMT->error;
+        $output["error"] = "PRODUCT TOTAL COUNT FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
+    $DB_STMT->bind_result($TEMP_PRODUCT_TOTAL_COUNT);
+    $DB_STMT->fetch();
     $DB_STMT->close();
 } catch(Exception $e) {
-    # rent allow query error
+    # product total count query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -206,10 +119,88 @@ try {
     exit();
 }
 
-# rent allow log
-newLog($DB, LogTypes::TYPE_RENT_ALLOW, $TEMP_PRODUCT_INDEX, $TEMP_PRODUCT_USER, NULL);
+# execute product available count query
+try {
+    $DB_SQL = "SELECT COUNT(*) FROM `Products` WHERE `product_status` = 0";
+    $DB_STMT = $DB->prepare($DB_SQL);
+    # database query not ready
+    if (!$DB_STMT) {
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    $DB_STMT->execute();
+    if ($DB_STMT->errno != 0) {
+        # product available count query error
+        $output = array();
+        $output["result"] = -4;
+        $output["error"] = "PRODUCT AVAILABLE COUNT FAILURE : ".$DB_STMT->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    $DB_STMT->bind_result($TEMP_PRODUCT_AVAILABLE_COUNT);
+    $DB_STMT->fetch();
+    $DB_STMT->close();
+} catch(Exception $e) {
+    # product available count query error
+    $output = array();
+    $output["result"] = -2;
+    $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
 
-# rent allow success
+# execute insert history query
+try {
+    $DB_SQL = "INSERT INTO `History` (`history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent`) VALUES (CAST(NOW() AS DATE), ?, ?, ?, ?)";
+    $DB_STMT = $DB->prepare($DB_SQL);
+    # database query not ready
+    if (!$DB_STMT) {
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+    $DB_STMT->bind_param("iiii", $TEMP_USER_COUNT, $TEMP_PRODUCT_TOTAL_COUNT, $TEMP_PRODUCT_AVAILABLE_COUNT, $TEMP_RENT_COUNT);
+    $DB_STMT->execute();
+    if ($DB_STMT->errno != 0) {
+        if ($DB_STMT->errno == 1062) {
+            # already today history is in database
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "ALREADY TODAY HISTORY IS IN DATABASE";
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        } else {
+            # insert history query error
+            $output = array();
+            $output["result"] = -4;
+            $output["error"] = "INSERT HISTORY FAILURE : ".$DB_STMT->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    }
+    $DB_STMT->close();
+} catch(Exception $e) {
+    # insert history query error
+    $output = array();
+    $output["result"] = -2;
+    $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+# history manage success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";

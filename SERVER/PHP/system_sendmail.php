@@ -41,56 +41,81 @@ if (isset($_REQUEST["session"]))
     exit();
 }
 
-# initialize log index
-if (isset($_REQUEST["log_index"]))
+# initialize user index
+if (isset($_REQUEST["user_index"]))
 {
-    $log_index = $_REQUEST["log_index"];
-    if (!is_numeric($log_index)) {
+    $user_index = $_REQUEST["user_index"];
+    if (!is_numeric($user_index)) {
         $output = array();
         $output["result"] = -1;
-        $output["error"] = "log_index MUST BE INT";
+        $output["error"] = "user_index MUST BE INT";
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     } else {
-        $log_index = intval($log_index);
+        $user_index = intval($user_index);
+    }
+}
+
+# initialize message
+if (isset($_REQUEST["message"]))
+{
+    $message = $_REQUEST["message"];
+    if (!is_string($message)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "message MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
     }
 } else {
     $output = array();
     $output["result"] = -1;
-    $output["error"] = "log_index IS EMPTY";
+    $output["error"] = "message IS EMPTY";
     $outputJson = json_encode($output);
     echo urldecode($outputJson);
     exit();
 }
 
-# execute log deletion query
+# ready for user email result
+$userMailResult = array();
+
+# execute user email query
 try {
-    $DB_SQL = "DELETE FROM `Logs` WHERE `log_index` = ?";
+    $DB_SQL = "SELECT `user_id`, `user_email` FROM `Users` WHERE 1=1";
+    if (isset($user_index)) {
+        $DB_SQL .= " AND `user_index` = ?";
+    }
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
         $output = array();
         $output["result"] = -2;
-        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $output["error"] = "DB QUERY FAILURE : " . $DB->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("i", $log_index);
+    if (isset($user_index)) {
+        $DB_STMT->bind_param("i", $user_index);
+    }
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # log deletion query error
         $output = array();
-        $output["result"] = -4;
-        $output["error"] = "DELETE LOG FAILURE : ".$DB_STMT->error;
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : " . $DB->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
+    $DB_STMT->bind_result($TEMP_USER_ID, $TEMP_USER_MAIL);
+    while ($DB_STMT->fetch()) {
+        array_push($userMailResult, $TEMP_USER_MAIL);
+    }
     $DB_STMT->close();
-} catch(Exception $e) {
-    # log deletion query error
+} catch (Exception $e) {
+    # user email query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -99,7 +124,12 @@ try {
     exit();
 }
 
-# log deletion success
+sendEmail($userMailResult, $message);
+
+# email log
+newLog($DB, LogTypes::TYPE_SEND_MAIL, 0, $validation["user_index"], $message);
+
+# send mail success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";

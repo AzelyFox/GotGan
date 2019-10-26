@@ -2,6 +2,15 @@
 
 require_once "./inc.php";
 
+if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
+    $output = array();
+    $output["result"] = -3;
+    $output["error"] = "SYSTEM SWITCH IS OFF";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 # initialize group name
 if (isset($_REQUEST["product_group_name"]))
 {

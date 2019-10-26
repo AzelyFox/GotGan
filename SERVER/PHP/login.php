@@ -10,6 +10,8 @@ if (isset($_REQUEST["session"]))
         $output = array();
         $output["result"] = -1;
         $output["error"] = "session MUST BE STRING";
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
@@ -24,6 +26,8 @@ if (isset($_REQUEST["session"]))
             $output = array();
             $output["result"] = -1;
             $output["error"] = "user_id MUST BE STRING";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
             exit();
@@ -32,6 +36,8 @@ if (isset($_REQUEST["session"]))
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_id IS EMPTY";
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
@@ -45,6 +51,8 @@ if (isset($_REQUEST["session"]))
             $output = array();
             $output["result"] = -1;
             $output["error"] = "user_pw MUST BE STRING";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
             exit();
@@ -53,6 +61,8 @@ if (isset($_REQUEST["session"]))
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_pw IS EMPTY";
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
@@ -67,6 +77,8 @@ if (isset($_REQUEST["user_uuid"]))
         $output = array();
         $output["result"] = -1;
         $output["error"] = "user_uuid MUST BE STRING";
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
@@ -91,6 +103,8 @@ WHERE `user_id` = ? or `user_index` = ?";
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
@@ -101,11 +115,24 @@ WHERE `user_id` = ? or `user_index` = ?";
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : " . $DB_STMT->error;
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
     $DB_STMT->bind_result($TEMP_USER_INDEX, $TEMP_USER_ID, $TEMP_USER_PW, $TEMP_USER_LEVEL, $TEMP_USER_NAME, $TEMP_USER_SID, $TEMP_USER_BLOCK, $TEMP_USER_GROUP_INDEX, $TEMP_USER_GROUP_NAME, $TEMP_USER_EMAIL, $TEMP_USER_PHONE, $TEMP_USER_CREATED);
+    $DB_STMT->store_result();
+    if ($DB_STMT->num_rows != 1) {
+        $output = array();
+        $output["result"] = -3;
+        $output["error"] = "LOGIN FAILURE";
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
     $DB_STMT->fetch();
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -113,6 +140,8 @@ WHERE `user_id` = ? or `user_index` = ?";
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+    $output["debug_file"] = __FILE__;
+    $output["debug_line"] = __LINE__;
     $outputJson = json_encode($output);
     echo urldecode($outputJson);
     exit();
@@ -123,15 +152,71 @@ if (!isset($session) && !password_verify($user_pw, $TEMP_USER_PW)) {
     $output = array();
     $output["result"] = -3;
     $output["error"] = "LOGIN FAILURE";
+    $output["debug_file"] = __FILE__;
+    $output["debug_line"] = __LINE__;
     $outputJson = json_encode($output);
     echo urldecode($outputJson);
     exit();
+}
+
+if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
+    if (isset($session)) {
+        if ($validation["user_level"] < 2) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "SYSTEM SWITCH IS OFF";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    } else {
+        if ($TEMP_USER_LEVEL < 2) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "SYSTEM SWITCH IS OFF";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    }
+}
+
+if (getSystemSwitch($DB, SwitchTypes::SWITCH_LOGIN) == 0) {
+    if (isset($session)) {
+        if ($validation["user_level"] < 2) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "LOGIN SWITCH IS OFF";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    } else {
+        if ($TEMP_USER_LEVEL < 2) {
+            $output = array();
+            $output["result"] = -3;
+            $output["error"] = "LOGIN SWITCH IS OFF";
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+    }
 }
 
 if ($TEMP_USER_BLOCK > 0) {
     $output = array();
     $output["result"] = -3;
     $output["error"] = "LOGIN FAILURE : BANNED ".$TEMP_USER_BLOCK." DAYS";
+    $output["debug_file"] = __FILE__;
+    $output["debug_line"] = __LINE__;
     $outputJson = json_encode($output);
     echo urldecode($outputJson);
     exit();
@@ -155,6 +240,8 @@ if (!isset($session)) {
             $output = array();
             $output["result"] = -2;
             $output["error"] = "DB QUERY FAILURE : " . $DB->error;
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
             exit();
@@ -165,6 +252,8 @@ if (!isset($session)) {
             $output = array();
             $output["result"] = -2;
             $output["error"] = "DB QUERY FAILURE : " . $DB_STMT->error;
+            $output["debug_file"] = __FILE__;
+            $output["debug_line"] = __LINE__;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
             exit();
@@ -175,6 +264,8 @@ if (!isset($session)) {
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $output["debug_file"] = __FILE__;
+        $output["debug_line"] = __LINE__;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();

@@ -11,29 +11,6 @@ if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
     exit();
 }
 
-# initialize user group index
-if (isset($_REQUEST["user_group_index"]))
-{
-    $user_group_index = $_REQUEST["user_group_index"];
-    if (!is_numeric($user_group_index)) {
-        $output = array();
-        $output["result"] = -1;
-        $output["error"] = "user_group_index MUST BE INT";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    } else {
-        $user_group_index = intval($user_group_index);
-    }
-} else {
-    $output = array();
-    $output["result"] = -1;
-    $output["error"] = "user_group_index IS EMPTY";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
-}
-
 # session auth
 if (isset($_REQUEST["session"]))
 {
@@ -47,8 +24,6 @@ if (isset($_REQUEST["session"]))
         exit();
     }
     $validation = validateSession($DB, $session);
-
-    # check user level
     if ($validation["user_level"] < 1) {
         $output = array();
         $output["result"] = -3;
@@ -66,33 +41,81 @@ if (isset($_REQUEST["session"]))
     exit();
 }
 
-# execute user group deletion query
+# initialize user index
+if (isset($_REQUEST["user_index"]))
+{
+    $user_index = $_REQUEST["user_index"];
+    if (!is_numeric($user_index)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "user_index MUST BE INT";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    } else {
+        $user_index = intval($user_index);
+    }
+}
+
+# initialize message
+if (isset($_REQUEST["message"]))
+{
+    $message = $_REQUEST["message"];
+    if (!is_string($message)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "message MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+} else {
+    $output = array();
+    $output["result"] = -1;
+    $output["error"] = "message IS EMPTY";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
+# ready for user fcm result
+$userFCMResult = array();
+
+# execute user fcm query
 try {
-    $DB_SQL = "DELETE FROM `UserGroup` WHERE `user_group_index` = ?";
+    $DB_SQL = "SELECT `user_id`, `user_uuid` FROM `Users` WHERE 1=1";
+    if (isset($user_index)) {
+        $DB_SQL .= " AND `user_index` = ?";
+    }
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
         $output = array();
         $output["result"] = -2;
-        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $output["error"] = "DB QUERY FAILURE : " . $DB->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("i", $user_group_index);
+    if (isset($user_index)) {
+        $DB_STMT->bind_param("i", $user_index);
+    }
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # user group deletion query error
         $output = array();
-        $output["result"] = -4;
-        $output["error"] = "DELETE USER GROUP FAILURE : ".$DB_STMT->error;
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : " . $DB->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
+    $DB_STMT->bind_result($TEMP_USER_ID, $TEMP_USER_UUID);
+    while ($DB_STMT->fetch()) {
+        array_push($userFCMResult, $TEMP_USER_UUID);
+    }
     $DB_STMT->close();
-} catch(Exception $e) {
-    # user group deletion query error
+} catch (Exception $e) {
+    # user fcm query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -101,10 +124,12 @@ try {
     exit();
 }
 
-# user group deletion log
-newLog($DB, LogTypes::TYPE_USER_GROUP_DELETE, 0, $validation["user_index"], NULL);
+sendFCM($userFCMResult, $message);
 
-# user group deletion success
+# fcm log
+newLog($DB, LogTypes::TYPE_SEND_FCM, 0, $validation["user_index"], $message);
+
+# send fcm success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";

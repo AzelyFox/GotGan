@@ -11,29 +11,6 @@ if (getSystemSwitch($DB, SwitchTypes::SWITCH_MASTER) == 0) {
     exit();
 }
 
-# initialize user group index
-if (isset($_REQUEST["user_group_index"]))
-{
-    $user_group_index = $_REQUEST["user_group_index"];
-    if (!is_numeric($user_group_index)) {
-        $output = array();
-        $output["result"] = -1;
-        $output["error"] = "user_group_index MUST BE INT";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    } else {
-        $user_group_index = intval($user_group_index);
-    }
-} else {
-    $output = array();
-    $output["result"] = -1;
-    $output["error"] = "user_group_index IS EMPTY";
-    $outputJson = json_encode($output);
-    echo urldecode($outputJson);
-    exit();
-}
-
 # session auth
 if (isset($_REQUEST["session"]))
 {
@@ -47,16 +24,6 @@ if (isset($_REQUEST["session"]))
         exit();
     }
     $validation = validateSession($DB, $session);
-
-    # check user level
-    if ($validation["user_level"] < 1) {
-        $output = array();
-        $output["result"] = -3;
-        $output["error"] = "NOT ALLOWED";
-        $outputJson = json_encode($output);
-        echo urldecode($outputJson);
-        exit();
-    }
 } else {
     $output = array();
     $output["result"] = -1;
@@ -66,9 +33,12 @@ if (isset($_REQUEST["session"]))
     exit();
 }
 
-# execute user group deletion query
+# prepare history list result
+$historyJsonResult = array();
+
+# execute history list query
 try {
-    $DB_SQL = "DELETE FROM `UserGroup` WHERE `user_group_index` = ?";
+    $DB_SQL = "SELECT `history_index`, `history_time`, `history_user_total`, `history_product_total`, `history_product_available`, `history_product_rent` FROM `History` ORDER BY `history_time` DESC LIMIT 30";
     $DB_STMT = $DB->prepare($DB_SQL);
     # database query not ready
     if (!$DB_STMT) {
@@ -79,20 +49,30 @@ try {
         echo urldecode($outputJson);
         exit();
     }
-    $DB_STMT->bind_param("i", $user_group_index);
     $DB_STMT->execute();
     if ($DB_STMT->errno != 0) {
-        # user group deletion query error
+        # history list query error
         $output = array();
         $output["result"] = -4;
-        $output["error"] = "DELETE USER GROUP FAILURE : ".$DB_STMT->error;
+        $output["error"] = "HISTORY LIST FAILURE : ".$DB_STMT->error;
         $outputJson = json_encode($output);
         echo urldecode($outputJson);
         exit();
     }
+    $DB_STMT->bind_result($TEMP_HISTORY_INDEX, $TEMP_HISTORY_TIME, $TEMP_HISTORY_USER_TOTAL, $TEMP_HISTORY_PRODUCT_TOTAL, $TEMP_HISTORY_PRODUCT_AVAILABLE, $TEMP_HISTORY_PRODUCT_RENT);
+    while($DB_STMT->fetch()) {
+        $historyJsonObject = array();
+        $historyJsonObject["history_index"] = $TEMP_HISTORY_INDEX;
+        $historyJsonObject["history_time"] = $TEMP_HISTORY_TIME;
+        $historyJsonObject["history_user_total"] = $TEMP_HISTORY_USER_TOTAL;
+        $historyJsonObject["history_product_total"] = $TEMP_HISTORY_PRODUCT_TOTAL;
+        $historyJsonObject["history_product_available"] = $TEMP_HISTORY_PRODUCT_AVAILABLE;
+        $historyJsonObject["history_product_rent"] = $TEMP_HISTORY_PRODUCT_RENT;
+        array_push($historyJsonResult, $historyJsonObject);
+    }
     $DB_STMT->close();
 } catch(Exception $e) {
-    # user group deletion query error
+    # history list query error
     $output = array();
     $output["result"] = -2;
     $output["error"] = "DB QUERY FAILURE : ".$DB->error;
@@ -101,13 +81,11 @@ try {
     exit();
 }
 
-# user group deletion log
-newLog($DB, LogTypes::TYPE_USER_GROUP_DELETE, 0, $validation["user_index"], NULL);
-
-# user group deletion success
+# history list success
 $output = array();
 $output["result"] = 0;
 $output["error"] = "";
+$output["histories"] = $historyJsonResult;
 $outputJson = json_encode($output);
 echo urldecode($outputJson);
 
