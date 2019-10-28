@@ -34,7 +34,12 @@ if (isset($_REQUEST["key"]))
         exit();
     }
     if ($key != $MANAGER_KEY) {
-
+        $output = array();
+        $output["result"] = -3;
+        $output["error"] = "key NOT VALID";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
     }
 } else {
     $output = array();
@@ -134,11 +139,11 @@ try {
 foreach ($rentDueJsonResult as $dueObject) {
     if (isset($dueObject["rent_user_email"])) {
         $emailMessage = "";
-        sendRentEmail($dueObject["rent_user_email"], $emailMessage);
+        sendEmail($dueObject["rent_user_email"], $emailMessage);
     }
     if (isset($dueObject["rent_user_uuid"])) {
         $fcmMessage = "";
-        sendRentFCM($dueObject["rent_user_uuid"], $fcmMessage);
+        sendFCM($dueObject["rent_user_uuid"], $fcmMessage);
     }
 }
 
@@ -231,11 +236,11 @@ try {
 foreach ($rentLateJsonResult as $dueObject) {
     if (isset($dueObject["rent_user_email"])) {
         $emailMessage = "";
-        sendRentEmail($dueObject["rent_user_email"], $emailMessage);
+        sendEmail($dueObject["rent_user_email"], $emailMessage);
     }
     if (isset($dueObject["rent_user_uuid"])) {
         $fcmMessage = "";
-        sendRentFCM($dueObject["rent_user_uuid"], $fcmMessage);
+        sendFCM($dueObject["rent_user_uuid"], $fcmMessage);
     }
 }
 

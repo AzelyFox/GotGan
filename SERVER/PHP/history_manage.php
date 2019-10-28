@@ -24,7 +24,12 @@ if (isset($_REQUEST["key"]))
         exit();
     }
     if ($key != $MANAGER_KEY) {
-
+        $output = array();
+        $output["result"] = -3;
+        $output["error"] = "key NOT VALID";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
     }
 } else {
     $output = array();
