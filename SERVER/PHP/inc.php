@@ -46,7 +46,7 @@ function validateSession(Mysqli $DB, string $session) {
             # user session query error
             $output = array();
             $output["result"] = -2;
-            $output["error"] = "DB QUERY FAILURE : ".$DB_STMT_SESSION->error;
+            $output["error"] = "SESSION QUERY FAILURE : ".$DB_STMT_SESSION->error;
             $outputJson = json_encode($output);
             echo urldecode($outputJson);
             exit();
@@ -66,6 +66,41 @@ function validateSession(Mysqli $DB, string $session) {
         $DB_STMT_SESSION->close();
     } catch (Exception $e) {
         # user session query error
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+
+    # execute session expire set query
+    try {
+        $DB_SQL_SESSION = "UPDATE `UserSession` SET `user_session_time` = NOW() WHERE `user_session_key` = ?";
+        $DB_STMT_SESSION = $DB->prepare($DB_SQL_SESSION);
+        # database query not ready
+        if (!$DB_STMT_SESSION) {
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : " . $DB->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT_SESSION->bind_param("s", $session);
+        $DB_STMT_SESSION->execute();
+        if ($DB_STMT_SESSION->errno != 0) {
+            # user session expire set query error
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "SESSION UPDATE FAILURE : ".$DB_STMT_SESSION->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT_SESSION->close();
+    } catch (Exception $e) {
+        # user session expire set query error
         $output = array();
         $output["result"] = -2;
         $output["error"] = "DB QUERY FAILURE : ".$DB->error;
