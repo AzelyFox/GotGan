@@ -203,7 +203,7 @@ try {
 # prepare product group list result
 $productGroupJsonResult = array();
 
-# execute log type list query
+# execute product group list query
 try {
     $DB_SQL = "SELECT `product_group_index`, `product_group_name`, `product_group_rentable`, `product_group_priority` FROM `ProductGroup`";
     $DB_STMT = $DB->prepare($DB_SQL);
