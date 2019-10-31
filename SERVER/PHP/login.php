@@ -271,6 +271,43 @@ if (!isset($session)) {
     $TEMP_USER_INDEX = $validation["user_index"];
 }
 
+if (isset($user_uuid)) {
+    # update UUID
+    try {
+        $DB_SQL = "UPDATE `Users` SET `user_uuid` = ? WHERE `user_index` = ?";
+        $DB_STMT = $DB->prepare($DB_SQL);
+        # database query not ready
+        if (!$DB_STMT) {
+            $output = array();
+            $output["result"] = -2;
+            $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT->bind_param("si", $user_uuid, $TEMP_USER_INDEX);
+        $DB_STMT->execute();
+        if ($DB_STMT->errno != 0) {
+            # user uuid update query error
+            $output = array();
+            $output["result"] = -4;
+            $output["error"] = "UUID UPDATE FAILURE : ".$DB_STMT->error;
+            $outputJson = json_encode($output);
+            echo urldecode($outputJson);
+            exit();
+        }
+        $DB_STMT->close();
+    } catch(Exception $e) {
+        # user uuid update query error
+        $output = array();
+        $output["result"] = -2;
+        $output["error"] = "DB QUERY FAILURE : ".$DB->error;
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+}
+
 # user login log
 newLog($DB, LogTypes::TYPE_LOGIN, 0, $TEMP_USER_INDEX, NULL);
 
