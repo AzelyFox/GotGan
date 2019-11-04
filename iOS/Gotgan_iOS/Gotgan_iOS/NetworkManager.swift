@@ -14,9 +14,32 @@ public class NetworkManager
 {
     static let Instance = NetworkManager()
     
-    private let url:String = "https://devx.kr/Apps/GotGan/"
+    private let url:String = "https://api.devx.kr/GotGan/v1/"
     private let login:String = "login.php"
     private let test:String = "test.php"
+    
+    public func RequestTest(value:String)
+    {
+        let param = ["value":value] as Parameters
+        AF.request(url + test,method: .post,parameters: param, encoding: URLEncoding.default)
+        .validate()
+        .responseData(completionHandler:
+        {
+            response in
+            switch response.result
+            {
+            case .success(let data):
+                print("Validation Succeded")
+                let result = String(decoding:data, as: UTF8.self)
+                print("\(result)")
+                
+            case .failure(let error):
+                print("Validation Fail")
+                print(error)
+                
+            }
+        })
+    }
     
     public func RequestLogin(id:String,pw:String)
     {
@@ -25,20 +48,21 @@ public class NetworkManager
             return
         }
         
-        let param = ["user_id":id,"user_pw":pw]
-        AF.request(url+test,method: .post,parameters: param,encoding:JSONEncoding.default)
+        let param = ["user_id":id,"user_pw":pw] as Parameters
+        AF.request(url+login, method: .post, parameters: param, encoding:URLEncoding.default)
             .validate(contentType: ["text/html"])
             .responseJSON(completionHandler:
             {
-                response in switch response.result
+                response in
+                switch response.result
                 {
-                case .success:
-                    print("Validation Success")
-                    let value = response.result
-                    print(value)
+                case .success(let data):
+                    print("Validation Succeded")
+                    let result = JSON(data)
+                    print("Recieved Data : \(result)")
                     
                 case .failure(let error):
-                    print("Validation Failure")
+                    print("Validation Failed")
                     print(error)
                     
                 }

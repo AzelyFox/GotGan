@@ -50,6 +50,16 @@ struct ContentView: View {
                     .foregroundColor(Color.white)
                     .background(Color.orange)
             }
+            
+            Button(action:{
+                // HTML Test
+                NetworkManager.Instance.RequestTest(value: "Qon")
+            }){
+                Text("HTML Test").fontWeight(.bold)
+                    .frame(width: 150,height: 45)
+                    .foregroundColor(Color.white)
+                    .background(Color.blue)
+            }
         }
     }
 }
