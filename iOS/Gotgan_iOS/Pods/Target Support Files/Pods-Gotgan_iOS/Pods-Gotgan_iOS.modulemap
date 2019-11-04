@@ -1,0 +1,6 @@
+framework module Pods_Gotgan_iOS {
+  umbrella header "Pods-Gotgan_iOS-umbrella.h"
+
+  export *
+  module * { export * }
+}
