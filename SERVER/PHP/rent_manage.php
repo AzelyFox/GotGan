@@ -233,7 +233,7 @@ try {
     exit();
 }
 
-foreach ($rentLateJsonResult as $dueObject) {
+foreach ($rentLateJsonResult as &$dueObject) {
     if (isset($dueObject["rent_user_email"])) {
         $emailMessage = "";
         sendEmail($dueObject["rent_user_email"], $emailMessage);
@@ -243,6 +243,7 @@ foreach ($rentLateJsonResult as $dueObject) {
         sendFCM($dueObject["rent_user_uuid"], $fcmMessage);
     }
 }
+unset($dueObject);
 
 # rent manage success
 $output = array();
