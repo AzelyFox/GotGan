@@ -16,6 +16,7 @@ public class NetworkManager
     
     private let url:String = "https://api.devx.kr/GotGan/v1/"
     private let login:String = "login.php"
+    private let register:String = "user_add.php"
     private let test:String = "test.php"
     
     public func RequestTest(value:String)
@@ -29,12 +30,12 @@ public class NetworkManager
             switch response.result
             {
             case .success(let data):
-                print("Validation Succeded")
+                print("Test Succeded")
                 let result = String(decoding:data, as: UTF8.self)
                 print("\(result)")
                 
             case .failure(let error):
-                print("Validation Fail")
+                print("Test Fail")
                 print(error)
                 
             }
@@ -57,15 +58,60 @@ public class NetworkManager
                 switch response.result
                 {
                 case .success(let data):
-                    print("Validation Succeded")
+                    print("Login Succeded")
                     let result = JSON(data)
                     print("Recieved Data : \(result)")
                     
                 case .failure(let error):
-                    print("Validation Failed")
+                    print("Login Failed")
                     print(error)
                     
                 }
             })
+    }
+    
+    let USER:Int = 0
+    let ADMIN:Int = 1
+    let MASTER:Int = 2
+    public func RequestRegister(id:String,pw:String)
+    {
+        let level:Int = USER
+        let name:String = ""
+        let group:Int = 0
+        let sid:String = ""
+        let blocked:Int = 0
+        let uuid:String = ""
+        let email:String = ""
+        let phone:String = ""
+        
+        let param:[String:Any] = ["user_id":id,
+                                  "user_pw":pw,
+                                  "user_level":level,
+                                  "user_name":name,
+                                  "user_group":group,
+                                  "user_sid":sid,
+                                  "user_block":blocked,
+                                  "user_uuid":uuid,
+                                  "user_email":email,
+                                  "user_phone":phone]
+        
+        AF.request(url+register, method: .post, parameters: param, encoding:URLEncoding.default)
+        .validate(contentType: ["text/html"])
+        .responseJSON(completionHandler:
+        {
+            response in
+            switch response.result
+            {
+            case .success(let data):
+                print("Register Succeded")
+                let result = JSON(data)
+                print("Recieved Data : \(result)")
+                
+            case .failure(let error):
+                print("Register Failed")
+                print(error)
+                
+            }
+        })
     }
 }

@@ -10,7 +10,7 @@
 		876CFD74817D537CDDD450AA /* Pods_Gotgan_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A2F5DABA28DE4BEE5B2992B /* Pods_Gotgan_iOS.framework */; };
 		F39633C8237018EC001DB7CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39633C7237018EC001DB7CB /* AppDelegate.swift */; };
 		F39633CA237018EC001DB7CB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39633C9237018EC001DB7CB /* SceneDelegate.swift */; };
-		F39633CC237018EC001DB7CB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39633CB237018EC001DB7CB /* ContentView.swift */; };
+		F39633CC237018EC001DB7CB /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39633CB237018EC001DB7CB /* LoginView.swift */; };
 		F39633CE237018EF001DB7CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F39633CD237018EF001DB7CB /* Assets.xcassets */; };
 		F39633D1237018EF001DB7CB /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F39633D0237018EF001DB7CB /* Preview Assets.xcassets */; };
 		F39633D4237018EF001DB7CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F39633D2237018EF001DB7CB /* LaunchScreen.storyboard */; };
@@ -43,7 +43,7 @@
 		F39633C4237018EC001DB7CB /* Gotgan_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gotgan_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F39633C7237018EC001DB7CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F39633C9237018EC001DB7CB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		F39633CB237018EC001DB7CB /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F39633CB237018EC001DB7CB /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F39633CD237018EF001DB7CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F39633D0237018EF001DB7CB /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F39633D3237018EF001DB7CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -127,12 +127,12 @@
 			children = (
 				F39633C7237018EC001DB7CB /* AppDelegate.swift */,
 				F39633C9237018EC001DB7CB /* SceneDelegate.swift */,
-				F39633CB237018EC001DB7CB /* ContentView.swift */,
+				F39633CB237018EC001DB7CB /* LoginView.swift */,
+				F39633F72370410F001DB7CB /* NetworkManager.swift */,
 				F39633CD237018EF001DB7CB /* Assets.xcassets */,
 				F39633D2237018EF001DB7CB /* LaunchScreen.storyboard */,
 				F39633D5237018EF001DB7CB /* Info.plist */,
 				F39633CF237018EF001DB7CB /* Preview Content */,
-				F39633F72370410F001DB7CB /* NetworkManager.swift */,
 			);
 			path = Gotgan_iOS;
 			sourceTree = "<group>";
@@ -341,7 +341,7 @@
 				F39633F82370410F001DB7CB /* NetworkManager.swift in Sources */,
 				F39633C8237018EC001DB7CB /* AppDelegate.swift in Sources */,
 				F39633CA237018EC001DB7CB /* SceneDelegate.swift in Sources */,
-				F39633CC237018EC001DB7CB /* ContentView.swift in Sources */,
+				F39633CC237018EC001DB7CB /* LoginView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

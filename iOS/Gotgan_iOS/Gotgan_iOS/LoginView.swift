@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  LoginView.swift
 //  Gotgan_iOS
 //
 //  Created by Gon on 2019/11/04.
@@ -33,7 +33,7 @@ struct ContentView: View {
             
             Button(action:{
                 // request login
-                print("ID : \(self.user_id) PW : \(self.user_pw)")
+                print("Login attempt ID : \(self.user_id) PW : \(self.user_pw)")
                 NetworkManager.Instance.RequestLogin(id: self.user_id, pw: self.user_pw)
             }){
                 Text("Sign In").fontWeight(.bold)
@@ -43,7 +43,8 @@ struct ContentView: View {
             }
             
             Button(action:{
-                // add user
+                print("Register ID : \(self.user_id) PW : \(self.user_pw)")
+                NetworkManager.Instance.RequestRegister(id: self.user_id, pw: self.user_pw)
             }){
                 Text("Sign Up").fontWeight(.bold)
                     .frame(width: 100,height: 45)
