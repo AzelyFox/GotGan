@@ -58,7 +58,7 @@ params.append('value', 'hi');
 var t1;
 
 var exportData = function(){
-  axios.post('https://devx.kr/Apps/GotGan/test.php', params)
+  axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', params)
   .then(function(response) {
     console.log(response);
     t1 = response.data;

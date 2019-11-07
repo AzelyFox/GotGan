@@ -30,7 +30,7 @@ import axios from 'axios';
 var params = new URLSearchParams();
 
 var exportData = function(params, vueObj){
-  axios.post('https://devx.kr/Apps/GotGan/login.php', params)
+  axios.post('https://api.devx.kr/GotGan/v1/login.php', params)
   .then(function(response) {
     console.log(response.data);
     vueObj.$emit("child",response.data);
