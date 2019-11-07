@@ -23,5 +23,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+    props: {
+      userInfo_Tab: Object
+    },
+};
 </script>

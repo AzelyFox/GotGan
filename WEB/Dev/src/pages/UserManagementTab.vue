@@ -22,7 +22,8 @@ export default {
     dataBackgroundColor: {
       type: String,
       default: ""
-    }
+    },
+    userInfo_Tab: Object
   }
 };
 </script>
