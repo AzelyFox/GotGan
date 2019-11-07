@@ -41,6 +41,7 @@ export default {
     };
   },
   created(){
+    console.log("StockDashboardTab");
     console.log(this._props);
   }
 };
