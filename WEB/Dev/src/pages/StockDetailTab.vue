@@ -17,118 +17,151 @@
         <!-- 재고 상세 테이블 카드-->
         <md-card>
           <md-card-header data-background-color="red">
-            <h4 class="title">재고 추가</h4>
-            <p class="category">재고 추가하기</p>
+            <h4 class="title">재고 / 그룹 추가</h4>
+            <p class="category">추가하기</p>
           </md-card-header>
 
           <md-card-content>
-            <div class="md-layout md-gutter">
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_name">항목 이름</label>
-                  <md-input name="product_name" id="product_name" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
+              <md-tabs md-dynamic-height>
+                <md-tab md-label="재고 추가" @click="toggleTab($event)">
+                  <div class="md-layout md-gutter">
+                    <div class="md-layout-item md-small-size-100">
+                      <md-field >
+                        <label for="product_name">항목 이름</label>
+                        <md-input v-model="add_ProductName" name="product_name" id="product_name" autocomplete="family-name" :disabled="sending" required/>
+                      </md-field>
+                    </div>
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_group">그룹</label>
-                  <md-select v-model="product_group" name="product_group" id="product_group" md-dense :disabled="sending">
-                    <md-option value="group_add" @click="test">그룹 추가</md-option>
-                    <md-option v-for="item in product_groups" v-bind:value="item.group_name">
-                      {{ item.group_name }}
-                    </md-option>
-                  </md-select>
-                </md-field>
-              </div>
-            </div>
+                    <div class="md-layout-item md-small-size-100">
+                      <md-field>
+                        <label for="product_group">그룹</label>
+                        <md-select v-model="add_ProductGroup" name="product_group" id="product_group" md-dense :disabled="sending" required>
+                          <md-option value="group_add">그룹 추가</md-option>
+                          <md-option v-for="item in product_groups" v-bind:value="item.group_index">
+                            {{ item.group_name }}
+                          </md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
+                  </div>
 
-            <div class="md-layout md-gutter">
+                  <div class="md-layout md-gutter">
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_status">상태</label>
-                  <md-input name="product_status" id="product_status" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
+                    <div class="md-layout-item md-small-size-100">
+                      <md-field>
+                        <label for="product_status">상태</label>
+                        <md-select v-model="add_ProductStatus"  name="product_status" id="product_status"  md-dense :disabled="sending">
+                          <md-option value="0">일반</md-option>
+                          <md-option value="1">사용불가</md-option>
+                          <md-option value="2">고장</md-option>
+                          <md-option value="3">수리중</md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_owner">소속</label>
-                  <md-input name="product_owner" id="product_owner" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
+                    <div class="md-layout-item md-small-size-100">
+                      <md-field >
+                        <label for="add_ProductOwner">소속</label>
+                        <md-select v-model="add_ProductOwner"  name="add_ProductOwner" id="add_ProductOwner"  md-dense :disabled="sending">
+                          <md-option v-for="item in user_Groups" v-bind:value="item.group_index">
+                            {{ item.group_name }}
+                          </md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_barcode">바코드</label>
-                  <md-input name="product_barcode" id="product_barcode" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
-            </div>
-            <div class="md-layout md-gutter" v-if="showGroupAdd">
+                    <div class="md-layout-item md-small-size-100">
+                      <md-field >
+                        <label for="product_barcode">바코드</label>
+                        <md-input v-model="add_ProductBarcode" name="product_barcode" id="product_barcode" autocomplete="family-name" :disabled="sending" />
+                      </md-field>
+                    </div>
+                  </div>
+                  <div class="md-layout md-gutter" v-if="showGroupAdd">
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_group_name">그룹 이름</label>
-                  <md-input name="product_group_name" id="product_group_name" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_name">그룹 이름</label>
+                        <md-input v-model="add_GroupName" name="product_group_name" id="product_group_name" autocomplete="family-name" :disabled="sending" required/>
+                      </md-field>
+                    </div>
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_group_rentable">대여 가능 일수</label>
-                  <md-input name="product_group_rentable" id="product_group_rentable" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
+                    <div class="md-layout-item md-size-10 md-small-size-100">
+                      <md-field>
+                        <label for="group_rentable">대여 가능 여부</label>
+                        <md-select v-model="add_GroupRentable"  name="group_rentable" id="group_rentable"  md-dense :disabled="sending" required>
+                          <md-option value="0">불가</md-option>
+                          <md-option value="1">가능</md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
 
-              <div class="md-layout-item md-small-size-100">
-                <md-field >
-                  <label for="product_group_priority">중요도</label>
-                  <md-input name="product_group_priority" id="product_group_priority" autocomplete="family-name" :disabled="sending" />
-                </md-field>
-              </div>
-            </div>
-            <!--
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_rentable_day">대여 가능 일수</label>
+                        <md-input v-model="add_GroupRentableDay" name="product_group_rentable_day" id="product_group_rentable_day" autocomplete="family-name" :disabled="add_GroupRentable == 0" />
+                      </md-field>
+                    </div>
 
-            products는 아래 값들로 이루어진 JSONObject 의 Array 이다.
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_priority">중요도</label>
+                        <md-select v-model="add_GroupPriority"  name="product_group_priority" id="product_group_priority"  md-dense :disabled="sending">
+                          <md-option value="0">일반항목</md-option>
+                          <md-option value="1">중요항목</md-option>
+                          <md-option value="2">집중관리항목</md-option>
+                        </md-select>
 
-            product_group (int) [필수 인자]
-            물품이 속하는 product_group_index 를 의미한다.
+                      </md-field>
+                    </div>
+                  </div>
+                </md-tab>
 
-            product_name (string) [선택 인자]
-            물품의 개별 이름을 의미한다.
-            값이 없을 경우 물품 그룹명을 그대로 가져온다.
+                <md-tab md-label="그룹 추가" @click="toggleTab($event)">
+                  <div class="md-layout md-gutter">
 
-            product_status (int) [선택 인자]
-            물품의 상태 코드를 의미한다.
-            0 : 일반
-            1 : 사용불가
-            2 : 고장
-            3 : 수리중
-            값이 없을 경우 기본값인 0으로 입력된다.
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_name">그룹 이름</label>
+                        <md-input v-model="add_GroupName" name="product_group_name" id="product_group_name" autocomplete="family-name" :disabled="sending" tabIndex="-1" required/>
+                      </md-field>
+                    </div>
 
-            product_owner (int) [선택 인자]
-            물품을 소유하는 유저그룹을 의미한다.
-            값이 없을 경우 0으로 입력된다.
+                    <div class="md-layout-item md-size-10 md-small-size-100">
+                      <md-field>
+                        <label for="group_rentable">대여 가능 여부</label>
+                        <md-select v-model="add_GroupRentable"  name="group_rentable" id="group_rentable"  md-dense :disabled="sending" tabIndex="-1" required>
+                          <md-option value="0">불가</md-option>
+                          <md-option value="1">가능</md-option>
+                        </md-select>
+                      </md-field>
+                    </div>
 
-            product_barcode (int) [선택 인자]
-            물품의 바코드 번호를 의미한다.
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_rentable_day">대여 가능 일수</label>
+                        <md-input v-model="add_GroupRentableDay" name="product_group_rentable_day" id="product_group_rentable_day" autocomplete="family-name" tabIndex="-1" :disabled="add_GroupRentable == 0" />
+                      </md-field>
+                    </div>
 
-            UNDER group
+                    <div class="md-layout-item md-size-30 md-small-size-100">
+                      <md-field >
+                        <label for="product_group_priority">중요도</label>
+                        <md-select v-model="add_GroupPriority"  name="product_group_priority" id="product_group_priority"  md-dense tabIndex="-1" :disabled="sending">
+                          <md-option value="0">일반항목</md-option>
+                          <md-option value="1">중요항목</md-option>
+                          <md-option value="2">집중관리항목</md-option>
+                        </md-select>
 
-            product_group_name (string) [필수 인자]
-            추가할 물품 그룹의 그룹명을 의미한다.
+                      </md-field>
+                    </div>
+                  </div>
+                </md-tab>
+              </md-tabs>
 
-            product_group_rentable (int) [필수 인자]
-            추가할 물품 그룹이 며칠동안 대여가 가능한지를 의미한다.
 
-            product_group_priority (int) [선택 인자]
-            추가할 물품 그룹의 중요도를 의미한다.
-            값이 없을 경우 0이 기본으로 입력된다.
-          -->
             <md-card-actions>
-              <md-button type="submit" class="md-primary" :disabled="sending" @click="test">재고 추가</md-button>
+              <md-button type="submit" class="md-primary" :disabled="sending" @click="addProductButton()">재고 추가</md-button>
             </md-card-actions>
 
 
@@ -159,46 +192,164 @@ export default {
     return {
       sending: false,
       product_groups: [],
-      product_group: "",
-      showGroupAdd: false
+      user_Groups: [],
+      showGroupAdd: false,
+      add_ProductName: "",
+      add_ProductGroup: "",
+      add_ProductStatus: 0,
+      add_ProductOwner: 1,
+      add_ProductBarcode: "",
+      add_GroupName: "",
+      add_GroupRentable: 0,
+      add_GroupRentableDay: "",
+      add_GroupPriority: 0,
+      tabSelect: 0
     };
   },
   created(){
     console.log("StockDetailTab");
     console.log(this._props);
     params.append('session', this._props.userInfo_Tab.session);
-    this.exportData(params);
+    this.exportProductData(params);
+    this.exportUserData(params);
+    this.sendProductAddData(params)
 
   },
   methods: {
-    exportData: function(){
+    exportProductData: function(param){
       var vue = this;
-      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', params)
+      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', param)
       .then(function(response) {
-        console.log(response.data.groups);
-          console.log(response.data.groups.length);
           for(var x = 0; x < response.data.groups.length; x++){
             vue.product_groups.push(response.data.groups[x]);
           }
-          console.log(vue);
-
       })
       .catch(function(error) {
         console.log(error);
       });
     },
-    test: function(){
-      console.log(this.product_group);
-      console.log("Hi");
+    exportUserData: function(param){
+      var vue = this;
+      axios.post('https://api.devx.kr/GotGan/v1/user_list.php', param)
+      .then(function(response) {
+          for(var x = 0; x < response.data.groups.length; x++){
+            vue.user_Groups.push(response.data.groups[x]);
+          }
+          console.log(vue);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
+    sendGroupAddData: function(param, product){
+      var vue = this;
+      axios.post('https://api.devx.kr/GotGan/v1/product_group_add.php', param)
+      .then(function(response) {
+          console.log("G + P");
+          console.log(response);
+          vue.$forceUpdate();
+          if(product != 0){
+            product.product_group = response.data.product_group_index;
+            var array = new Array();
+            array.push(product);
+            var addProductParams = new URLSearchParams();
+            addProductParams.append('session', vue._props.userInfo_Tab.session);
+            addProductParams.append('products', JSON.stringify(array));
+
+            vue.sendProductAddData(addProductParams);
+          }
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
+    sendProductAddData: function(param){
+      var vue = this;
+      axios.post('https://api.devx.kr/GotGan/v1/product_add.php', param)
+      .then(function(response) {
+          console.log(response);
+          vue.$forceUpdate();
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
+    addProductButton: function(){
+      var addGroupParams = new URLSearchParams();
+      if(this.tabSelect){
+        addGroupParams.append('session', this._props.userInfo_Tab.session);
+        addGroupParams.append('product_group_name', this.add_GroupName);
+        this.add_GroupRentableDay == "" ? this.add_GroupRentableDay = 0 : 0;
+        addGroupParams.append('product_group_rentable', this.add_GroupRentableDay);
+        addGroupParams.append('product_group_priority', this.add_GroupPriority);
+
+        this.sendGroupAddData(addGroupParams, 0);
+      }else{
+        var addProductParams = new URLSearchParams();
+
+        var array = new Array();
+
+        var obj = {
+          'product_group' : this.add_ProductGroup,
+          'product_name' : this.add_ProductName,
+          'product_status' : this.add_ProductStatus,
+          'product_owner' : this.add_ProductOwner,
+          'product_barcode' : this.add_ProductBarcode
+        };
+
+        if(this.add_ProductGroup == "group_add"){
+          addGroupParams.append('session', this._props.userInfo_Tab.session);
+          addGroupParams.append('product_group_name', this.add_GroupName);
+          this.add_GroupRentableDay == "" ? this.add_GroupRentableDay = 0 : 0;
+          addGroupParams.append('product_group_rentable', this.add_GroupRentableDay);
+          addGroupParams.append('product_group_priority', this.add_GroupPriority);
+          //send add group
+          this.sendGroupAddData(addGroupParams, obj);
+        }else{
+          array.push(obj);
+          addProductParams.append('session', this._props.userInfo_Tab.session);
+          addProductParams.append('products', JSON.stringify(array));
+
+
+          console.log("프로덕트 파라미터");
+          console.dir(addProductParams);
+          // send add product
+          this.sendProductAddData(addProductParams);
+        }
+      }
+    },
+     toggleTab: function(clickTarget){
+       try {
+         if(clickTarget.target.firstChild.className == "md-button-content" || clickTarget.target.className == "md-button-content"){
+           clickTarget.target.outerText == "재고 추가" ? this.tabSelect = 0 : this.tabSelect = 1;
+           this.add_GroupRentable = 0;
+           this.add_GroupRentableDay = "";
+         }
+       }
+       catch (e) {
+       }
     }
   },
   updated(){
-    if(this.product_group == "group_add"){
-      this.showGroupAdd = true;
-      console.log(this.product_group);
-    }else{
-      this.showGroupAdd = false;
-    }
+    this.add_ProductGroup == "group_add" ? this.showGroupAdd = true : this.showGroupAdd = false;
   }
 };
 </script>
+
+<style>
+  .md-tabs-navigation {
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+    margin: 0!important;
+    padding: 0!important;
+  }
+  .md-tab-nav-button>.md-ripple>.md-button-content {
+
+    color: black!important;
+
+  }
+
+  .md-tab-nav-button:hover {
+    background-color: #f0f0f0;
+  }
+</style>
