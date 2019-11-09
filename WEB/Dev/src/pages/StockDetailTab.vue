@@ -245,7 +245,6 @@ export default {
       var vue = this;
       axios.post('https://api.devx.kr/GotGan/v1/product_group_add.php', param)
       .then(function(response) {
-          console.log("G + P");
           console.log(response);
           vue.$forceUpdate();
           if(product != 0){
