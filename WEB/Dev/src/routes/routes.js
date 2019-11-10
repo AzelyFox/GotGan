@@ -49,14 +49,6 @@ const routes = [
   {
     path: "/user",
     component: DashboardLayout,
-    redirect: "/user/test",
-    children: [
-      {
-        path: "test",
-        name: "사용자 페이지",
-        component: StockDashboardTab
-      }
-    ]
   }
 ];
 
