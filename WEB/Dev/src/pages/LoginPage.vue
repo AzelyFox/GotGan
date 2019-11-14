@@ -98,18 +98,6 @@
 import router from '../main.js'
 import axios from 'axios';
 
-var sendSignIn = function(params, vueObj){
-  axios.post('https://api.devx.kr/GotGan/v1/login.php', params)
-  .then(function(response) {
-    console.log(response.data);
-    vueObj.$emit("child",response.data);
-    router.push("/stockdashboard");
-  })
-  .catch(function(error) {
-    console.log(error);
-  });
-};
-
 export default {
   props: {
     _userInfo: Object
@@ -141,9 +129,15 @@ export default {
 
         axios.post('https://api.devx.kr/GotGan/v1/login.php', signInParams)
         .then(function(response) {
-          console.log(response.data.user_level);
           vue.$emit("child",response.data);
-          response.data.user_level == 2 ? router.push("/stockdashboard") : router.push("/user");
+          if(response.data.result == 0){
+            //로그인 성공
+            response.data.user_level == 2 ? router.push("/stockdashboard") : router.push("/user");
+          }else{
+            // 로그인 실패
+            alert("ERROR");
+          }
+
         })
         .catch(function(error) {
           console.log(error);
