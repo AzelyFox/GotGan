@@ -48,9 +48,11 @@
 
           <md-card-content class="md-layout">
             <md-field class="md-layout-item md-size-25">
-              <label for="add_RentProduct">대여할 물품</label>
-              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required>
-                <md-option value="3D 프린터">3D 프린터</md-option>
+              <label for="add_RentGroup">대여할 물품 그룹</label>
+              <md-select v-model="add_RentGroup" name="add_RentGroup" id="add_RentGroup" md-dense required @md-selected="clearSelectedProduct">
+                <md-option v-for="item in groupList" v-bind:value="item.group_index" >
+                  {{ item.group_name }}
+                </md-option>
               </md-select>
             </md-field>
 
@@ -62,12 +64,24 @@
               </md-datepicker>
             </div>
 
+            <div class="md-layout-item md-size-45"></div>
+
+            <md-field class="md-layout-item md-size-25">
+              <label for="add_RentProduct">상세 물품 선택</label>
+              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required>
+                <md-option v-for="item in productList" v-bind:value="item.product_index" v-if="item.product_group_index == add_RentGroup">
+                  {{ item.product_name }}
+                </md-option>
+              </md-select>
+            </md-field>
+
             <div class="md-layout-item md-size-5"></div>
 
             <md-field class="md-layout-item md-size-25">
               <label>반납일</label>
               <md-input v-model="add_RentEndDay" disabled style="margin-top: 14px"></md-input>
             </md-field>
+
             <!--
             session (string) [필수 인자]
             세션 인증이 필요하다.
@@ -111,10 +125,13 @@ export default {
   data() {
     return {
       rentList: [],
+      add_RentGroup: "",
       add_RentProduct: "",
       input_RentStartDay: null,
       add_RentStartDay: "",
-      add_RentEndDay: ""
+      add_RentEndDay: "",
+      groupList: [],
+      productList: []
     };
   },
   created(){
@@ -122,6 +139,7 @@ export default {
     console.log(this._props);
 
     this.exportRentData(this._props.userInfo_Tab.session);
+    this.exportProductData(this._props.userInfo_Tab.session);
   },
   methods: {
     exportRentData: function(session){
@@ -143,6 +161,27 @@ export default {
         console.log(error);
       });
     },
+    exportProductData: function(session){
+      var vue = this;
+      var productParams = new URLSearchParams();
+      productParams.append('session', session);
+
+      axios.post('https://api.devx.kr/GotGan/v1/product_list.php', productParams)
+      .then(function(response) {
+        console.log(response.data);
+        for(var x = 0; x < response.data.groups.length;x++){
+          vue.groupList.push(response.data.groups[x]);
+        }
+        for(var x = 0; x < response.data.products.length;x++){
+          vue.productList.push(response.data.products[x]);
+        }
+        console.log(vue.groupList);
+        console.log(vue.productList);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
     calculateStartDay: function(){
       var returnText = "";
       try {
@@ -152,7 +191,7 @@ export default {
         this.input_RentStartDay.getDate() < 10 ? day =  "0" + this.input_RentStartDay.getDate() : day =this.input_RentStartDay.getDate();
 
         returnText = this.input_RentStartDay.getFullYear() + "-" + month + "-" + day + " 00:00:00";
-        
+
         this.add_RentEndDay = returnText;
       } catch (e) {
       }
@@ -161,10 +200,15 @@ export default {
 
       console.log("test");
       return "hello";
+    },
+    clearSelectedProduct: function(){
+      // 상세 선택 초기화 해야됨
+      this.add_RentProduct = "";
     }
   },
   updated() {
-    console.log(this.input_RentStartDay);
+
+    //console.log(this.input_RentStartDay);
     this.calculateStartDay();
   }
 };
