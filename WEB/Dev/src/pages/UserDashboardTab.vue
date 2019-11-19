@@ -59,7 +59,7 @@
             <div class="md-layout-item md-size-5"></div>
 
             <div class="md-layout-item md-size-25">
-              <md-datepicker v-model="input_RentStartDay" md-closed="calculateEndDay" md-immediately>
+              <md-datepicker v-model="input_RentStartDay" md-immediately>
                 <label>시작일</label>
               </md-datepicker>
             </div>
@@ -68,7 +68,7 @@
 
             <md-field class="md-layout-item md-size-25">
               <label for="add_RentProduct">상세 물품 선택</label>
-              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required>
+              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required @md-selected="checkSelectedProduct">
                 <md-option v-for="item in productList" v-bind:value="item.product_index" v-if="item.product_group_index == add_RentGroup">
                   {{ item.product_name }}
                 </md-option>
@@ -127,6 +127,7 @@ export default {
       rentList: [],
       add_RentGroup: "",
       add_RentProduct: "",
+      rentableDay: 0,
       input_RentStartDay: null,
       add_RentStartDay: "",
       add_RentEndDay: "",
@@ -142,6 +143,7 @@ export default {
     this.exportProductData(this._props.userInfo_Tab.session);
   },
   methods: {
+    // 대여 현황 받아오기
     exportRentData: function(session){
       var vue = this;
       var rentParams = new URLSearchParams();
@@ -161,6 +163,7 @@ export default {
         console.log(error);
       });
     },
+    // 재고와 그룹 데이터 받아오기
     exportProductData: function(session){
       var vue = this;
       var productParams = new URLSearchParams();
@@ -175,13 +178,12 @@ export default {
         for(var x = 0; x < response.data.products.length;x++){
           vue.productList.push(response.data.products[x]);
         }
-        console.log(vue.groupList);
-        console.log(vue.productList);
       })
       .catch(function(error) {
         console.log(error);
       });
     },
+    // 날짜 관련 계산
     calculateStartDay: function(){
       var returnText = "";
       try {
@@ -190,25 +192,37 @@ export default {
         num < 10 ? month = "0" + num : month = num;
         this.input_RentStartDay.getDate() < 10 ? day =  "0" + this.input_RentStartDay.getDate() : day =this.input_RentStartDay.getDate();
 
+        console.log(this.input_RentStartDay);
+        console.log(this.input_RentStartDay + this.rentableDay);
+
         returnText = this.input_RentStartDay.getFullYear() + "-" + month + "-" + day + " 00:00:00";
 
-        this.add_RentEndDay = returnText;
+        var endDate = new Date(this.input_RentStartDay);
+        endDate.setDate(parseInt(day) + this.rentableDay);
+
+
+        num = endDate.getMonth() + 1;
+        num < 10 ? month = "0" + num : month = num;
+        endDate.getDate() < 10 ? day =  "0" + endDate.getDate() : day =endDate.getDate();
+
+
+        this.add_RentEndDay = endDate.getFullYear() + "-" + month + "-" + day ;
       } catch (e) {
       }
     },
-    calculateEndDay: function(){
-
-      console.log("test");
-      return "hello";
-    },
+    //물품 그룹 선택시 상세 물품 선택 초기화
     clearSelectedProduct: function(){
-      // 상세 선택 초기화 해야됨
       this.add_RentProduct = "";
+    },
+    // 상세 물품 선택시 대여 가능일수 확인
+    checkSelectedProduct: function(){
+      for(var i in this.groupList){
+        this.groupList[i].group_index == this.add_RentGroup ? this.rentableDay = this.groupList[i].group_rentable : 0;
+      }
     }
   },
   updated() {
-
-    //console.log(this.input_RentStartDay);
+    // 시작 날짜, 종료 날짜 계산
     this.calculateStartDay();
   }
 };
