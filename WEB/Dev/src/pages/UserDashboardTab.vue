@@ -35,6 +35,21 @@
           </md-card-header>
 
           <md-card-content>
+            <md-table>
+              <md-table-row>
+                <md-table-head>이름</md-table-head>
+                <md-table-head>시작 일자</md-table-head>
+                <md-table-head>종료 일자</md-table-head>
+                <md-table-head>대여 상태</md-table-head>
+              </md-table-row>
+
+              <md-table-row v-for="item in rentList">
+                <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_end}}</md-table-cell>
+                <md-table-cell>{{ item.rent_status }}</md-table-cell>
+              </md-table-row>
+            </md-table>
           </md-card-content>
         </md-card>
       </div>
@@ -107,7 +122,7 @@
           </md-card-content>
 
           <md-card-actions>
-            <md-button>대여 신청</md-button>
+            <md-button @click="sendRentData">대여 신청</md-button>
           </md-card-actions>
         </md-card>
       </div>
@@ -151,12 +166,14 @@ export default {
 
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', rentParams)
       .then(function(response) {
+        console.log(response.data);
         var userIndex = vue._props.userInfo_Tab.user_index;
         for(var x = 0; x < response.data.rents.length; x++){
           if(userIndex == response.data.rents[x].rent_user_index){
             vue.rentList.push(response.data.rents[x]);
           }
         }
+        console.log(vue.rentList);
 
       })
       .catch(function(error) {
@@ -183,20 +200,33 @@ export default {
         console.log(error);
       });
     },
+    // 대여 신청 전송
+    sendRentData: function(){
+      var vue = this;
+      var rentParams = new URLSearchParams();
+      rentParams.append('session', vue._props.userInfo_Tab.session);
+      rentParams.append('rent_product', vue.add_RentProduct);
+      rentParams.append('rent_user', vue._props.userInfo_Tab.user_index);
+      rentParams.append('rent_time_start', vue.add_RentStartDay);
+
+      axios.post('https://api.devx.kr/GotGan/v1/rent_add.php', rentParams)
+      .then(function(response) {
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
     // 날짜 관련 계산
     calculateStartDay: function(){
-      var returnText = "";
       try {
+
         var month, day = "";
         var num = this.input_RentStartDay.getMonth() + 1;
         num < 10 ? month = "0" + num : month = num;
         this.input_RentStartDay.getDate() < 10 ? day =  "0" + this.input_RentStartDay.getDate() : day =this.input_RentStartDay.getDate();
 
-        console.log(this.input_RentStartDay);
-        console.log(this.input_RentStartDay + this.rentableDay);
-
-        returnText = this.input_RentStartDay.getFullYear() + "-" + month + "-" + day + " 00:00:00";
-
+        this.add_RentStartDay = this.input_RentStartDay.getFullYear() + "-" + month + "-" + day + " 00:00:00";
         var endDate = new Date(this.input_RentStartDay);
         endDate.setDate(parseInt(day) + this.rentableDay);
 
@@ -216,6 +246,11 @@ export default {
     },
     // 상세 물품 선택시 대여 가능일수 확인
     checkSelectedProduct: function(){
+      if(this.input_RentStartDay != null){
+        this.input_RentStartDay = null;
+        this.add_RentEndDay = "";
+      }
+
       for(var i in this.groupList){
         this.groupList[i].group_index == this.add_RentGroup ? this.rentableDay = this.groupList[i].group_rentable : 0;
       }
