@@ -198,12 +198,15 @@ export default {
         sID: "",
         email: "",
         phone: ""
-      }
+      },
+      session: ""
     };
   },
   created(){
     console.log("UserDashboardTab");
-    console.log(this._props);
+    console.log(this._props.userInfo_Tab);
+
+    this.session = this.getCookie("session");
 
     this.userInfo = {
       name: this._props.userInfo_Tab.user_name,
@@ -212,13 +215,9 @@ export default {
       email: this._props.userInfo_Tab.user_email,
       phone: this._props.userInfo_Tab.user_phone
     };
-    //this.modifyUserInfo = false;
 
-    console.log(this.modifyUserInfo);
-    console.log(this.userInfo);
-
-    this.exportRentData(this._props.userInfo_Tab.session);
-    this.exportProductData(this._props.userInfo_Tab.session);
+    this.exportRentData(this.session);
+    this.exportProductData(this.session);
   },
   methods: {
     // 대여 현황 받아오기
@@ -226,7 +225,7 @@ export default {
       var vue = this;
       var rentParams = new URLSearchParams();
       rentParams.append('session', session);
-
+      console.log(session);
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', rentParams)
       .then(function(response) {
         console.log(response.data);
@@ -351,7 +350,11 @@ export default {
         email: this._props.userInfo_Tab.user_email,
         phone: this._props.userInfo_Tab.user_phone
       };
-    }
+    },
+    getCookie: function(_name) {
+      var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
+      return value? value[2] : null;
+    },
   },
   updated() {
     // 시작 날짜, 종료 날짜 계산
