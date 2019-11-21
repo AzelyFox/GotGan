@@ -14,7 +14,7 @@
           </md-card-content>
         </md-card>
 
-        <!-- 재고 상세 테이블 카드-->
+        <!-- 재고 / 그룹 추가 카드-->
         <md-card>
           <md-card-header data-background-color="red">
             <h4 class="title">재고 / 그룹 추가</h4>
@@ -209,10 +209,11 @@ export default {
   created(){
     console.log("StockDetailTab");
     console.log(this._props);
-    params.append('session', this._props.userInfo_Tab.session);
+
+    params.append('session', this.getCookie("session"));
+
     this.exportProductData(params);
     this.exportUserData(params);
-    this.sendProductAddData(params)
 
   },
   methods: {
@@ -235,7 +236,6 @@ export default {
           for(var x = 0; x < response.data.groups.length; x++){
             vue.user_Groups.push(response.data.groups[x]);
           }
-          console.log(vue);
       })
       .catch(function(error) {
         console.log(error);
@@ -245,14 +245,12 @@ export default {
       var vue = this;
       axios.post('https://api.devx.kr/GotGan/v1/product_group_add.php', param)
       .then(function(response) {
-          console.log(response);
-          vue.$forceUpdate();
           if(product != 0){
             product.product_group = response.data.product_group_index;
             var array = new Array();
             array.push(product);
             var addProductParams = new URLSearchParams();
-            addProductParams.append('session', vue._props.userInfo_Tab.session);
+            addProductParams.append('session', vue.getCookie("session"));
             addProductParams.append('products', JSON.stringify(array));
 
             vue.sendProductAddData(addProductParams);
@@ -266,17 +264,20 @@ export default {
       var vue = this;
       axios.post('https://api.devx.kr/GotGan/v1/product_add.php', param)
       .then(function(response) {
-          console.log(response);
-          vue.$forceUpdate();
+        // 새로고침 말고 테이블만 로드 필요
+        location.reload();
       })
       .catch(function(error) {
         console.log(error);
       });
     },
     addProductButton: function(){
+      // 재고 추가 버튼
       var addGroupParams = new URLSearchParams();
+
       if(this.tabSelect){
-        addGroupParams.append('session', this._props.userInfo_Tab.session);
+        // 그룹 추가
+        addGroupParams.append('session', this.getCookie("session"));
         addGroupParams.append('product_group_name', this.add_GroupName);
         this.add_GroupRentableDay == "" ? this.add_GroupRentableDay = 0 : 0;
         addGroupParams.append('product_group_rentable', this.add_GroupRentableDay);
@@ -284,6 +285,7 @@ export default {
 
         this.sendGroupAddData(addGroupParams, 0);
       }else{
+        // 재고 추가
         var addProductParams = new URLSearchParams();
 
         var array = new Array();
@@ -297,22 +299,20 @@ export default {
         };
 
         if(this.add_ProductGroup == "group_add"){
-          addGroupParams.append('session', this._props.userInfo_Tab.session);
+          // 재고 + 그룹 추가
+          addGroupParams.append('session', this.getCookie("session"));
           addGroupParams.append('product_group_name', this.add_GroupName);
           this.add_GroupRentableDay == "" ? this.add_GroupRentableDay = 0 : 0;
           addGroupParams.append('product_group_rentable', this.add_GroupRentableDay);
           addGroupParams.append('product_group_priority', this.add_GroupPriority);
-          //send add group
+
           this.sendGroupAddData(addGroupParams, obj);
         }else{
+          // 재고만 추가
           array.push(obj);
-          addProductParams.append('session', this._props.userInfo_Tab.session);
+          addProductParams.append('session', this.getCookie("session"));
           addProductParams.append('products', JSON.stringify(array));
 
-
-          console.log("프로덕트 파라미터");
-          console.dir(addProductParams);
-          // send add product
           this.sendProductAddData(addProductParams);
         }
       }
@@ -327,6 +327,10 @@ export default {
        }
        catch (e) {
        }
+    },
+    getCookie: function(_name) {
+      var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
+      return value? value[2] : null;
     }
   },
   updated(){
