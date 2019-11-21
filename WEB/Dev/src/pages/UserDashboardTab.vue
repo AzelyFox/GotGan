@@ -22,7 +22,7 @@
           </md-card-content>
 
           <md-card-actions>
-            <md-button>정보 관리</md-button>
+            <md-button @click="showDialog = true">정보 관리</md-button>
           </md-card-actions>
         </md-card>
       </div>
@@ -38,16 +38,16 @@
             <md-table>
               <md-table-row>
                 <md-table-head>이름</md-table-head>
+                <md-table-head>대여 상태</md-table-head>
                 <md-table-head>시작 일자</md-table-head>
                 <md-table-head>종료 일자</md-table-head>
-                <md-table-head>대여 상태</md-table-head>
               </md-table-row>
 
               <md-table-row v-for="item in rentList">
                 <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
-                <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
-                <md-table-cell>{{ item.rent_time_end}}</md-table-cell>
                 <md-table-cell>{{ item.rent_status }}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
               </md-table-row>
             </md-table>
           </md-card-content>
@@ -96,29 +96,6 @@
               <label>반납일</label>
               <md-input v-model="add_RentEndDay" disabled style="margin-top: 14px"></md-input>
             </md-field>
-
-            <!--
-            session (string) [필수 인자]
-            세션 인증이 필요하다.
-
-            product_barcode (int) [선택 인자]
-            대여할 물품의 바코드 번호를 의미한다.
-            이 값이 있는 경우 rent_product 는 선택 인자가 된다.
-
-            rent_product (int) [준 필수 인자]
-            대여할 물품의 인덱스 번호를 의미한다.
-            이 값이 있는 경우 product_barcode 보다 우선시된다.
-            이 값과 product_barcode 값 둘 다 없는 경우 에러가 반환된다.
-
-            rent_user (int) [선택 인자]
-            대여하는 유저의 인덱스를 의미한다.
-            관리자 이상 등급만 타인을 rent_user로 설정이 가능하다.
-            값이 없을 경우 세션에서 로그인 정보를 기반으로 사용자를 가져온다.
-
-            rent_time_start (string) [필수 인자]
-            대여할 시작 일자를 의미한다.
-            yyyy-MM-dd HH:mm:ss 형식으로 전달이 필요하다.
-          -->
           </md-card-content>
 
           <md-card-actions>
@@ -127,6 +104,69 @@
         </md-card>
       </div>
     </div>
+
+    <md-dialog :md-active.sync="showDialog">
+      <md-dialog-title>개인 정보 관리</md-dialog-title>
+
+      <md-dialog-content>
+        <md-field>
+          <label v-if="modifyUserInfo">이름</label>
+          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_name }}</label>
+          <md-input v-model="userInfo.name" v-if="modifyUserInfo"></md-input>
+        </md-field>
+
+        <!--
+        <md-field>
+          <label v-if="modifyUserInfo">그룹</label>
+          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_group_name }}</label>
+          <md-input v-model="userInfo.group" v-if="modifyUserInfo"></md-input>
+        </md-field>
+₩      -->
+        <md-field>
+          <label v-if="modifyUserInfo">학번</label>
+          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_sid }}</label>
+          <md-input v-model="userInfo.sID" v-if="modifyUserInfo"></md-input>
+        </md-field>
+
+        <md-field>
+          <label v-if="modifyUserInfo">이메일</label>
+          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_email }}</label>
+          <md-input v-model="userInfo.email" v-if="modifyUserInfo"></md-input>
+        </md-field>
+
+        <md-field>
+          <label v-if="modifyUserInfo">전화번호</label>
+          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_phone }}</label>
+          <md-input v-model="userInfo.phone" v-if="modifyUserInfo"></md-input>
+        </md-field>
+        <!--
+        user_pw (string) [선택 인자]
+        수정할 유저의 비밀번호를 의미한다.
+
+        user_name (string) [선택 인자]
+        수정할 유저의 이름을 의미한다.
+
+        user_group (int) [선택 인자]
+        수정할 유저가 속할 그룹을 의미한다.
+
+        user_sid (string) [선택 인자]
+        수정할 유저의 학번을 의미한다.
+
+        user_email (string) [선택 인자]
+        수정할 유저의 이메일을 의미한다.
+
+        user_phone (string) [선택 인자]
+        수정할 유저의 휴대기기 번호를 의미한다.
+      -->
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="modifyButton" v-if="!modifyUserInfo">수정하기</md-button>
+        <md-button class="md-primary" @click="showDialog = false" v-if="!modifyUserInfo">닫기</md-button>
+
+        <md-button class="md-primary" @click="modifySendButton" v-if="modifyUserInfo">수정전송</md-button>
+        <md-button class="md-primary" @click="cancleButton" v-if="modifyUserInfo">취소하기</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -136,6 +176,8 @@ import axios from 'axios';
 export default {
   props: {
     userInfo_Tab: Object
+  },
+  components: {
   },
   data() {
     return {
@@ -147,12 +189,33 @@ export default {
       add_RentStartDay: "",
       add_RentEndDay: "",
       groupList: [],
-      productList: []
+      productList: [],
+      showDialog: false,
+      modifyUserInfo: false,
+      userInfo: {
+        name: "",
+        //group: "",
+        sID: "",
+        email: "",
+        phone: ""
+      }
     };
   },
   created(){
     console.log("UserDashboardTab");
     console.log(this._props);
+
+    this.userInfo = {
+      name: this._props.userInfo_Tab.user_name,
+      //group: this._props.userInfo_Tab.user_group_name,
+      sID: this._props.userInfo_Tab.user_sid,
+      email: this._props.userInfo_Tab.user_email,
+      phone: this._props.userInfo_Tab.user_phone
+    };
+    //this.modifyUserInfo = false;
+
+    console.log(this.modifyUserInfo);
+    console.log(this.userInfo);
 
     this.exportRentData(this._props.userInfo_Tab.session);
     this.exportProductData(this._props.userInfo_Tab.session);
@@ -174,7 +237,6 @@ export default {
           }
         }
         console.log(vue.rentList);
-
       })
       .catch(function(error) {
         console.log(error);
@@ -220,7 +282,6 @@ export default {
     // 날짜 관련 계산
     calculateStartDay: function(){
       try {
-
         var month, day = "";
         var num = this.input_RentStartDay.getMonth() + 1;
         num < 10 ? month = "0" + num : month = num;
@@ -254,11 +315,49 @@ export default {
       for(var i in this.groupList){
         this.groupList[i].group_index == this.add_RentGroup ? this.rentableDay = this.groupList[i].group_rentable : 0;
       }
+    },
+    modifyButton: function(){
+      this.modifyUserInfo = true;
+    },
+    cancleButton: function(){
+      this.modifyUserInfo = false;
+    },
+    modifySendButton: function(){
+      var vue = this;
+      var userModifyParams = new URLSearchParams();
+      userModifyParams.append('session', vue._props.userInfo_Tab.session);
+      userModifyParams.append('user_index', vue._props.userInfo_Tab.user_index);
+      userModifyParams.append('user_name', vue.userInfo.name);
+      //userModifyParams.append('user_group', vue.userInfo.group);
+      userModifyParams.append('user_sid', vue.userInfo.sID);
+      userModifyParams.append('user_email', vue.userInfo.email);
+      userModifyParams.append('user_phone', vue.userInfo.phone);
+
+      axios.post('https://api.devx.kr/GotGan/v1/user_modify.php', userModifyParams)
+      .then(function(response) {
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    },
+    resetModifyInfo: function(){
+      this.modifyUserInfo = false;
+
+      this.userInfo = {
+        name: this._props.userInfo_Tab.user_name,
+        //group: this._props.userInfo_Tab.user_group_name,
+        sID: this._props.userInfo_Tab.user_sid,
+        email: this._props.userInfo_Tab.user_email,
+        phone: this._props.userInfo_Tab.user_phone
+      };
     }
   },
   updated() {
     // 시작 날짜, 종료 날짜 계산
     this.calculateStartDay();
+
+    this.showDialog ? 0 : this.resetModifyInfo();
   }
 };
 </script>
