@@ -173,6 +173,11 @@
 <script>
 import axios from 'axios';
 
+var params = new URLSearchParams();
+
+var propsEmpty = false;
+
+
 export default {
   props: {
     userInfo_Tab: Object
@@ -206,7 +211,8 @@ export default {
     console.log("UserDashboardTab");
     console.log(this._props.userInfo_Tab);
 
-    this.session = this.getCookie("session");
+
+    params.append('session', this.getCookie("session"));
 
     this.userInfo = {
       name: this._props.userInfo_Tab.user_name,
@@ -216,38 +222,38 @@ export default {
       phone: this._props.userInfo_Tab.user_phone
     };
 
-    this.exportRentData(this.session);
-    this.exportProductData(this.session);
+    this.exportRentData(params);
+    this.exportProductData(params);
   },
   methods: {
     // 대여 현황 받아오기
-    exportRentData: function(session){
+    exportRentData: function(param){
       var vue = this;
-      var rentParams = new URLSearchParams();
-      rentParams.append('session', session);
-      console.log(session);
-      axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', rentParams)
+
+      axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', param)
       .then(function(response) {
         console.log(response.data);
         var userIndex = vue._props.userInfo_Tab.user_index;
-        for(var x = 0; x < response.data.rents.length; x++){
-          if(userIndex == response.data.rents[x].rent_user_index){
-            vue.rentList.push(response.data.rents[x]);
+        if(userIndex != null){
+          for(var x = 0; x < response.data.rents.length; x++){
+            if(userIndex == response.data.rents[x].rent_user_index){
+              vue.rentList.push(response.data.rents[x]);
+            }
           }
+        }else{
+          vue.exportRentData(params);
         }
-        console.log(vue.rentList);
+        //console.log(vue.rentList);
       })
       .catch(function(error) {
         console.log(error);
       });
     },
     // 재고와 그룹 데이터 받아오기
-    exportProductData: function(session){
+    exportProductData: function(param){
       var vue = this;
-      var productParams = new URLSearchParams();
-      productParams.append('session', session);
 
-      axios.post('https://api.devx.kr/GotGan/v1/product_list.php', productParams)
+      axios.post('https://api.devx.kr/GotGan/v1/product_list.php', param)
       .then(function(response) {
         console.log(response.data);
         for(var x = 0; x < response.data.groups.length;x++){
@@ -265,7 +271,7 @@ export default {
     sendRentData: function(){
       var vue = this;
       var rentParams = new URLSearchParams();
-      rentParams.append('session', vue._props.userInfo_Tab.session);
+      rentParams.append('session', vue.getCookie("session"));
       rentParams.append('rent_product', vue.add_RentProduct);
       rentParams.append('rent_user', vue._props.userInfo_Tab.user_index);
       rentParams.append('rent_time_start', vue.add_RentStartDay);
@@ -324,7 +330,7 @@ export default {
     modifySendButton: function(){
       var vue = this;
       var userModifyParams = new URLSearchParams();
-      userModifyParams.append('session', vue._props.userInfo_Tab.session);
+      userModifyParams.append('session', vue.getCookie("session"));
       userModifyParams.append('user_index', vue._props.userInfo_Tab.user_index);
       userModifyParams.append('user_name', vue.userInfo.name);
       //userModifyParams.append('user_group', vue.userInfo.group);
