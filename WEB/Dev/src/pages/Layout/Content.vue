@@ -27,7 +27,8 @@ export default {
     };
   },
   created(){
-    console.log(this);
+    console.log("content");
+    console.log(this._props.userInfo_Content);
   }
 };
 </script>
