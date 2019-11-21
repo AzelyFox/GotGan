@@ -4,13 +4,13 @@
 
       <md-list-item style="border: black;">
         <div  class="list-line">
-          <span class="list-header">이름</span>
-          <span class="list-header">상태 코드</span>
-          <span class="list-header">소유 유저 그룹 인덱스</span>
-          <span class="list-header">그룹명</span>
-          <span class="list-header">대여인덱스</span>
-          <span class="list-header">바코드번호</span>
-          <span class="list-header">처음시간</span>
+          <span class="list-header">종류</span>
+          <span class="list-header">대여 가능</span>
+          <span class="list-header">사용 불가</span>
+          <span class="list-header">고장</span>
+          <span class="list-header">수리중</span>
+          <span class="list-header">대여중</span>
+          <span class="list-header">총 갯수</span>
         </div>
       </md-list-item>
 
@@ -86,7 +86,6 @@
 <script>
 import axios from 'axios';
 
-var params = new URLSearchParams();
 export default {
   name: "stock-detail-table",
   props: {
@@ -109,21 +108,24 @@ export default {
   created(){
     console.log("StockDetailTable");
     console.log(this._props);
-    params.append('session', this._props.userInfo_Table.session);
-    this.exportData(params);
+
+    this.exportData();
   },
   methods:{
     exportData: function(){
+      var productParams = new URLSearchParams();
       var vue = this;
-      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', params)
+
+      productParams.append('session', vue.getCookie("session"));
+
+      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', productParams)
       .then(function(response) {
-        console.log(response.data);
         for(var x = 0; x < Object.keys(response.data.groups).length; x++){
           vue.productGroup.push(response.data.groups[x]);
           vue.productGroup[x].products = [];
           vue.productGroup[x].showTable = false;
         }
-        axios.post('https://api.devx.kr/GotGan/v1/product_list.php', params)
+        axios.post('https://api.devx.kr/GotGan/v1/product_list.php', productParams)
         .then(function(response) {
           response.data.products.forEach(function(e){
             vue.productGroup.forEach(function(f){
@@ -132,8 +134,6 @@ export default {
               }
             });
           });
-
-          console.log(vue);
         })
         .catch(function(error) {
           console.log(error);
@@ -150,6 +150,10 @@ export default {
     toggleDialog: function(product){
       this.showDialog = true;
       this.dialogInfo = product;
+    },
+    getCookie: function(_name) {
+      var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
+      return value? value[2] : null;
     }
   }
 };

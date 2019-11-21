@@ -26,7 +26,6 @@
 
 <script>
 import axios from 'axios';
-var params = new URLSearchParams();
 
 export default {
   name: "stock-table",
@@ -44,26 +43,30 @@ export default {
   },
   created(){
     console.log("StockTable");
-    console.log(this._props);
-    params.append('session', this._props.userInfo_Table.session);
-    this.exportData(params);
+    console.log(this._props.userInfo_Table);
+
+    this.exportData();
   },
   methods:{
     exportData: function(){
+      var productParams = new URLSearchParams();
       var vue = this;
-      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', params)
+
+      productParams.append('session', vue.getCookie("session"));
+
+      axios.post('https://api.devx.kr/GotGan/v1/product_overview.php', productParams)
       .then(function(response) {
-        console.log(response.data);
         for(var x = 0; x < Object.keys(response.data.groups).length; x++){
           vue.productGroup.push(response.data.groups[x]);
         }
-
-
-        console.log(vue.productGroup);
       })
       .catch(function(error) {
         console.log(error);
       });
+    },
+    getCookie: function(_name) {
+      var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
+      return value? value[2] : null;
     }
   }
 };
