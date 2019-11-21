@@ -168,7 +168,8 @@ export default {
     setCookie: function(_name, _value){
       var date = new Date();
       date.setTime(date.getTime() + 60 * 30 * 1000); // 30min
-      document.cookie = _name + '=' + _value + ';expires=' + date.toUTCString() + ';path=/';
+      //document.cookie = _name + '=' + _value + ';expires=' + date.toUTCString() + ';path=/';
+      document.cookie = _name + '=' + _value + ';path=/';
     }
   },
   computed: {
