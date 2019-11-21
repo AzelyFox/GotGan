@@ -7,18 +7,22 @@
         <md-icon>view_module</md-icon>
         <p>재고 대시보드</p>
       </sidebar-link>
+
       <sidebar-link to="/stockDetail">
         <md-icon>content_paste</md-icon>
         <p>재고 상세</p>
       </sidebar-link>
+
       <sidebar-link to="/rentDashboard">
         <md-icon>view_quilt</md-icon>
         <p>반출입 대시보드</p>
       </sidebar-link>
+
       <sidebar-link to="/userManagement">
         <md-icon>person</md-icon>
         <p>유저 관리</p>
       </sidebar-link>
+
       <sidebar-link to="/setting">
         <md-icon>settings_applications</md-icon>
         <p>설정</p>
@@ -27,7 +31,7 @@
 
     <side-bar v-if="user_Level == 0">
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/">
+      <sidebar-link to="/user">
         <md-icon>view_module</md-icon>
         <p>사용자 페이지</p>
       </sidebar-link>
@@ -36,7 +40,7 @@
     <div class="main-panel">
       <top-navbar></top-navbar>
 
-      <dashboard-content :userInfo_Content="userInfo"> </dashboard-content>
+      <dashboard-content :userInfo_Content="userInfo"></dashboard-content>
 
       <content-footer v-if="!$route.meta.hideFooter"></content-footer>
     </div>
