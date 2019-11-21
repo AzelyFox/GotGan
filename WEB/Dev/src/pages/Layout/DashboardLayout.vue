@@ -38,7 +38,7 @@
     </side-bar>
 
     <div class="main-panel">
-      <top-navbar></top-navbar>
+      <top-navbar :userName_Top="userName"></top-navbar>
 
       <dashboard-content :userInfo_Content="userInfo"></dashboard-content>
 
@@ -70,7 +70,8 @@ export default {
     return{
       userInfo: {},
       user_Level: 0,
-      session: ""
+      session: "",
+      userName: ""
     }
   },
   created(){
@@ -83,6 +84,7 @@ export default {
     }else{
       this.user_Level = this._props._userInfo.user_level;
       this.userInfo = this._props._userInfo;
+      this.userName = this._props._userInfo.user_name;
     }
 
 
@@ -119,6 +121,7 @@ export default {
             user_phone: response.data.user_phone,
             user_sid: response.data.user_sid
           };
+          vue.userName = response.data.user_name;
         }else{
           // 로그인 실패
           alert("다시 로그인 하시오.");

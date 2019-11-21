@@ -19,6 +19,12 @@
       <div class="md-collapse">
 
         <md-list>
+          <md-list-item>
+            <p>{{ userName_Top }}</p>
+          </md-list-item>
+
+
+
           <md-list-item @click="logoutButton">
             <i class="material-icons">logout</i>
             <p class="hidden-lg hidden-md">Logout</p>
@@ -35,12 +41,17 @@ import axios from 'axios';
 import router from '../../main.js'
 
 export default {
+  props: {
+    userName_Top: String
+  },
   data() {
     return {
       session: ""
     };
   },
   created() {
+    console.log(this);
+
     this.session = this.getCookie("session");
   },
   methods: {
@@ -68,11 +79,16 @@ export default {
       return value? value[2] : null;
     },
     deleteCookie: function(_name) {
-        var date = new Date();
-        document.cookie = _name + "= " + "; expires=" + date.toUTCString() + "; path=/";
+      var date = new Date();
+      document.cookie = _name + "= " + "; expires=" + date.toUTCString() + "; path=/";
     }
   }
 };
 </script>
 
-<style lang="css"></style>
+<style lang="css">
+
+  .name {
+  }
+
+</style>
