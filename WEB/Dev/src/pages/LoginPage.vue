@@ -132,6 +132,8 @@ export default {
           vue.$emit("child",response.data);
           if(response.data.result == 0){
             //로그인 성공
+            vue.setCookie("session", response.data.session);
+
             response.data.user_level == 2 ? router.push("/stockdashboard") : router.push("/user");
           }else{
             // 로그인 실패
@@ -162,6 +164,11 @@ export default {
       .catch(function(error) {
         console.log(error);
       });
+    },
+    setCookie: function(_name, _value){
+      var date = new Date();
+      date.setTime(date.getTime() + 60 * 30 * 1000); // 30min
+      document.cookie = _name + '=' + _value + ';expires=' + date.toUTCString() + ';path=/';
     }
   },
   computed: {
