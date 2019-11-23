@@ -12,13 +12,12 @@ import UserDashboardTab from "@/pages/UserDashboardTab.vue";
 
 const routes = [
   {
-    path: "/login",
+    path: "/",
     component: LoginPage
   },
   {
-    path: "/",
+    path: "/admin",
     component: DashboardLayout,
-    redirect: "/stockdashboard",
     children: [
       {
         path: "stockDashboard",

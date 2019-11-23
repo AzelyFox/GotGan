@@ -3,27 +3,27 @@
 
     <side-bar v-if="user_Level == 2">
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/stockDashboard">
+      <sidebar-link to="/admin/stockDashboard">
         <md-icon>view_module</md-icon>
         <p>재고 대시보드</p>
       </sidebar-link>
 
-      <sidebar-link to="/stockDetail">
+      <sidebar-link to="/admin/stockDetail">
         <md-icon>content_paste</md-icon>
         <p>재고 상세</p>
       </sidebar-link>
 
-      <sidebar-link to="/rentDashboard">
+      <sidebar-link to="/admin/rentDashboard">
         <md-icon>view_quilt</md-icon>
         <p>반출입 대시보드</p>
       </sidebar-link>
 
-      <sidebar-link to="/userManagement">
+      <sidebar-link to="/admin/userManagement">
         <md-icon>person</md-icon>
         <p>유저 관리</p>
       </sidebar-link>
 
-      <sidebar-link to="/setting">
+      <sidebar-link to="/admin/setting">
         <md-icon>settings_applications</md-icon>
         <p>설정</p>
       </sidebar-link>

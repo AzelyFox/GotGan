@@ -20,7 +20,7 @@
 
         <md-list>
           <md-list-item>
-            <p>{{ userName_Top }}</p>
+            <h3 class="md-title">{{ userName_Top }}</h3>
           </md-list-item>
 
 
@@ -67,7 +67,7 @@ export default {
       .then(function(response) {
         console.log(response.data);
         vue.deleteCookie("session");
-        router.push("/login");
+        router.push("/");
       })
       .catch(function(error) {
         console.log(error);
