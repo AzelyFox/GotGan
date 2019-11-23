@@ -2,8 +2,8 @@
   <div>
     <md-list>
 
-      <md-list-item style="border: black;">
-        <div  class="list-line">
+      <md-list-item style="border: black;" class="header">
+        <div class="list-line header">
           <span class="list-header">종류</span>
           <span class="list-header">대여 가능</span>
           <span class="list-header">사용 불가</span>
@@ -14,33 +14,33 @@
         </div>
       </md-list-item>
 
-        <md-list-item v-for="item in productGroup">
-          <div class="list-line" @click="toggle(item)">
-            <span class="list-item">{{ item.group_name }}</span>
-            <span class="list-item">{{ item.group_count_available - item.group_count_rent }}</span>
-            <span class="list-item">{{ item.group_count_unavailable}}</span>
-            <span class="list-item">{{ item.group_count_broken}}</span>
-            <span class="list-item">{{ item.group_count_repair}}</span>
-            <span class="list-item">{{ item.group_count_rent}}</span>
-            <span class="list-item">{{ item.group_count_available + item.group_count_unavailable + item.group_count_broken + item.group_count_repair}}</span>
-          </div>
-          <md-table v-show="item.showTable">
-            <md-table-row>
-              <md-table-head md-numeric>바코드ID</md-table-head>
-              <md-table-head>이름</md-table-head>
-              <md-table-head>소속</md-table-head>
-              <md-table-head>구매 일자</md-table-head>
-            </md-table-row>
+      <md-list-item v-for="item in productGroup">
+        <div class="list-line" @click="toggle(item)">
+          <span class="list-item">{{ item.group_name }}</span>
+          <span class="list-item">{{ item.group_count_available - item.group_count_rent }}</span>
+          <span class="list-item">{{ item.group_count_unavailable}}</span>
+          <span class="list-item">{{ item.group_count_broken}}</span>
+          <span class="list-item">{{ item.group_count_repair}}</span>
+          <span class="list-item">{{ item.group_count_rent}}</span>
+          <span class="list-item">{{ item.group_count_available + item.group_count_unavailable + item.group_count_broken + item.group_count_repair}}</span>
+        </div>
+        <md-table v-show="item.showTable">
+          <md-table-row>
+            <md-table-head md-numeric>바코드ID</md-table-head>
+            <md-table-head>이름</md-table-head>
+            <md-table-head>소속</md-table-head>
+            <md-table-head>구매 일자</md-table-head>
+          </md-table-row>
 
-            <md-table-row v-for="product in item.products" @click="toggleDialog(product)">
-              <md-table-cell md-numeric>{{ product.product_barcode }}</md-table-cell>
-              <md-table-cell>{{ product.product_name }}</md-table-cell>
-              <md-table-cell>{{ product.product_owner_name }}</md-table-cell>
-              <md-table-cell>{{ product.product_created }}</md-table-cell>
-            </md-table-row>
-          </md-table>
-        </md-list-item>
-      </md-list>
+          <md-table-row v-for="product in item.products" @click="toggleDialog(product)">
+            <md-table-cell md-numeric>{{ product.product_barcode }}</md-table-cell>
+            <md-table-cell>{{ product.product_name }}</md-table-cell>
+            <md-table-cell>{{ product.product_owner_name }}</md-table-cell>
+            <md-table-cell>{{ product.product_created }}</md-table-cell>
+          </md-table-row>
+        </md-table>
+      </md-list-item>
+    </md-list>
 
 
 
@@ -74,13 +74,13 @@
           product_rent_index: 0
           product_status: 0
         -->
-        </md-table>
-      </md-dialog-content>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showDialog = false">Close</md-button>
-      </md-dialog-actions>
-    </md-dialog>
-  </div>
+      </md-table>
+    </md-dialog-content>
+    <md-dialog-actions>
+      <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+    </md-dialog-actions>
+  </md-dialog>
+</div>
 </template>
 
 <script>
@@ -100,7 +100,8 @@ export default {
       productGroup: [],
       showDialog: false,
       dialogInfo: {},
-      showTable: false
+      showTable: false,
+      logList: []
     };
   },
   components: {
@@ -150,6 +151,31 @@ export default {
     toggleDialog: function(product){
       this.showDialog = true;
       this.dialogInfo = product;
+
+      var logParams = new URLSearchParams();
+      var vue = this;
+      logParams.append("session", this.getCookie("session"));
+      logParams.append("log_product", product.product_index);
+
+      axios.post('https://api.devx.kr/GotGan/v1/log_list.php', logParams)
+      .then(function(response) {
+        vue.logList = [];
+        for(var i in response.data.logs){
+          var logType = response.data.types[response.data.logs[i].log_type - 1].type_name;
+          var obj = {
+            time: response.data.logs[i].log_time,
+            type: logType,
+            userName: response.data.logs[i].log_user_name,
+            userID: response.data.logs[i].log_user_id
+          }
+          vue.logList.push(obj);
+        }
+        console.log(vue.logList);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
     },
     getCookie: function(_name) {
       var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
@@ -160,46 +186,55 @@ export default {
 </script>
 
 <style>
-  .list {
-    display: block;
+.list {
+  display: block;
 
-  }
+}
 
-  .list-header, .list-item{
-      padding-left: 8px;
-      font-weight: 300;
-    position: inherit!important;
-  }
+.header {
+  height: 32px!important;
+}
 
-  .list-header {
-    font-size: 1.0625rem;
-    color: rgba(0, 0, 0, 0.54);
-    color: var(--md-theme-default-text-accent-on-background, rgba(0, 0, 0, 0.54));
-  }
+.list-header, .list-item{
+  padding-left: 8px;
+  font-weight: 300;
+  position: inherit!important;
+}
 
-  .list-line {
-        font-size: 14px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    border-bottom: thin solid #f0f0f0;
-        padding-bottom: 4px;
-        transition: .3s cubic-bezier(.4,0,.2,1);
-    transition-property: background-color,font-weight;
-    will-change: background-color,font-weight;
-  }
+.list-header {
+  font-size: 1.0625rem;
+  color: rgba(0, 0, 0, 0.54);
+  color: var(--md-theme-default-text-accent-on-background, rgba(0, 0, 0, 0.54));
+}
 
-  .list-line:hover {
-    background-color: #f0f0f0;
-  }
+.list-line {
+  height: 48px;
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  border-bottom: thin solid #f0f0f0;
+  padding-bottom: 4px;
+  transition: .3s cubic-bezier(.4,0,.2,1);
+  transition-property: background-color,font-weight;
+  will-change: background-color,font-weight;
+}
 
-  .md-list-item-content {
-    display: block!important;
-  }
+.list-line:hover {
+  background-color: #f0f0f0;
+}
 
-  .md-disabled {
-    padding: 0!important;
+.md-list-item-content {
+  min-height: 1rem!important;
+  display: block!important;
+}
 
-  }
+.md-disabled {
+  padding: 0!important;
 
+}
 
+.list-item {
+  height: fit-content;
+  padding: 1rem 0;
+}
 </style>
