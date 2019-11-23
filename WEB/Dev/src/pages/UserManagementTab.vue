@@ -8,7 +8,7 @@
             <p class="category">유저 관리 관련 카드</p>
           </md-card-header>
           <md-card-content>
-            <p>관리하자</p>
+            <user-table  :userInfo_Table="userInfo_Tab"></user-table>
           </md-card-content>
         </md-card>
       </div>
@@ -17,13 +17,20 @@
 </template>
 
 <script>
+import {
+  UserTable
+} from "@/components";
+
 export default {
   props: {
-    dataBackgroundColor: {
-      type: String,
-      default: ""
-    },
     userInfo_Tab: Object
+  },
+  components: {
+    UserTable
+  },
+  created() {
+    console.log("UserManagementTab");
+    console.log(this._props.userInfo_Tab);
   }
 };
 </script>
