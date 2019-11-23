@@ -1,8 +1,8 @@
 <template>
   <div>
-    <md-list>
+    <md-list class="list">
 
-      <md-list-item style="border: black;" class="header">
+      <md-list-item style="border: black;" class="headerList">
         <div class="list-line header">
           <span class="list-header">종류</span>
           <span class="list-header">대여 가능</span>
@@ -225,7 +225,8 @@ export default {
   background-color: #f0f0f0;
 }
 
-.md-list-item-content {
+.tableScrollDiv > .md-list-item > .md-list-item-container > .md-list-item-content,
+.headerList > .md-list-item-container > .md-list-item-content  {
   min-height: 1rem!important;
   display: block!important;
 }
@@ -235,7 +236,7 @@ export default {
 
 }
 
-.list-item {
+.list-line > .list-item {
   height: fit-content;
   padding: 1rem 0;
 }
