@@ -115,13 +115,6 @@
           <md-input v-model="userInfo.name" v-if="modifyUserInfo"></md-input>
         </md-field>
 
-        <!--
-        <md-field>
-          <label v-if="modifyUserInfo">그룹</label>
-          <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_group_name }}</label>
-          <md-input v-model="userInfo.group" v-if="modifyUserInfo"></md-input>
-        </md-field>
-₩      -->
         <md-field>
           <label v-if="modifyUserInfo">학번</label>
           <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_sid }}</label>
@@ -139,26 +132,8 @@
           <label v-if="!modifyUserInfo">{{ _props.userInfo_Tab.user_phone }}</label>
           <md-input v-model="userInfo.phone" v-if="modifyUserInfo"></md-input>
         </md-field>
-        <!--
-        user_pw (string) [선택 인자]
-        수정할 유저의 비밀번호를 의미한다.
-
-        user_name (string) [선택 인자]
-        수정할 유저의 이름을 의미한다.
-
-        user_group (int) [선택 인자]
-        수정할 유저가 속할 그룹을 의미한다.
-
-        user_sid (string) [선택 인자]
-        수정할 유저의 학번을 의미한다.
-
-        user_email (string) [선택 인자]
-        수정할 유저의 이메일을 의미한다.
-
-        user_phone (string) [선택 인자]
-        수정할 유저의 휴대기기 번호를 의미한다.
-      -->
       </md-dialog-content>
+
       <md-dialog-actions>
         <md-button class="md-primary" @click="modifyButton" v-if="!modifyUserInfo">수정하기</md-button>
         <md-button class="md-primary" @click="showDialog = false" v-if="!modifyUserInfo">닫기</md-button>
