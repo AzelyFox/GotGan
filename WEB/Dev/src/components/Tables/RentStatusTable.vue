@@ -44,6 +44,11 @@ export default {
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
+    this.$EventBus.$on('updateRentStatusTable', () => {
+      this.exportData(params);
+    });
+
+
     params.append('session', this.getCookie("session"));
     this.exportData(params);
   },
@@ -52,11 +57,11 @@ export default {
       var vue = this;
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', params)
       .then(function(response) {
-        console.log(response.data);
+        console.log(response);
+        vue.rentList = [];
         for(var x = 0; x < Object.keys(response.data.rents).length; x++){
           vue.rentList.push(response.data.rents[x]);
         }
-
       })
       .catch(function(error) {
         console.log(error);
@@ -71,6 +76,7 @@ export default {
       axios.post('https://api.devx.kr/GotGan/v1/rent_return.php', returnParams)
       .then(function(response) {
         console.log(response.data);
+        vue.exportData(params);
       })
       .catch(function(error) {
         console.log(error);

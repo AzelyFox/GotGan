@@ -15,7 +15,7 @@
         <md-table-cell>{{ item.rent_time_end }}</md-table-cell>
         <md-table-cell>
           <md-button class="md-raised" data-background-color="blue" @click="allowButton(item.rent_index)">허가</md-button>
-          <md-button class="md-raised" data-background-color="red" @click="">거부</md-button>
+          <md-button class="md-raised" data-background-color="red" @click="rejectButtion">거부</md-button>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -45,6 +45,11 @@ export default {
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
+    console.log(this.$EventBus);
+
+
+    console.log(this);
+
     params.append('session', this.getCookie("session"));
     this.exportData(params);
   },
@@ -54,6 +59,7 @@ export default {
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', params)
       .then(function(response) {
         console.log(response.data);
+        vue.rentList = [];
         for(var x = 0; x < Object.keys(response.data.rents).length; x++){
           vue.rentList.push(response.data.rents[x]);
         }
@@ -74,17 +80,20 @@ export default {
       allowParams.append('session', this.getCookie("session"));
       allowParams.append('rent_index', _index);
 
-
       axios.post('https://api.devx.kr/GotGan/v1/rent_allow.php', allowParams)
       .then(function(response) {
         console.log(response.data);
-        vue.$forceUpdate();
+        vue.exportData();
+        vue.$EventBus.$emit('updateRentStatusTable');
+        vue.$EventBus.$emit('updateSideBarBadge');
       })
       .catch(function(error) {
         console.log(error);
       });
     },
-
+    rejectButtion: function(){
+      vue.$EventBus.$emit('updateSideBarBadge');
+    }
   }
 };
 

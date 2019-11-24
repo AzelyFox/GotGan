@@ -45,6 +45,8 @@ Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 //Vue.use(Notifications);
 
+Vue.prototype.$EventBus = new Vue();
+
 /* eslint-disable no-new */
 new Vue({
   el: "#app",
