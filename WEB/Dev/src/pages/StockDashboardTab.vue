@@ -4,7 +4,7 @@
   <div class="content">
     <div class="md-layout">
 
-      <div class="md-layout-item">
+      <div class="md-layout-item md-size-100">
         <md-card>
 
           <md-card-header data-background-color="orange">

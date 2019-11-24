@@ -22,7 +22,7 @@
           </md-card-header>
 
           <md-card-content>
-            <md-tabs md-dynamic-height @md-changed="test($event)" class="md-transparent">
+            <md-tabs md-dynamic-height @md-changed="test($event)" class="md-accent">
               <md-tab id="stockAddTab" md-label="재고 추가">
                 <div class="md-layout md-gutter">
                   <div class="md-layout-item md-small-size-100">
@@ -348,12 +348,13 @@ export default {
   color: black!important;
 }
 
-.md-activ {
-  background-color: red!important;
+.md-tabs.md-theme-default.md-accent .md-tabs-navigation {
+  background-color: #00000000!important;
 }
 
-.md-tab-nav-button:hover {
-  background-color: #f0f0f0;
+.md-tabs.md-theme-default.md-accent .md-tabs-navigation > .md-active {
+    border-bottom: solid;
+    border-color: blue;
 }
 
 .md-list-item-text {
