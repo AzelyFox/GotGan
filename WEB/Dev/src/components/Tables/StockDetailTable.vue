@@ -26,14 +26,16 @@
           </div>
           <md-table v-show="item.showTable">
             <md-table-row>
-              <md-table-head md-numeric>바코드ID</md-table-head>
+              <md-table-head>바코드ID</md-table-head>
+              <md-table-head>물품 인덱스</md-table-head>
               <md-table-head>이름</md-table-head>
               <md-table-head>소속</md-table-head>
               <md-table-head>구매 일자</md-table-head>
             </md-table-row>
 
             <md-table-row v-for="product in item.products" @click="toggleDialog(product)">
-              <md-table-cell md-numeric>{{ product.product_barcode }}</md-table-cell>
+              <md-table-cell>{{ product.product_barcode }}</md-table-cell>
+              <md-table-cell>{{ product.product_index }}</md-table-cell>
               <md-table-cell>{{ product.product_name }}</md-table-cell>
               <md-table-cell>{{ product.product_owner_name }}</md-table-cell>
               <md-table-cell>{{ product.product_created }}</md-table-cell>
@@ -137,6 +139,7 @@ export default {
               }
             });
           });
+          console.log(vue.productGroup);
         })
         .catch(function(error) {
           console.log(error);
