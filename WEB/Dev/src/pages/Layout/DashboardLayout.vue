@@ -13,8 +13,16 @@
         <p>재고 상세</p>
       </sidebar-link>
 
+
       <sidebar-link to="/admin/rentDashboard">
         <md-icon>view_quilt</md-icon>
+        <div class="md-badge-content" v-if="showNum > 0">
+          <div class="md-badge md-theme-default md-position-top">
+            <div>
+              {{ showNum }}
+            </div>
+          </div>
+        </div>
         <p>반출입 대시보드</p>
       </sidebar-link>
 
@@ -46,7 +54,7 @@
     </div>
   </div>
 </template>
-<style lang="scss"></style>
+
 <script>
 import router from '../../main.js'
 import axios from 'axios';
@@ -58,8 +66,8 @@ import MobileMenu from "@/pages/Layout/MobileMenu.vue";
 
 export default {
   props: {
-  _userInfo: Object
-},
+    _userInfo: Object
+  },
   components: {
     TopNavbar,
     DashboardContent,
@@ -71,13 +79,19 @@ export default {
       userInfo: {},
       user_Level: 0,
       session: "",
-      userName: ""
+      userName: "",
+      rentNum: 0,
+      showNum: 0
     }
   },
   created(){
     console.log("DashboardLayout");
     console.log(this._props._userInfo);
     this.session = this.getCookie("session");
+
+    this.$EventBus.$on('updateSideBarBadge', () => {
+      this.updateData();
+    });
 
     if(Object.keys(this._props._userInfo).length == 0){
       this.login();
@@ -87,7 +101,7 @@ export default {
       this.userName = this._props._userInfo.user_name;
     }
 
-
+    this.updateData();
   },
   methods: {
     getCookie: function(_name) {
@@ -98,7 +112,6 @@ export default {
       var signInParams = new URLSearchParams();
       var vue = this;
       signInParams.append('session', this.session);
-      console.log(this.session);
 
       axios.post('https://api.devx.kr/GotGan/v1/login.php', signInParams)
       .then(function(response) {
@@ -125,7 +138,7 @@ export default {
         }else{
           // 로그인 실패
           alert("다시 로그인 하시오.");
-          router.push("/login");
+          router.push("/");
         }
       })
       .catch(function(error) {
@@ -133,6 +146,35 @@ export default {
       });
 
     },
+    updateData: function(){
+      var params = new URLSearchParams();
+      var vue = this;
+      params.append('session', this.session);
+
+      axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', params)
+      .then(function(response) {
+        vue.rentNum = 0;
+        for(var i in response.data.rents){
+          response.data.rents[i].rent_status == 1 ? vue.rentNum++ : 0;
+        }
+        vue.showNum != vue.rentNum? vue.showNum = vue.rentNum : 0;
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    }
+  },
+  updated() {
+    this.updateData();
   }
 };
+
 </script>
+
+<style lang="scss">
+.md-badge-content {
+  position: absolute!important;
+  left: 2.3rem;
+  bottom: 1.6rem;
+}
+</style>
