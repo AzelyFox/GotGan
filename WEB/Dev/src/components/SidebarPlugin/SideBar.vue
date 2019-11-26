@@ -7,14 +7,14 @@
   >
     <!-- Logo -->
     <div class="logo">
-      <a href="https://www.gotgan.devx.kr" class="simple-text logo-mini">
+      <a href="https://gotgan.devx.kr" class="simple-text logo-mini">
         <div class="logo-img">
           <img :src="imgLogo" alt="" style="width: auto"/>
         </div>
       </a>
 
       <a
-        href="https://www.gotgan.devx.kr"
+        href="https://gotgan.devx.kr"
         target="_blank"
         class="simple-text logo-normal"
       >
