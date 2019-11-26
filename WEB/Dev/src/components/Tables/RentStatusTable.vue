@@ -8,14 +8,18 @@
         <md-table-head>반납예정일</md-table-head>
         <md-table-head>처리 버튼</md-table-head>
       </md-table-row>
-      <md-table-row slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 2">
+      <md-table-row class="statusRow" slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 2">
         <md-table-cell>{{ item.rent_user_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_start }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_end }}</md-table-cell>
         <md-table-cell>
-          <md-button class="md-raised" data-background-color="red" @click="confirmButton(item.rent_index)">반납 확인</md-button>
+          <md-button class="md-raised rentButton" data-background-color="red" @click="returnButton(item)">반납 확인</md-button>
         </md-table-cell>
+      </md-table-row>
+
+      <md-table-row v-if="rentStatusNum == 0">
+        <md-table-cell>대여 신청이 없습니다.</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -38,16 +42,23 @@ export default {
   data() {
     return {
       selected: [],
-      rentList: []
+      rentList: [],
+      rentStatusNum: 0
     };
   },
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
+
+    var vue = this;
+
     this.$EventBus.$on('updateRentStatusTable', () => {
-      this.exportData(params);
+      vue.exportData(params);
     });
 
+    this.$EventBus.$on('sendReturn', function(index) {
+      vue.sendReturn(index);
+    });
 
     params.append('session', this.getCookie("session"));
     this.exportData(params);
@@ -58,16 +69,21 @@ export default {
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', params)
       .then(function(response) {
         console.log(response);
+        vue.rentStatusNum = 0;
         vue.rentList = [];
         for(var x = 0; x < Object.keys(response.data.rents).length; x++){
           vue.rentList.push(response.data.rents[x]);
+          response.data.rents[x].rent_status == 2 ? vue.rentStatusNum++ : 0 ;
         }
       })
       .catch(function(error) {
         console.log(error);
       });
     },
-    confirmButton: function(index){
+    returnButton: function(obj){
+      this.$EventBus.$emit('returnButton', obj);
+    },
+    sendReturn: function(index){
       var vue = this;
       var returnParams = new URLSearchParams();
       returnParams.append("session", this.getCookie("session"));
@@ -86,7 +102,8 @@ export default {
       var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
       return value? value[2] : null;
     }
-  }
+  },
+  updated() {}
 };
 
 

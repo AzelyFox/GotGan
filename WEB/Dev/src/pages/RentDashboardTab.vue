@@ -23,6 +23,52 @@
         </md-card>
       </div>
     </div>
+
+    <md-dialog :md-active.sync="showAllowDialog">
+      <md-dialog-title>대여 허가</md-dialog-title>
+
+      <md-dialog-content>
+        <p>이름 : {{ dialogInfo.rent_user_name }}</p>
+        <p>대여 품목 : {{ dialogInfo.rent_product_name }}</p>
+        <p>대여 시작일 : {{ dialogInfo.rent_time_start }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendAllowButton">허가</md-button>
+        <md-button class="md-primary" @click="showAllowDialog = false">취소</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="showRejectDialog">
+      <md-dialog-title>대여 거부</md-dialog-title>
+
+      <md-dialog-content>
+        <p>이름 : {{ dialogInfo.rent_user_name }}</p>
+        <p>대여 품목 : {{ dialogInfo.rent_product_name }}</p>
+        <p>대여 시작일 : {{ dialogInfo.rent_time_start }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendRejectButton">거부</md-button>
+        <md-button class="md-primary" @click="showRejectDialog = false">취소</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="showReturnDialog">
+      <md-dialog-title>반납 확인</md-dialog-title>
+
+      <md-dialog-content>
+        <p>이름 : {{ dialogInfo.rent_user_name }}</p>
+        <p>대여 품목 : {{ dialogInfo.rent_product_name }}</p>
+        <p>대여 시작일 : {{ dialogInfo.rent_time_start }}</p>
+        <p>대여 종료일 : {{ dialogInfo.rent_time_end }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendReturnButton">확인</md-button>
+        <md-button class="md-primary" @click="showReturnDialog = false">취소</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -33,12 +79,68 @@ import {
 } from "@/components";
 
 export default {
+  created() {
+    var vue = this;
+
+    this.$EventBus.$on('allowButton', function(params) {
+      vue.showAllow(params);
+    });
+
+    this.$EventBus.$on('rejectButton', function(params) {
+      vue.showReject(params);
+    });
+
+    this.$EventBus.$on('returnButton', function(params) {
+      vue.showReturn(params);
+    });
+  },
   props: {
     userInfo_Tab: Object
+  },
+  data(){
+    return{
+      showAllowDialog: false,
+      showRejectDialog: false,
+      showReturnDialog: false,
+      dialogInfo: {}
+    }
   },
   components: {
     RentRequestTable,
     RentStatusTable
+  },
+  methods: {
+    showAllow: function(obj){
+      console.log(obj);
+      this.dialogInfo = obj;
+      this.showAllowDialog = true;
+    },
+    showReject: function(obj){
+      console.log(obj);
+      this.dialogInfo = obj;
+      this.showRejectDialog = true;
+    },
+    showReturn: function(obj){
+      console.log(obj);
+      this.dialogInfo = obj;
+      this.showReturnDialog = true;
+    },
+    sendAllowButton: function(){
+      console.log(this.dialogInfo);
+      var vue = this;
+      this.showAllowDialog = false;
+      this.$EventBus.$emit('sendAllow', vue.dialogInfo.rent_index);
+    },
+    sendRejectButton: function(){
+      var vue = this;
+      this.showRejectDialog = false;
+      this.$EventBus.$emit('sendReject', vue.dialogInfo.rent_index);
+    },
+    sendReturnButton: function(){
+      var vue = this;
+      this.showReturnDialog = false;
+      this.$EventBus.$emit('sendReturn', vue.dialogInfo.rent_index);
+    }
   }
 };
 </script>

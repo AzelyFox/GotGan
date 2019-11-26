@@ -8,15 +8,20 @@
         <md-table-head>반납 예정일</md-table-head>
         <md-table-head>처리 버튼</md-table-head>
       </md-table-row>
-      <md-table-row slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 1">
+
+      <md-table-row class="requestRow" slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 1">
         <md-table-cell>{{ item.rent_user_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_start }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_end }}</md-table-cell>
         <md-table-cell>
-          <md-button class="md-raised" data-background-color="blue" @click="allowButton(item.rent_index)">허가</md-button>
-          <md-button class="md-raised" data-background-color="red" @click="rejectButtion">거부</md-button>
+          <md-button class="md-raised rentButton" data-background-color="blue" @click="allowButton(item)">허가</md-button>
+          <md-button class="md-raised rentButton" data-background-color="red" @click="rejectButtion(item)">거부</md-button>
         </md-table-cell>
+      </md-table-row>
+
+      <md-table-row v-if="rentRequestNum == 0">
+        <md-table-cell>대여 신청이 없습니다.</md-table-cell>
       </md-table-row>
     </md-table>
   </div>
@@ -39,31 +44,40 @@ export default {
   data() {
     return {
       selected: [],
-      rentList: []
+      rentList: [],
+      rentRequestNum : 0
     };
   },
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
-    console.log(this.$EventBus);
 
-
-    console.log(this);
+    var vue = this;
 
     params.append('session', this.getCookie("session"));
     this.exportData(params);
+
+    this.$EventBus.$on('sendAllow', function(index) {
+      vue.sendAllow(index);
+    });
+
+    this.$EventBus.$on('sendReject', function(index) {
+      vue.sendReject(index);
+    });
   },
   methods:{
     exportData: function(){
       var vue = this;
+      vue.rentRequestNum = 0;
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', params)
       .then(function(response) {
         console.log(response.data);
         vue.rentList = [];
         for(var x = 0; x < Object.keys(response.data.rents).length; x++){
           vue.rentList.push(response.data.rents[x]);
+          response.data.rents[x].rent_status == 1 ? vue.rentRequestNum++ : 0 ;
         }
-
+        console.log(vue.rentRequestNum);
       })
       .catch(function(error) {
         console.log(error);
@@ -73,7 +87,10 @@ export default {
       var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
       return value? value[2] : null;
     },
-    allowButton: function(_index) {
+    allowButton: function(obj) {
+      this.$EventBus.$emit('allowButton', obj);
+    },
+    sendAllow: function(_index) {
       console.log(_index);
       var vue = this;
       var allowParams = new URLSearchParams();
@@ -91,11 +108,37 @@ export default {
         console.log(error);
       });
     },
-    rejectButtion: function(){
+    rejectButtion: function(obj){
+      this.$EventBus.$emit('rejectButton', obj);
+    },
+    sendReject: function(_index){
+    console.log(_index);
+    var vue = this;
+    var rejectParams = new URLSearchParams();
+    rejectParams.append('session', this.getCookie("session"));
+    rejectParams.append('rent_index', _index);
+
+    axios.post('https://api.devx.kr/GotGan/v1/rent_delete.php', rejectParams)
+    .then(function(response) {
+      console.log(response.data);
+      vue.exportData();
+      vue.$EventBus.$emit('updateRentStatusTable');
       vue.$EventBus.$emit('updateSideBarBadge');
-    }
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
+},
+  updated() {
   }
 };
 
 
 </script>
+
+<style>
+.rentButton{
+  margin: 0 0.8rem!important;
+}
+</style>
