@@ -1,10 +1,8 @@
 <template>
-
-
   <div class="content">
     <div class="md-layout">
 
-      <div class="md-layout-item md-size-50">
+      <div class="md-layout-item md-size-40">
         <md-card>
           <md-card-header data-background-color="orange">
             <h4 class="title">개인 정보</h4>
@@ -27,7 +25,7 @@
         </md-card>
       </div>
 
-      <div class="md-layout-item md-size-50">
+      <div class="md-layout-item md-size-60">
         <md-card>
           <md-card-header data-background-color="orange">
             <h4 class="title">대여 현황</h4>
@@ -39,18 +37,33 @@
               <md-table-row>
                 <md-table-head>이름</md-table-head>
                 <md-table-head>대여 상태</md-table-head>
-                <md-table-head>시작 일자</md-table-head>
-                <md-table-head>종료 일자</md-table-head>
+                <md-table-head>대여 일자</md-table-head>
+                <md-table-head>반납 예정일</md-table-head>
+                <md-table-head>반납 완료일</md-table-head>
               </md-table-row>
 
-              <md-table-row v-for="item in rentList">
+              <md-table-row v-for="item in rentList" v-if="item.rent_status == 0 && showPostRent">
                 <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
-                <md-table-cell>{{ item.rent_status }}</md-table-cell>
+                <md-table-cell>{{ item.status }}</md-table-cell>
                 <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_end}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_return}}</md-table-cell>
+              </md-table-row>
+
+              <md-table-row v-for="item in rentList" v-if="item.rent_status != 0">
+                <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
+                <md-table-cell>{{ item.status }}</md-table-cell>
                 <md-table-cell>{{ item.rent_time_start}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_end}}</md-table-cell>
+                <md-table-cell>{{ item.rent_time_return}}</md-table-cell>
               </md-table-row>
             </md-table>
           </md-card-content>
+
+          <md-card-actions>
+            <md-button @click="postRentLisrButton" v-if="!showPostRent">이전 대여 항목 조회</md-button>
+            <md-button @click="postRentLisrButton" v-if="showPostRent">이전 대여 항목 닫기</md-button>
+          </md-card-actions>
         </md-card>
       </div>
 
@@ -83,7 +96,7 @@
 
             <md-field class="md-layout-item md-size-25">
               <label for="add_RentProduct">상세 물품 선택</label>
-              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required @md-selected="checkSelectedProduct">
+              <md-select v-model="add_RentProduct" name="add_RentProduct" id="add_RentProduct" md-dense required @md-selected="checkSelectedProduct" v-if="this.add_RentGroup.length != 0">
                 <md-option v-for="item in productList" v-bind:value="item.product_index" v-if="item.product_group_index == add_RentGroup">
                   {{ item.product_name }}
                 </md-option>
@@ -99,7 +112,7 @@
           </md-card-content>
 
           <md-card-actions>
-            <md-button @click="sendRentData">대여 신청</md-button>
+            <md-button @click="sendRentButton">대여 신청</md-button>
           </md-card-actions>
         </md-card>
       </div>
@@ -142,6 +155,20 @@
         <md-button class="md-primary" @click="cancleButton" v-if="modifyUserInfo">취소하기</md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <md-dialog :md-active.sync="showRentDialog">
+      <md-dialog-title>대여 신청</md-dialog-title>
+
+      <md-dialog-content>
+        <p>{{rentProductName}}</p>
+        <p>{{add_RentStartDay}}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendRentData">대여 신청</md-button>
+        <md-button class="md-primary" @click="showRentDialog = false">취소</md-button>
+      </md-dialog-actions>
+    </md-dialog>
   </div>
 </template>
 
@@ -179,7 +206,10 @@ export default {
         email: "",
         phone: ""
       },
-      session: ""
+      session: "",
+      showPostRent: false,
+      showRentDialog: false,
+      rentProductName: ""
     };
   },
   created(){
@@ -207,18 +237,33 @@ export default {
 
       axios.post('https://api.devx.kr/GotGan/v1/rent_list.php', param)
       .then(function(response) {
-        console.log(response.data);
+        vue.rentList = [];
         var userIndex = vue._props.userInfo_Tab.user_index;
         if(userIndex != null){
           for(var x = 0; x < response.data.rents.length; x++){
             if(userIndex == response.data.rents[x].rent_user_index){
-              vue.rentList.push(response.data.rents[x]);
+              var obj = response.data.rents[x];
+              obj.rent_time_start = obj.rent_time_start.slice(0, 10);
+              obj.rent_time_end != null ? obj.rent_time_end = obj.rent_time_end.slice(0, 10) : 0;
+              obj.rent_time_return != null ? obj.rent_time_return = obj.rent_time_return.slice(0, 10) : 0;
+
+              switch (obj.rent_status) {
+                case 0:
+                obj.status = "완료됨";
+                break;
+                case 1:
+                obj.status = "대여 신청됨";
+                break;
+                case 2:
+                obj.status = "대여중";
+                break;
+              }
+              vue.rentList.push(obj);
             }
           }
         }else{
           vue.exportRentData(params);
         }
-        //console.log(vue.rentList);
       })
       .catch(function(error) {
         console.log(error);
@@ -230,7 +275,7 @@ export default {
 
       axios.post('https://api.devx.kr/GotGan/v1/product_list.php', param)
       .then(function(response) {
-        console.log(response.data);
+        //console.log(response.data);
         for(var x = 0; x < response.data.groups.length;x++){
           vue.groupList.push(response.data.groups[x]);
         }
@@ -242,18 +287,34 @@ export default {
         console.log(error);
       });
     },
+    // 대여 신청 버튼
+    sendRentButton: function(){
+      if(this.add_RentProduct == ""){
+        alert("대여할 물품을 선택하시오.");
+      }else if(this.add_RentStartDay == ""){
+        alert("시작일을 선택하시오.");
+      }else{
+        for(var i in this.productList){
+          if(this.productList[i].product_index == this.add_RentProduct)
+          this.rentProductName = this.productList[i].product_name;
+        }
+        this.showRentDialog = true;
+      }
+    },
     // 대여 신청 전송
     sendRentData: function(){
-      var vue = this;
       var rentParams = new URLSearchParams();
-      rentParams.append('session', vue.getCookie("session"));
-      rentParams.append('rent_product', vue.add_RentProduct);
-      rentParams.append('rent_user', vue._props.userInfo_Tab.user_index);
-      rentParams.append('rent_time_start', vue.add_RentStartDay);
+      var vue = this;
+      rentParams.append('session', this.getCookie("session"));
+      rentParams.append('rent_product', this.add_RentProduct);
+      rentParams.append('rent_user', this._props.userInfo_Tab.user_index);
+      rentParams.append('rent_time_start', this.add_RentStartDay);
 
       axios.post('https://api.devx.kr/GotGan/v1/rent_add.php', rentParams)
       .then(function(response) {
-        console.log(response.data);
+        //console.log(response.data);
+        vue.showRentDialog = false;
+        vue.exportRentData(params);
       })
       .catch(function(error) {
         console.log(error);
@@ -336,6 +397,9 @@ export default {
       var value = document.cookie.match('(^|;) ?' + _name + '=([^;]*)(;|$)');
       return value? value[2] : null;
     },
+    postRentLisrButton: function(){
+      this.showPostRent = !this.showPostRent;
+    }
   },
   updated() {
     // 시작 날짜, 종료 날짜 계산
