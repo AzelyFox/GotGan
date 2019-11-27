@@ -182,7 +182,8 @@ var propsEmpty = false;
 
 export default {
   props: {
-    userInfo_Tab: Object
+    userInfo_Tab: Object,
+    englishSwitch_Tab: Boolean
   },
   components: {
   },

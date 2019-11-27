@@ -1,7 +1,7 @@
 <template>
   <div>
     <md-table>
-      <md-table-row>
+      <md-table-row v-if="!this._props.englishSwitch_Table">
         <md-table-head>유저 인덱스</md-table-head>
         <md-table-head>ID</md-table-head>
         <md-table-head>이름</md-table-head>
@@ -10,6 +10,16 @@
         <md-table-head>학번</md-table-head>
         <md-table-head>가입일</md-table-head>
     </md-table-row>
+
+    <md-table-row v-if="this._props.englishSwitch_Table">
+      <md-table-head>User Index</md-table-head>
+      <md-table-head>ID</md-table-head>
+      <md-table-head>Name</md-table-head>
+      <md-table-head>Group</md-table-head>
+      <md-table-head>Authority</md-table-head>
+      <md-table-head>StudentID</md-table-head>
+      <md-table-head>Registration Date</md-table-head>
+  </md-table-row>
 
     <md-table-row v-for="item in userList">
       <md-table-cell>{{ item.user_index }}</md-table-cell>
@@ -30,7 +40,8 @@ import axios from 'axios';
 export default {
   name: "stock-table",
   props: {
-    userInfo_Table: Object
+    userInfo_Table: Object,
+    englishSwitch_Table: Boolean
   },
   data() {
     return {

@@ -1,6 +1,6 @@
 <template>
   <transition name="fade" mode="out-in">
-    <router-view :userInfo_Tab="userInfo_Content"></router-view>
+    <router-view :userInfo_Tab="userInfo_Content" :englishSwitch_Tab="englishSwitch_Content"></router-view>
   </transition>
 </template>
 <style>
@@ -20,7 +20,8 @@
 <script>
 export default {
   props: {
-    userInfo_Content: Object
+    userInfo_Content: Object,
+    englishSwitch_Content: Boolean
   },
   data(){
     return{
@@ -29,6 +30,8 @@ export default {
   created(){
     console.log("content");
     console.log(this._props.userInfo_Content);
+    console.log(this._props.englishSwitch_Content);
+
   }
 };
 </script>

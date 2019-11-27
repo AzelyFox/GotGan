@@ -2,7 +2,8 @@
   <md-toolbar md-elevation="0" class="md-transparent">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
-        <h3 class="md-title">{{ $route.name }}</h3>
+        <h3 class="md-title" v-if="!_props.englishSwitch_Top">{{ $route.name }}</h3>
+        <h3 class="md-title" v-if="_props.englishSwitch_Top">{{ name }}</h3>
       </div>
       <!-- 반응형 같음 -->
       <div class="md-toolbar-section-end">
@@ -42,17 +43,22 @@ import router from '../../main.js'
 
 export default {
   props: {
-    userName_Top: String
+    userName_Top: String,
+    englishSwitch_Top: Boolean
   },
   data() {
     return {
-      session: ""
+      session: "",
+      name: ""
     };
   },
   created() {
-    console.log(this);
-
+    var vue = this;
     this.session = this.getCookie("session");
+
+    this.$EventBus.$on('changeTitle', () => {
+      vue.changeTitle();
+    });
   },
   methods: {
     toggleSidebar() {
@@ -81,6 +87,27 @@ export default {
     deleteCookie: function(_name) {
       var date = new Date();
       document.cookie = _name + "= " + "; expires=" + date.toUTCString() + "; path=/";
+    },
+    changeTitle: function(){
+      switch (this.$route.name) {
+        case "재고 대시보드":
+          this.name = "Stock Dashboard";
+        break;
+        case "재고 상세":
+          this.name = "Stock Detail";
+        break;
+        case "반출입 대시보드":
+          this.name = "Rent Dashboard";
+        break;
+        case "유저 관리":
+          this.name = "Uset Management";
+        break;
+        case "설정":
+          this.name = "Setting";
+        break;
+        default:
+
+      }
     }
   }
 };
@@ -88,7 +115,7 @@ export default {
 
 <style lang="css">
 
-  .name {
-  }
+.name {
+}
 
 </style>

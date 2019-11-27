@@ -1,16 +1,18 @@
 <template>
   <div class="wrapper" :class="{ 'nav-open': $sidebar.showSidebar }">
 
-    <side-bar v-if="user_Level == 2">
+    <side-bar v-if="user_Level == 2" :englishSwitch_Side="englishSwitch">
       <mobile-menu slot="content"></mobile-menu>
       <sidebar-link to="/admin/stockDashboard">
         <md-icon>view_module</md-icon>
-        <p>재고 대시보드</p>
+        <p v-if="!englishSwitch">재고 대시보드</p>
+        <p v-if="englishSwitch">Stock Dashboard</p>
       </sidebar-link>
 
       <sidebar-link to="/admin/stockDetail">
         <md-icon>content_paste</md-icon>
-        <p>재고 상세</p>
+        <p v-if="!englishSwitch">재고 상세</p>
+        <p v-if="englishSwitch">Stock Detail</p>
       </sidebar-link>
 
 
@@ -23,17 +25,20 @@
             </div>
           </div>
         </div>
-        <p>반출입 대시보드</p>
+        <p v-if="!englishSwitch">반출입 대시보드</p>
+        <p v-if="englishSwitch">Rent Dashboard</p>
       </sidebar-link>
 
       <sidebar-link to="/admin/userManagement">
         <md-icon>person</md-icon>
-        <p>유저 관리</p>
+        <p v-if="!englishSwitch">유저 관리</p>
+        <p v-if="englishSwitch">User Management</p>
       </sidebar-link>
 
       <sidebar-link to="/admin/setting">
         <md-icon>settings_applications</md-icon>
-        <p>설정</p>
+        <p v-if="!englishSwitch">설정</p>
+        <p v-if="englishSwitch">Setting</p>
       </sidebar-link>
     </side-bar>
 
@@ -41,14 +46,15 @@
       <mobile-menu slot="content"></mobile-menu>
       <sidebar-link to="/user">
         <md-icon>view_module</md-icon>
-        <p>사용자 페이지</p>
+        <p v-if="!englishSwitch">사용자 페이지</p>
+        <p v-if="englishSwitch">User Dashboard</p>
       </sidebar-link>
     </side-bar>
 
     <div class="main-panel">
-      <top-navbar :userName_Top="userName"></top-navbar>
+      <top-navbar :userName_Top="userName"  :englishSwitch_Top="englishSwitch"></top-navbar>
 
-      <dashboard-content :userInfo_Content="userInfo"></dashboard-content>
+      <dashboard-content :userInfo_Content="userInfo" :englishSwitch_Content="englishSwitch"></dashboard-content>
 
       <content-footer v-if="!$route.meta.hideFooter"></content-footer>
     </div>
@@ -81,16 +87,22 @@ export default {
       session: "",
       userName: "",
       rentNum: 0,
-      showNum: 0
+      showNum: 0,
+      englishSwitch: false
     }
   },
   created(){
     console.log("DashboardLayout");
     console.log(this._props._userInfo);
+
     this.session = this.getCookie("session");
 
     this.$EventBus.$on('updateSideBarBadge', () => {
       this.updateData();
+    });
+
+    this.$EventBus.$on('changeLanguage', () => {
+      this.changeLanguage();
     });
 
     if(Object.keys(this._props._userInfo).length == 0){
@@ -162,10 +174,14 @@ export default {
       .catch(function(error) {
         console.log(error);
       });
+    },
+    changeLanguage: function(){
+      this.englishSwitch = !this.englishSwitch;
     }
   },
   updated() {
     this.updateData();
+    this.$EventBus.$emit('changeTitle');
   }
 };
 

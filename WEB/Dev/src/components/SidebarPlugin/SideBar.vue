@@ -17,8 +17,17 @@
         href="https://gotgan.devx.kr"
         target="_blank"
         class="simple-text logo-normal"
+        v-if="!this._props.englishSwitch_Side"
       >
         {{ title }}
+      </a>
+      <a
+        href="https://gotgan.devx.kr"
+        target="_blank"
+        class="simple-text logo-normal"
+        v-if="this._props.englishSwitch_Side"
+      >
+        Gotgan
       </a>
     </div>
 
@@ -75,7 +84,8 @@ export default {
     autoClose: {
       type: Boolean,
       default: true
-    }
+    },
+    englishSwitch_Side: Boolean
   },
   provide() {
     return {

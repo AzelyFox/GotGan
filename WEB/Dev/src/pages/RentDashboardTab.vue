@@ -3,28 +3,40 @@
     <div class="md-layout">
       <div class="md-layout-item">
         <md-card>
-          <md-card-header data-background-color="red">
+          <md-card-header data-background-color="red" v-if="!this._props.englishSwitch_Tab">
             <h4 class="title">대여 신청 현황</h4>
             <p class="category">현재 신청되어 있는 대여 정보 보여주기</p>
           </md-card-header>
+
+          <md-card-header data-background-color="red" v-if="this._props.englishSwitch_Tab">
+            <h4 class="title">Rent Request</h4>
+            <p class="category">Show about the current requested rent info</p>
+          </md-card-header>
+
           <md-card-content>
-            <rent-request-table table-header-color="red"  :userInfo_Table="userInfo_Tab"></rent-request-table>
+            <rent-request-table table-header-color="red"  :userInfo_Table="userInfo_Tab" :englishSwitch_Table="englishSwitch_Tab"></rent-request-table>
           </md-card-content>
         </md-card>
 
         <md-card>
-          <md-card-header data-background-color="red">
+          <md-card-header data-background-color="red" v-if="!this._props.englishSwitch_Tab">
             <h4 class="title">반출 현황</h4>
             <p class="category">현재 반출되어 있는 재고 보여주기</p>
           </md-card-header>
+
+          <md-card-header data-background-color="red" v-if="this._props.englishSwitch_Tab">
+            <h4 class="title">Rent Status</h4>
+            <p class="category">Show about the current rent status</p>
+          </md-card-header>
+
           <md-card-content>
-            <rent-status-table table-header-color="red"  :userInfo_Table="userInfo_Tab"></rent-status-table>
+            <rent-status-table table-header-color="red"  :userInfo_Table="userInfo_Tab" :englishSwitch_Table="englishSwitch_Tab"></rent-status-table>
           </md-card-content>
         </md-card>
       </div>
     </div>
 
-    <md-dialog :md-active.sync="showAllowDialog">
+    <md-dialog :md-active.sync="showAllowDialog" v-if="!this._props.englishSwitch_Tab">
       <md-dialog-title>대여 허가</md-dialog-title>
 
       <md-dialog-content>
@@ -39,7 +51,22 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog :md-active.sync="showRejectDialog">
+    <md-dialog :md-active.sync="showAllowDialog" v-if="this._props.englishSwitch_Tab">
+      <md-dialog-title>Rent Allow</md-dialog-title>
+
+      <md-dialog-content>
+        <p>Name : {{ dialogInfo.rent_user_name }}</p>
+        <p>Product : {{ dialogInfo.rent_product_name }}</p>
+        <p>Rent Start date : {{ dialogInfo.rent_time_start }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendAllowButton">Allow</md-button>
+        <md-button class="md-primary" @click="showAllowDialog = false">Cancel</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="showRejectDialog" v-if="!this._props.englishSwitch_Tab">
       <md-dialog-title>대여 거부</md-dialog-title>
 
       <md-dialog-content>
@@ -54,7 +81,22 @@
       </md-dialog-actions>
     </md-dialog>
 
-    <md-dialog :md-active.sync="showReturnDialog">
+    <md-dialog :md-active.sync="showRejectDialog" v-if="this._props.englishSwitch_Tab">
+      <md-dialog-title>Rent Reject</md-dialog-title>
+
+      <md-dialog-content>
+        <p>Name : {{ dialogInfo.rent_user_name }}</p>
+        <p>Product : {{ dialogInfo.rent_product_name }}</p>
+        <p>Rent Start Date : {{ dialogInfo.rent_time_start }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendRejectButton">Reject</md-button>
+        <md-button class="md-primary" @click="showRejectDialog = false">Cancel</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="showReturnDialog" v-if="!this._props.englishSwitch_Tab">
       <md-dialog-title>반납 확인</md-dialog-title>
 
       <md-dialog-content>
@@ -67,6 +109,22 @@
       <md-dialog-actions>
         <md-button class="md-primary" @click="sendReturnButton">확인</md-button>
         <md-button class="md-primary" @click="showReturnDialog = false">취소</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
+    <md-dialog :md-active.sync="showReturnDialog" v-if="this._props.englishSwitch_Tab">
+      <md-dialog-title>Return Check</md-dialog-title>
+
+      <md-dialog-content>
+        <p>Name : {{ dialogInfo.rent_user_name }}</p>
+        <p>Product : {{ dialogInfo.rent_product_name }}</p>
+        <p>Rent Start Date : {{ dialogInfo.rent_time_start }}</p>
+        <p>Rent End Date : {{ dialogInfo.rent_time_end }}</p>
+      </md-dialog-content>
+
+      <md-dialog-actions>
+        <md-button class="md-primary" @click="sendReturnButton">Check</md-button>
+        <md-button class="md-primary" @click="showReturnDialog = false">Cancel</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -95,7 +153,8 @@ export default {
     });
   },
   props: {
-    userInfo_Tab: Object
+    userInfo_Tab: Object,
+    englishSwitch_Tab: Boolean
   },
   data(){
     return{

@@ -4,26 +4,36 @@
       <div class="md-layout-item">
         <!-- 재고 상세 테이블 카드-->
         <md-card>
-          <md-card-header data-background-color="red">
+          <md-card-header data-background-color="red" v-if="!this._props.englishSwitch_Tab">
             <h4 class="title">재고 상세</h4>
             <p class="category">상세한 재고 보여주기</p>
           </md-card-header>
 
+          <md-card-header data-background-color="red" v-if="this._props.englishSwitch_Tab">
+            <h4 class="title">Stock Detail</h4>
+            <p class="category">Show about stock details</p>
+          </md-card-header>
+
           <md-card-content>
-            <stock-detail-table :userInfo_Table="userInfo_Tab"></stock-detail-table>
+            <stock-detail-table :userInfo_Table="userInfo_Tab" :englishSwitch_Table="englishSwitch_Tab"></stock-detail-table>
           </md-card-content>
         </md-card>
 
         <!-- 재고 / 그룹 추가 카드-->
         <md-card>
-          <md-card-header data-background-color="red">
+          <md-card-header data-background-color="red" v-if="!this._props.englishSwitch_Tab">
             <h4 class="title">재고 / 그룹 추가</h4>
             <p class="category">추가하기</p>
           </md-card-header>
 
+          <md-card-header data-background-color="red" v-if="this._props.englishSwitch_Tab">
+            <h4 class="title">Stock / Group Add</h4>
+            <p class="category">Add</p>
+          </md-card-header>
+
           <md-card-content>
             <md-tabs md-dynamic-height @md-changed="test($event)" class="md-accent">
-              <md-tab id="stockAddTab" md-label="재고 추가">
+              <md-tab id="stockAddTab" md-label="재고 추가" v-if="!this._props.englishSwitch_Tab">
                 <div class="md-layout md-gutter">
                   <div class="md-layout-item md-small-size-100">
                     <md-field >
@@ -117,7 +127,101 @@
                 </div>
               </md-tab>
 
-              <md-tab id="groupAddTab" md-label="그룹 추가">
+              <md-tab id="stockAddTab" md-label="Stock Add" v-if="this._props.englishSwitch_Tab">
+                <div class="md-layout md-gutter">
+                  <div class="md-layout-item md-small-size-100">
+                    <md-field >
+                      <label for="product_name">Product Name</label>
+                      <md-input v-model="add_ProductName" name="product_name" id="product_name" autocomplete="family-name" :disabled="sending" required/>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-small-size-100">
+                    <md-field>
+                      <label for="product_group">Group</label>
+                      <md-select v-model="add_ProductGroup" name="product_group" id="product_group" md-dense :disabled="sending" required>
+                        <md-option value="group_add">Add Group</md-option>
+                        <md-option v-for="item in product_groups" v-bind:value="item.group_index">
+                          {{ item.group_name }}
+                        </md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+                </div>
+
+                <div class="md-layout md-gutter">
+
+                  <div class="md-layout-item md-small-size-100">
+                    <md-field>
+                      <label for="product_status">Status</label>
+                      <md-select v-model="add_ProductStatus"  name="product_status" id="product_status"  md-dense :disabled="sending">
+                        <md-option value="0">Normal</md-option>
+                        <md-option value="1">Unusable</md-option>
+                        <md-option value="2">Failure</md-option>
+                        <md-option value="3">Repair</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-small-size-100">
+                    <md-field >
+                      <label for="add_ProductOwner">Attached</label>
+                      <md-select v-model="add_ProductOwner"  name="add_ProductOwner" id="add_ProductOwner"  md-dense :disabled="sending">
+                        <md-option v-for="item in user_Groups" v-bind:value="item.group_index">
+                          {{ item.group_name }}
+                        </md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-small-size-100">
+                    <md-field >
+                      <label for="product_barcode">Barcode</label>
+                      <md-input v-model="add_ProductBarcode" name="product_barcode" id="product_barcode" autocomplete="family-name" :disabled="sending" />
+                    </md-field>
+                  </div>
+                </div>
+                <div class="md-layout md-gutter" v-if="showGroupAdd">
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_name">Group Name</label>
+                      <md-input v-model="add_GroupName" name="product_group_name" id="product_group_name" autocomplete="family-name" :disabled="sending" required/>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-10 md-small-size-100">
+                    <md-field>
+                      <label for="group_rentable">Rentable</label>
+                      <md-select v-model="add_GroupRentable"  name="group_rentable" id="group_rentable"  md-dense :disabled="sending" required>
+                        <md-option value="0">X</md-option>
+                        <md-option value="1">O</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_rentable_day">Rentable Day</label>
+                      <md-input v-model="add_GroupRentableDay" name="product_group_rentable_day" id="product_group_rentable_day" autocomplete="family-name" :disabled="add_GroupRentable == 0" />
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_priority">Priority</label>
+                      <md-select v-model="add_GroupPriority"  name="product_group_priority" id="product_group_priority"  md-dense :disabled="sending">
+                        <md-option value="0">Normal</md-option>
+                        <md-option value="1">Focus</md-option>
+                        <md-option value="2">Intensive</md-option>
+                      </md-select>
+
+                    </md-field>
+                  </div>
+                </div>
+              </md-tab>
+
+              <md-tab id="groupAddTab" md-label="그룹 추가" v-if="!this._props.englishSwitch_Tab">
                 <div class="md-layout md-gutter">
 
                   <div class="md-layout-item md-size-30 md-small-size-100">
@@ -157,15 +261,54 @@
                   </div>
                 </div>
               </md-tab>
+
+              <md-tab id="groupAddTab" md-label="Group Add" v-if="this._props.englishSwitch_Tab">
+                <div class="md-layout md-gutter">
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_name">Group Name</label>
+                      <md-input v-model="add_GroupName" name="product_group_name" id="product_group_name" autocomplete="family-name" :disabled="sending" tabIndex="-1" required/>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-10 md-small-size-100">
+                    <md-field>
+                      <label for="group_rentable">Rentable</label>
+                      <md-select v-model="add_GroupRentable"  name="group_rentable" id="group_rentable"  md-dense :disabled="sending" tabIndex="-1" required>
+                        <md-option value="0">O</md-option>
+                        <md-option value="1">X</md-option>
+                      </md-select>
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_rentable_day">Rentable Day</label>
+                      <md-input v-model="add_GroupRentableDay" name="product_group_rentable_day" id="product_group_rentable_day" autocomplete="family-name" tabIndex="-1" :disabled="add_GroupRentable == 0" />
+                    </md-field>
+                  </div>
+
+                  <div class="md-layout-item md-size-30 md-small-size-100">
+                    <md-field >
+                      <label for="product_group_priority">Priority</label>
+                      <md-select v-model="add_GroupPriority"  name="product_group_priority" id="product_group_priority"  md-dense tabIndex="-1" :disabled="sending">
+                        <md-option value="0">Normal</md-option>
+                        <md-option value="1">Focus</md-option>
+                        <md-option value="2">Intensive</md-option>
+                      </md-select>
+
+                    </md-field>
+                  </div>
+                </div>
+              </md-tab>
             </md-tabs>
 
 
             <md-card-actions>
-              <md-button type="submit" class="md-primary" :disabled="sending" @click="addProductButton()">재고 추가</md-button>
+              <md-button type="submit" class="md-primary" :disabled="sending" @click="addProductButton()" v-if="!this._props.englishSwitch_Tab">재고 추가</md-button>
+              <md-button type="submit" class="md-primary" :disabled="sending" @click="addProductButton()" v-if="this._props.englishSwitch_Tab">Submit</md-button>
             </md-card-actions>
-
-
-            <!--md-snackbar :md-active.sync="userSaved">The user  was saved with success!</md-snackbar-->
           </md-card-content>
         </md-card>
       </div>
@@ -183,7 +326,8 @@ import {
 
 export default {
   props: {
-    userInfo_Tab: Object
+    userInfo_Tab: Object,
+    englishSwitch_Tab: Boolean
   },
   components: {
     StockDetailTable
@@ -353,8 +497,8 @@ export default {
 }
 
 .md-tabs.md-theme-default.md-accent .md-tabs-navigation > .md-active {
-    border-bottom: solid;
-    border-color: blue;
+  border-bottom: solid;
+  border-color: blue;
 }
 
 .md-list-item-text {

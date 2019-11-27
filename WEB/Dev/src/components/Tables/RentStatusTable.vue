@@ -1,23 +1,32 @@
 <template>
   <div>
     <md-table :table-header-color="tableHeaderColor">
-      <md-table-row>
+      <md-table-row v-if="!this._props.englishSwitch_Table">
         <md-table-head>이름</md-table-head>
         <md-table-head>항목</md-table-head>
         <md-table-head>시작일</md-table-head>
         <md-table-head>반납예정일</md-table-head>
         <md-table-head>처리 버튼</md-table-head>
       </md-table-row>
+
+      <md-table-row v-if="this._props.englishSwitch_Table">
+        <md-table-head>Name</md-table-head>
+        <md-table-head>Product</md-table-head>
+        <md-table-head>Rent Start Date</md-table-head>
+        <md-table-head>Rent End Date</md-table-head>
+        <md-table-head>Button</md-table-head>
+      </md-table-row>
+
       <md-table-row class="statusRow" slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 2">
         <md-table-cell>{{ item.rent_user_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_start }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_end }}</md-table-cell>
         <md-table-cell>
-          <md-button class="md-raised rentButton" data-background-color="red" @click="returnButton(item)">반납 확인</md-button>
+          <md-button class="md-raised rentButton" data-background-color="red" @click="returnButton(item)" v-if="!englishSwitch">반납 확인</md-button>
+          <md-button class="md-raised rentButton" data-background-color="red" @click="returnButton(item)" v-if="englishSwitch">Return Check</md-button>
         </md-table-cell>
       </md-table-row>
-
       <md-table-row v-if="rentStatusNum == 0">
         <md-table-cell>대여 신청이 없습니다.</md-table-cell>
       </md-table-row>
@@ -27,7 +36,7 @@
 
 <script>
 import axios from 'axios';
-
+var vueTest;
 var params = new URLSearchParams();
 
 export default {
@@ -37,19 +46,21 @@ export default {
       type: String,
       default: ""
     },
-    userInfo_Table: Object
+    userInfo_Table: Object,
+    englishSwitch_Table: Boolean
   },
   data() {
     return {
       selected: [],
       rentList: [],
-      rentStatusNum: 0
+      rentStatusNum: 0,
+      englishSwitch: false
     };
   },
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
-
+    this.englishSwitch = this._props.englishSwitch_Table;
     var vue = this;
 
     this.$EventBus.$on('updateRentStatusTable', () => {

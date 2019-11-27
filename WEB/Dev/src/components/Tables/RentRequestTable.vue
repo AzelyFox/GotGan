@@ -1,22 +1,31 @@
 <template>
   <div>
     <md-table :table-header-color="tableHeaderColor">
-      <md-table-row>
+      <md-table-row v-if="!englishSwitch">
         <md-table-head>이름</md-table-head>
         <md-table-head>항목</md-table-head>
         <md-table-head>시작일</md-table-head>
-        <md-table-head>반납 예정일</md-table-head>
         <md-table-head>처리 버튼</md-table-head>
+      </md-table-row>
+
+      <md-table-row v-if="englishSwitch">
+        <md-table-head>Name</md-table-head>
+        <md-table-head>Product</md-table-head>
+        <md-table-head>Rent Start Date</md-table-head>
+        <md-table-head>Button</md-table-head>
       </md-table-row>
 
       <md-table-row class="requestRow" slot="md-table-row" v-for="item in rentList" v-if="item.rent_status == 1">
         <md-table-cell>{{ item.rent_user_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_product_name }}</md-table-cell>
         <md-table-cell>{{ item.rent_time_start }}</md-table-cell>
-        <md-table-cell>{{ item.rent_time_end }}</md-table-cell>
-        <md-table-cell>
+        <md-table-cell v-if="!englishSwitch">
           <md-button class="md-raised rentButton" data-background-color="blue" @click="allowButton(item)">허가</md-button>
           <md-button class="md-raised rentButton" data-background-color="red" @click="rejectButtion(item)">거부</md-button>
+        </md-table-cell>
+        <md-table-cell v-if="englishSwitch">
+          <md-button class="md-raised rentButton" data-background-color="blue" @click="allowButton(item)">Allow</md-button>
+          <md-button class="md-raised rentButton" data-background-color="red" @click="rejectButtion(item)">Reject</md-button>
         </md-table-cell>
       </md-table-row>
 
@@ -39,19 +48,21 @@ export default {
       type: String,
       default: ""
     },
-    userInfo_Table: Object
+    userInfo_Table: Object,
+    englishSwitch_Table: Boolean
   },
   data() {
     return {
       selected: [],
       rentList: [],
-      rentRequestNum : 0
+      rentRequestNum : 0,
+      englishSwitch: false
     };
   },
   created(){
     console.log("RentRequestTable");
     console.log(this._props);
-
+    this.englishSwitch = this._props.englishSwitch_Table;
     var vue = this;
 
     params.append('session', this.getCookie("session"));

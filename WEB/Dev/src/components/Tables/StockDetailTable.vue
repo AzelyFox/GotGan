@@ -3,7 +3,7 @@
     <md-list class="list">
 
       <md-list-item style="border: black;" class="headerList">
-        <div class="list-line header">
+        <div class="list-line header" v-if="!this._props.englishSwitch_Table">
           <span class="list-header">종류</span>
           <span class="list-header">대여 가능</span>
           <span class="list-header">사용 불가</span>
@@ -11,6 +11,15 @@
           <span class="list-header">수리중</span>
           <span class="list-header">대여중</span>
           <span class="list-header">총 갯수</span>
+        </div>
+        <div class="list-line header" v-if="this._props.englishSwitch_Table">
+          <span class="list-header">Product</span>
+          <span class="list-header">Rentable</span>
+          <span class="list-header">Unusable</span>
+          <span class="list-header">Failure</span>
+          <span class="list-header">Repair</span>
+          <span class="list-header">Renting</span>
+          <span class="list-header">Total</span>
         </div>
       </md-list-item>
       <md-content class="md-scrollbar tableScrollDiv">
@@ -25,12 +34,20 @@
             <span class="list-item">{{ item.group_count_available + item.group_count_unavailable + item.group_count_broken + item.group_count_repair}}</span>
           </div>
           <md-table v-show="item.showTable">
-            <md-table-row>
+            <md-table-row v-if="!englishSwitch">
               <md-table-head>바코드ID</md-table-head>
               <md-table-head>물품 인덱스</md-table-head>
               <md-table-head>이름</md-table-head>
               <md-table-head>소속</md-table-head>
               <md-table-head>구매 일자</md-table-head>
+            </md-table-row>
+
+            <md-table-row v-if="englishSwitch">
+              <md-table-head>Barcode</md-table-head>
+              <md-table-head>Index</md-table-head>
+              <md-table-head>Product</md-table-head>
+              <md-table-head>Attached</md-table-head>
+              <md-table-head>Generation Date</md-table-head>
             </md-table-row>
 
             <md-table-row v-for="product in item.products" @click="toggleDialog(product)">
@@ -49,8 +66,9 @@
 
 
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>제품 상세</md-dialog-title>
-      <md-dialog-content>
+      <md-dialog-title v-if="!englishSwitch">제품 상세</md-dialog-title>
+      <md-dialog-title v-if="englishSwitch">Product Detail</md-dialog-title>
+      <md-dialog-content v-if="!englishSwitch">
         <div>바코드 ID : {{ dialogInfo.product_barcode }}</div>
         <div>이름 : {{ dialogInfo.product_name }}</div>
         <div>소속 : {{ dialogInfo.product_owner_name }}</div>
@@ -80,6 +98,37 @@
         </md-content>
 
       </md-dialog-content>
+
+      <md-dialog-content v-if="englishSwitch">
+        <div>Barcode : {{ dialogInfo.product_barcode }}</div>
+        <div>Product : {{ dialogInfo.product_name }}</div>
+        <div>Attached : {{ dialogInfo.product_owner_name }}</div>
+        <div>Generation Date : {{ dialogInfo.product_created }}</div>
+        <div>Log</div>
+        <md-content class="md-scrollbar logScrollDiv">
+          <md-table :table-header-color="tableHeaderColor">
+            <md-table-row>
+              <md-table-head>Time</md-table-head>
+              <md-table-head>Type</md-table-head>
+              <md-table-head>ID</md-table-head>
+              <md-table-head>User Name</md-table-head>
+            </md-table-row>
+
+            <md-table-row v-for="log in logList">
+              <md-table-cell>{{ log.time }}</md-table-cell>
+              <md-table-cell>{{ log.type }}</md-table-cell>
+              <md-table-cell>{{ log.userID }}</md-table-cell>
+              <md-table-cell>{{ log.userName }}</md-table-cell>
+            </md-table-row>
+
+            <md-table-row v-if="logList.length == 0">
+              <md-table-cell>No Log</md-table-cell>
+            </md-table-row>
+
+          </md-table>
+        </md-content>
+
+      </md-dialog-content>
       <md-dialog-actions>
         <md-button class="md-primary" @click="showDialog = false">Close</md-button>
       </md-dialog-actions>
@@ -97,7 +146,8 @@ export default {
       type: String,
       default: ""
     },
-    userInfo_Table: Object
+    userInfo_Table: Object,
+    englishSwitch_Table: Boolean
   },
   data() {
     return {
@@ -105,7 +155,8 @@ export default {
       showDialog: false,
       dialogInfo: {},
       showTable: false,
-      logList: []
+      logList: [],
+      englishSwitch: false
     };
   },
   components: {
@@ -113,7 +164,7 @@ export default {
   created(){
     console.log("StockDetailTable");
     console.log(this._props);
-
+    this.englishSwitch = this._props.englishSwitch_Table;
     this.exportData();
   },
   methods:{

@@ -1,7 +1,7 @@
 <template>
   <div>
     <md-table :table-header-color="tableHeaderColor">
-      <md-table-row>
+      <md-table-row v-if="!this._props.englishSwitch_Table">
         <md-table-head>종류</md-table-head>
         <md-table-head>대여 가능</md-table-head>
         <md-table-head>사용 불가</md-table-head>
@@ -9,6 +9,16 @@
         <md-table-head>수리중</md-table-head>
         <md-table-head>대여중</md-table-head>
         <md-table-head>총 갯수</md-table-head>
+      </md-table-row>
+
+      <md-table-row v-if="this._props.englishSwitch_Table">
+        <md-table-head>Product</md-table-head>
+        <md-table-head>Rentable</md-table-head>
+        <md-table-head>Unusable</md-table-head>
+        <md-table-head>Failure</md-table-head>
+        <md-table-head>Repair</md-table-head>
+        <md-table-head>Renting</md-table-head>
+        <md-table-head>Total</md-table-head>
       </md-table-row>
 
       <md-table-row v-for="item in productGroup">
@@ -34,7 +44,8 @@ export default {
       type: String,
       default: ""
     },
-    userInfo_Table: Object
+    userInfo_Table: Object,
+    englishSwitch_Table: Boolean
   },
   data() {
     return {
