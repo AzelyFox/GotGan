@@ -1,97 +1,76 @@
 <template>
-  <form novalidate class="md-layout" @submit.prevent="validateUser">
-    <div class="md-layout-item md-size-35"></div>
-    <md-card class="md-layout-item md-size-30 md-small-size-100 md-gutter card">
-      <md-card-header>
-        <span class="md-title">GotGan</span>
-      </md-card-header>
-      <md-card-content>
-        <div class="md-layout md-gutter">
-          <div class="md-layout-item md-small-size-100 cardDiv">
-            <md-field :class="messageClass" :md-counter="false">
-              <label for="userID">ID</label>
-              <md-input name="userID" v-model="user_ID" maxlength="20" required/>
-              <span class="md-error">There is an error</span>
-            </md-field>
-
-            <md-field :class="messageClass" :md-counter="false">
-
-              <label for="userPW">Password</label>
-              <md-input name="userPW" v-model="user_Password" type="password"  maxlength="20" required/>
-              <span class="md-error">There is an error</span>
-            </md-field>
-
-            <transition-group name="slide-fade">
-              <div v-bind:key="showCard">
-                <md-field :md-counter="false" v-if="showCard">
-                  <label for="userName">이름</label>
-                  <md-input name="userName" v-model="user_Name" maxlength="20" required/>
-                  <span class="md-error">There is an error</span>
-                </md-field>
-
-                <md-field :md-counter="false" v-if="showCard">
-                  <label for="userEmail">이메일</label>
-                  <md-input name="userEmail" v-model="user_Email" maxlength="20"/>
-                </md-field>
-
-                <md-field :md-counter="false" v-if="showCard">
-                  <label for="user_Phone">전화번호</label>
-                  <md-input name="user_Phone" v-model="user_Phone" maxlength="20"/>
-                </md-field>
-
-                <md-field :md-counter="false" v-if="showCard">
-                  <label for="userGroup">유저그룹</label>
-                  <md-input name="userGroup" v-model="user_Group" maxlength="20"/>
-                </md-field>
-
-                <md-field :md-counter="false" v-if="showCard">
-                  <label for="userSID">학번</label>
-                  <md-input name="userSID" v-model="user_SID" maxlength="20"/>
-                </md-field>
-              </div>
-
-              <!--
-              user_id (string) [필수 인자]
-              유저의 아이디를 의미한다.
-
-              user_pw (string) [필수 인자]
-              유저의 비밀번호를 의미한다.
-              서버에서 bcrypt 알고리즘을 통해 암호화하여 저장한다.
-
-              user_level (int) [필수 인자]
-              유저의 계정 등급을 의미한다.
-              0 : 일반 사용자
-              1 : 관리자
-              2 : 최고 관리자
-
-              user_name (string) [필수 인자]
-              유저명을 의미한다.
-
-              user_group (int) [선택 인자]
-              유저가 속할 그룹을 의미한다.
-              전달받은 인자가 없을 경우 0번 그룹에 기본으로 속한다.
-
-              user_sid (string) [선택 인자]
-              유저의 학번을 의미한다.
-
-              user_email (string) [선택 인자]
-              유저의 이메일을 의미한다.
-
-              user_phone (string) [선택 인자]
-              유저의 휴대기기 번호를 의미한다.-->
-            </transition-group>
-          </div>
+  <div class="md-layout loginBackground">
+    <div class="md-layout-item md-size-20"></div>
+    <md-card class="md-layout-item md-size-60 md-gutter card">
+      <div class="md-layout" style="height:100%;">
+        <div class="md-layout-item md-xlarge-size-50 md-large-size-45 md-medium-size-45 logoDiv" >
+          <img src="../assets/img/gotgan-logo.png" class="logoImg">
         </div>
-      </md-card-content>
-      <md-card-actions>
-        <md-button class="md-raised" v-on:click="signIn" :to="link" v-if="showCard == 0">Sign in</md-button>
-        <md-button v-on:click="showCard = 1" v-if="showCard == 0">Sign up</md-button>
-        <md-button v-on:click="showCard = 0" v-if="showCard == 1">Cancle</md-button>
-        <md-button v-on:click="signUp" v-if="showCard == 1">Register</md-button>
-      </md-card-actions>
+
+        <div class="md-layout-item md-xlarge-size-50 md-large-size-55 md-medium-size-55 " style="margin:auto;">
+          <div class="md-layout" style="height:100%;">
+            <div class="md-layout-item md-size-20">
+            </div>
+            <div class="md-layout-item md-size-60">
+              <h3 class="loginText">Makerspace Stock Management Systme</h3>
+
+              <md-field :class="messageClass" :md-counter="false">
+                <label for="userID">ID</label>
+                <md-input name="userID" v-model="user_ID" maxlength="20" required/>
+                <span class="md-error">There is an error</span>
+              </md-field>
+              <md-field :class="messageClass" :md-counter="false">
+
+                <label for="userPW">Password</label>
+                <md-input name="userPW" v-model="user_Password" type="password"  maxlength="20" required/>
+                <span class="md-error">There is an error</span>
+              </md-field>
+
+              <transition-group name="slide-fade">
+                <div v-bind:key="showCard">
+                  <md-field :md-counter="false" v-if="showCard">
+                    <label for="userName">이름</label>
+                    <md-input name="userName" v-model="user_Name" maxlength="20" required/>
+                    <span class="md-error">There is an error</span>
+                  </md-field>
+
+                  <md-field :md-counter="false" v-if="showCard">
+                    <label for="userEmail">이메일</label>
+                    <md-input name="userEmail" v-model="user_Email" maxlength="20"/>
+                  </md-field>
+
+                  <md-field :md-counter="false" v-if="showCard">
+                    <label for="user_Phone">전화번호</label>
+                    <md-input name="user_Phone" v-model="user_Phone" maxlength="20"/>
+                  </md-field>
+
+                  <md-field :md-counter="false" v-if="showCard">
+                    <label for="userGroup">유저그룹</label>
+                    <md-input name="userGroup" v-model="user_Group" maxlength="20"/>
+                  </md-field>
+
+                  <md-field :md-counter="false" v-if="showCard">
+                    <label for="userSID">학번</label>
+                    <md-input name="userSID" v-model="user_SID" maxlength="20"/>
+                  </md-field>
+                </div>
+              </transition-group>
+              <div class="buttonSpace">
+                <md-button class="md-raised" v-on:click="signIn" :to="link" v-if="showCard == 0">Sign in</md-button>
+
+                <md-button v-on:click="showCard = 0" v-if="showCard == 1">Cancle</md-button>
+                <md-button v-on:click="signUp" v-if="showCard == 1">Register</md-button>
+              </div>
+              <div class="buttonSpace">
+                <a class="signIn" v-on:click="showCard = 1" v-if="showCard == 0">Create your account -></a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </md-card>
-    <div class="md-layout-item md-size-35"></div>
-  </form>
+  </div>
 </template>
 
 <script>
@@ -211,9 +190,37 @@ export default {
 </script>
 
 <style>
-.card {
-  margin-top: 12rem!important;
+/* xlarge */
+@media (min-width: 1920px) {
+  .card {
+    margin: 8rem 0!important;
+  }
+  .loginText {
+
+  }
 }
+
+/* large */
+@media (min-width: 1280px) and (max-width: 1919px) {
+  .card {
+    margin: 6rem 0!important;
+  }
+  .loginText {
+    font-size: 1.1rem;
+  }
+}
+
+/* medium */
+@media (min-width: 960px) and (max-width: 1279px) {
+  .card {
+    margin: 4rem 0!important;
+  }
+  .loginText {
+    font-size: 0.9rem;
+  }
+}
+
+
 
 .cardDiv {
   transition-property: all;
@@ -232,4 +239,39 @@ transform: translateX(10px);
 opacity: 0;
 }
 
+.loginBackground {
+  height:-webkit-fill-available;
+  background-image: url("../assets/img/Login_Background2.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.loginText {
+  text-align: center;
+  font-weight: 400;
+}
+
+.signIn {
+  color: #999999!important;
+  margin: 0 auto;
+}
+
+.signIn:hover {
+  color: green!important;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.buttonSpace {
+  text-align: center;
+}
+
+.logoImg {
+  width: 80%!important;
+}
+
+.logoDiv {
+  margin: auto;
+  text-align: center;
+}
 </style>
