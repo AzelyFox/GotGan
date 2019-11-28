@@ -66,7 +66,7 @@ try {
         $productGroupJsonObject["group_name"] = $TEMP_PRODUCT_TYPE_NAME;
         $productGroupJsonObject["group_rentable"] = $TEMP_PRODUCT_TYPE_RENTABLE;
         $productGroupJsonObject["group_priority"] = $TEMP_PRODUCT_TYPE_PRIORITY;
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX] = $productGroupJsonObject;
+        array_push($productGroupJsonResult, $productGroupJsonObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -104,7 +104,13 @@ try {
     }
     $DB_STMT->bind_result($TEMP_PRODUCT_TYPE_INDEX, $TEMP_PRODUCT_TYPE_AVAILABLE);
     while($DB_STMT->fetch()) {
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX]["group_count_available"] = $TEMP_PRODUCT_TYPE_AVAILABLE;
+        foreach ($productGroupJsonResult as &$productGroupObject) {
+            if ($productGroupObject["group_index"] == $TEMP_PRODUCT_TYPE_INDEX) {
+                $productGroupObject["group_count_available"] = $TEMP_PRODUCT_TYPE_AVAILABLE;
+                break;
+            }
+        }
+        unset($productGroupObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -142,7 +148,13 @@ try {
     }
     $DB_STMT->bind_result($TEMP_PRODUCT_TYPE_INDEX, $TEMP_PRODUCT_TYPE_UNAVAILABLE);
     while($DB_STMT->fetch()) {
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX]["group_count_unavailable"] = $TEMP_PRODUCT_TYPE_UNAVAILABLE;
+        foreach ($productGroupJsonResult as &$productGroupObject) {
+            if ($productGroupObject["group_index"] == $TEMP_PRODUCT_TYPE_INDEX) {
+                $productGroupObject["group_count_unavailable"] = $TEMP_PRODUCT_TYPE_UNAVAILABLE;
+                break;
+            }
+        }
+        unset($productGroupObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -180,7 +192,13 @@ try {
     }
     $DB_STMT->bind_result($TEMP_PRODUCT_TYPE_INDEX, $TEMP_PRODUCT_TYPE_BROKEN);
     while($DB_STMT->fetch()) {
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX]["group_count_broken"] = $TEMP_PRODUCT_TYPE_BROKEN;
+        foreach ($productGroupJsonResult as &$productGroupObject) {
+            if ($productGroupObject["group_index"] == $TEMP_PRODUCT_TYPE_INDEX) {
+                $productGroupObject["group_count_broken"] = $TEMP_PRODUCT_TYPE_BROKEN;
+                break;
+            }
+        }
+        unset($productGroupObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -218,7 +236,13 @@ try {
     }
     $DB_STMT->bind_result($TEMP_PRODUCT_TYPE_INDEX, $TEMP_PRODUCT_TYPE_REPAIR);
     while($DB_STMT->fetch()) {
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX]["group_count_repair"] = $TEMP_PRODUCT_TYPE_REPAIR;
+        foreach ($productGroupJsonResult as &$productGroupObject) {
+            if ($productGroupObject["group_index"] == $TEMP_PRODUCT_TYPE_INDEX) {
+                $productGroupObject["group_count_repair"] = $TEMP_PRODUCT_TYPE_REPAIR;
+                break;
+            }
+        }
+        unset($productGroupObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -256,7 +280,13 @@ try {
     }
     $DB_STMT->bind_result($TEMP_PRODUCT_TYPE_INDEX, $TEMP_PRODUCT_TYPE_RENT);
     while($DB_STMT->fetch()) {
-        $productGroupJsonResult[$TEMP_PRODUCT_TYPE_INDEX]["group_count_rent"] = $TEMP_PRODUCT_TYPE_RENT;
+        foreach ($productGroupJsonResult as &$productGroupObject) {
+            if ($productGroupObject["group_index"] == $TEMP_PRODUCT_TYPE_INDEX) {
+                $productGroupObject["group_count_rent"] = $TEMP_PRODUCT_TYPE_RENT;
+                break;
+            }
+        }
+        unset($productGroupObject);
     }
     $DB_STMT->close();
 } catch(Exception $e) {
@@ -268,6 +298,26 @@ try {
     echo urldecode($outputJson);
     exit();
 }
+
+# change products overview empty values to default
+foreach ($productGroupJsonResult as &$productGroupJsonObject) {
+    if (!isset($productGroupJsonObject["group_count_available"])) {
+        $productGroupJsonObject["group_count_available"] = 0;
+    }
+    if (!isset($productGroupJsonObject["group_count_unavailable"])) {
+        $productGroupJsonObject["group_count_unavailable"] = 0;
+    }
+    if (!isset($productGroupJsonObject["group_count_broken"])) {
+        $productGroupJsonObject["group_count_broken"] = 0;
+    }
+    if (!isset($productGroupJsonObject["group_count_repair"])) {
+        $productGroupJsonObject["group_count_repair"] = 0;
+    }
+    if (!isset($productGroupJsonObject["group_count_rent"])) {
+        $productGroupJsonObject["group_count_rent"] = 0;
+    }
+}
+unset($productGroupJsonObject);
 
 # product group overview success
 $output = array();
