@@ -1,0 +1,9 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '13.0'
+use_frameworks!
+
+target 'Gotgan_iOS' do
+
+	pod 'Alamofire', '~> 5.0.0-rc.3'
+	pod 'SwiftyJSON', '~> 4.0'
+end
