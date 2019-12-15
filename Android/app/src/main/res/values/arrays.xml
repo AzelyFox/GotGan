@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="product_add_status_array">
+        <item>일반</item>
+        <item>사용불가</item>
+        <item>고장</item>
+        <item>수리중</item>
+    </string-array>
+
+    <string-array name="product_add_department_array">
+        <item>영업부</item>
+        <item>재정부</item>
+        <item>총무부</item>
+        <item>홍보부</item>
+    </string-array>
+
+    <string-array name="product_group_rentable_array">
+        <item>가능</item>
+        <item>불가</item>
+    </string-array>
+
+    <string-array name="product_group_importance_array">
+        <item>일반항목</item>
+        <item>중요항목</item>
+        <item>집중관리항목</item>
+    </string-array>
+
+</resources>

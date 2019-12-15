@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/home_inout_list_item_user_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="test"
+        android:ellipsize="marquee" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/home_inout_list_item_product_name"
+        app:layout_constraintLeft_toRightOf="@id/home_inout_list_item_user_name"
+        app:layout_constraintRight_toLeftOf="@id/home_inout_list_item_allow_deny_layout"
+        android:ellipsize="marquee"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textStyle="bold"
+        android:text="test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/home_inout_list_item_allow_deny_layout"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/home_inout_list_item_allow_button"
+            android:layout_width="70dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/allow"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/home_inout_list_item_deny_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="@string/deny"
+            android:textColor="@color/colorPrimary" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

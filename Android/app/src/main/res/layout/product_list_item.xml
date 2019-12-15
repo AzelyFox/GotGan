@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/product_list_cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="5dp"
+    app:cardUseCompatPadding="true"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/product_group_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="Title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/product_list_arrow"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/down_arrow"
+            android:tint="@color/colorPrimary"
+            app:layout_constraintLeft_toRightOf="@id/product_group_name_textView"
+            app:layout_constraintTop_toTopOf="@id/product_group_name_textView"
+            app:layout_constraintBottom_toBottomOf="@id/product_group_name_textView" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_can_rent_count_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="10"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintBottom_toTopOf="@id/product_list_can_rent_textView"
+            app:layout_constraintLeft_toLeftOf="@id/product_list_can_rent_textView"
+            app:layout_constraintRight_toRightOf="@id/product_list_can_rent_textView"
+            app:layout_constraintTop_toBottomOf="@id/product_group_name_textView" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_already_rent_count_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="10"
+            android:textColor="@color/colorPrimary"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toTopOf="@id/product_list_already_rent_textView"
+            app:layout_constraintLeft_toLeftOf="@id/product_list_already_rent_textView"
+            app:layout_constraintRight_toRightOf="@id/product_list_already_rent_textView"
+            app:layout_constraintTop_toBottomOf="@id/product_group_name_textView" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_all_stock_count_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="10"
+            android:textColor="@color/colorPrimary"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:layout_constraintBottom_toTopOf="@id/product_list_all_stock_textView"
+            app:layout_constraintRight_toRightOf="@id/product_list_all_stock_textView"
+            app:layout_constraintLeft_toLeftOf="@id/product_list_all_stock_textView"
+            app:layout_constraintTop_toBottomOf="@id/product_group_name_textView" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_can_rent_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/can_rent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintTop_toBottomOf="@id/product_list_can_rent_count_textView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/product_list_already_rent_textView"
+            app:layout_constraintBottom_toTopOf="@+id/product_list_cant_use_count_textView"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_already_rent_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/already_rent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintTop_toBottomOf="@id/product_list_already_rent_count_textView"
+            app:layout_constraintLeft_toRightOf="@id/product_list_can_rent_textView"
+            app:layout_constraintRight_toLeftOf="@id/product_list_all_stock_textView"
+            app:layout_constraintBottom_toTopOf="@id/product_list_broken_count_textView" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/product_list_all_stock_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/all_stock"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintTop_toBottomOf="@id/product_list_all_stock_count_textView"
+            app:layout_constraintLeft_toRightOf="@id/product_list_already_rent_textView"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/product_list_fixing_count_textView" />
+
+        <!-- detail info -->
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_cant_use_count_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="10"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    app:layout_constraintLeft_toLeftOf="@id/product_list_cant_use_textView"
+                    app:layout_constraintRight_toRightOf="@id/product_list_cant_use_textView"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_can_rent_textView"
+                    app:layout_constraintBottom_toBottomOf="@id/product_list_cant_use_textView"
+                    android:textColor="@color/colorPrimary"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_broken_count_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="10"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintLeft_toLeftOf="@id/product_list_broken_textView"
+                    app:layout_constraintRight_toRightOf="@id/product_list_broken_textView"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_already_rent_textView"
+                    app:layout_constraintBottom_toBottomOf="@id/product_list_broken_textView"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_fixing_count_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="10"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintLeft_toLeftOf="@id/product_list_fixing_textView"
+                    app:layout_constraintRight_toRightOf="@id/product_list_fixing_textView"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_all_stock_textView"
+                    app:layout_constraintBottom_toBottomOf="@id/product_list_fixing_textView"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_cant_use_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/cant_use"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_cant_use_count_textView"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/product_list_broken_textView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_broken_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/broken"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_broken_count_textView"
+                    app:layout_constraintLeft_toRightOf="@id/product_list_cant_use_textView"
+                    app:layout_constraintRight_toLeftOf="@id/product_list_fixing_textView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/product_list_fixing_textView"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/fixing"
+                    app:layout_constraintTop_toBottomOf="@id/product_list_fixing_count_textView"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/product_list_broken_textView"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,132 @@
+<resources>
+    <string name="app_name">곳간</string>
+    <string name="id">아이디</string>
+    <string name="pw">비밀번호</string>
+    <string name="login">로그인</string>
+    <string name="find_id_pw">ID/PW 찾기</string>
+    <string name="sign_up">회원가입</string>
+    <string name="name">이름</string>
+    <string name="student_id_number">학번</string>
+    <string name="email">이메일</string>
+    <string name="phone_number">휴대폰 번호</string>
+    <string name="duplicate_check">중복체크</string>
+    <string name="stock_management">재고 관리</string>
+    <string name="all_stock">총 수량</string>
+    <string name="lend_stock">대여중</string>
+    <string name="keep_stock">보관중</string>
+    <string name="import_export_management">반출입 관리</string>
+    <string name="inout_management_rent_status">대여 신청 현황</string>
+    <string name="inout_management_rented_status">반출 현황</string>
+    <string name="empty_rent_data">대여 신청 사항이 없습니다 :(</string>
+    <string name="empty_rented_data">반출된 물품이 없습니다 :(</string>
+    <string name="empty_product_list">재고 데이터가 없습니다 :(</string>
+    <string name="loading_data">데이터를 불러오는 중..</string>
+    <string name="loading_data_message">데이터를 불러오는 중 입니다 :)</string>
+    <string name="rent_adding">대여 신청 중..</string>
+    <string name="loading_data_fail">데이터를 불러오기 실패</string>
+    <string name="loading_data_fail_message">데이터 불러오기에 실패했습니다 :(</string>
+    <string name="product_add_success">재고 추가에 성공했습니다! :)</string>
+    <string name="product_add_fail">재고 추가 실패</string>
+    <string name="product_add_fail_message">재고 추가 실패에 실패했습니다 :(</string>
+    <string name="dont_have_permission_error">권한이 없습니다 :(</string>
+
+    <string name="success_logout">로그아웃에 성공했습니다! :)</string>
+    <string name="failed_logout">로그아웃에 실패했습니다 :(</string>
+
+    <string name="searching_error">현황 검색에 실패했습니다 :(</string>
+    <string name="product_searching_error">물품 검색에 실패했습니다 :(</string>
+    <string name="rent_allow_error">대여 허가에 실패했습니다 :( 계속 발생 시에 관리자에게 문의해주세요</string>
+    <string name="loading_login">로그인 중..</string>
+    <string name="loading_auto_login">자동 로그인 중..</string>
+    <string name="loading_login_message">로그인 중 입니다 :)</string>
+    <string name="loading_auto_login_message">자동 로그인 중 입니다 :)</string>
+    <string name="login_fail">로그인 실패</string>
+    <string name="implementation_error">앱에 에러가 발생했습니다 :( 관리자에게 문의해주세요</string>
+    <string name="server_error">서버에 문제가 생겨 로그인에 실패했습니다 :(</string>
+    <string name="wrong_id_pw_error">아이디나 비밀번호가 틀렸습니다 :(</string>
+    <string name="expire_session_error">세션이 만료되어 다시 로그인해주셔야 합니다 :)</string>
+    <string name="plz_input_id_and_pw">아이디와 비밀번호를 입력해주세요 :)</string>
+    <string name="plz_input_id">아이디를 입력해주세요 :)</string>
+    <string name="plz_input_pw">비밀번호를 입력해주세요 :)</string>
+    <string name="home">홈</string>
+    <string name="product_list">재고 목록</string>
+    <string name="product_management">재고 관리</string>
+    <string name="inout_management">반출입 관리</string>
+    <string name="log">활동 로그</string>
+    <string name="available_count">사용 가능</string>
+    <string name="unavailable_count">사용 불가능</string>
+    <string name="broken_count">고장</string>
+    <string name="repair_count">수리 중</string>
+    <string name="rent_count">대여 중</string>
+    <string name="processing">처리 중..</string>
+    <string name="allow">허가</string>
+    <string name="allow_success_message">대여 신청을 허가 완료했습니다 :)</string>
+    <string name="deny">거부</string>
+    <string name="allow_deny_message">대여 신청을 거부 했습니다 :)</string>
+
+    <string name="success_return_message">반납 처리를 완료했습니다 :)</string>
+
+    <string name="check_return">반납 확인</string>
+    
+    <string name="can_rent">대여 가능</string>
+    <string name="cant_use">사용 불가</string>
+    <string name="broken">고장</string>
+    <string name="fixing">수리 중</string>
+    <string name="already_rent">대여 중</string>
+
+    <string name="product_add">재고 추가</string>
+    <string name="group_add">그룹 추가</string>
+    
+    <string name="product_add_name">항목 이름*</string>
+    <string name="product_group">그룹*</string>
+    <string name="product_status">상태</string>
+    <string name="product_department">소속</string>
+    <string name="product_barcode">바코드</string>
+
+    <string name="logout">로그아웃</string>
+    <string name="logout_trying_title">로그아웃 중..</string>
+    <string name="logout_trying_message">로그아웃 중 입니다. 잠시만 기다려주세요 :)</string>
+    <string name="logout_fail">로그아웃 실패</string>
+
+    <string name="group_add_name">그룹 이름*</string>
+    <string name="group_rent_is_available">대여 가능 여부*</string>
+    <string name="group_rent_date">대여 가능 일수</string>
+    <string name="group_importance">중요도</string>
+    
+    <string name="plz_input_product_name">항목 이름을 입력해주세요 :)</string>
+    <string name="plz_input_group_name">그룹 이름을 입력해주세요 :)</string>
+    <string name="plz_input_rentable_date_name">대여 가능 일수를 입력해주세요 :)</string>
+    
+    <string name="barcode_product_add">바코드로 재고 검색 및 추가</string>
+    <string name="barcode_product_search">바코드로 재고 검색</string>
+    <string name="barcode_product_rent">바코드로 대여 신청</string>
+    <string name="the_barcode_value_is">바코드 값은</string>
+
+    <string name="dont_have_rent_available">대여 가능한 물품이 없습니다 :(</string>
+    <string name="plz_pick_rent_start_date">대여 시작일을 선택해주세요 :)</string>
+    
+    <string name="searching_barcode">바코드 검색 중..</string>
+
+    <string name="product_info">물품 상세 정보</string>
+
+    <string name="rent_add_success">대여 신청 성공</string>
+    
+    <string name="rent_status">대여 현황</string>
+    <string name="rent_add">대여 신청</string>
+    
+    <string name="rent_group_list">대여할 물품 그룹*</string>
+    <string name="rent_product_list">상세 물품 선택*</string>
+    <string name="start_date">시작일</string>
+    <string name="end_date">반납일</string>
+    
+    <string name="user_rent_item_group_name">이름</string>
+    <string name="user_rent_item_rent_status_complete">완료됨</string>
+    <string name="user_rent_item_rent_status_rent_add">대여 신청됨</string>
+    <string name="user_rent_item_rent_status_renting">대여중</string>
+    
+    <string name="user_rent_item_rent_start_date">대여 일자</string>
+    <string name="user_rent_item_rent_finish_plan_date">반납 예정일</string>
+    <string name="user_rent_item_rent_finish_date">반납 완료일</string>
+
+
+</resources>

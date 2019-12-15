@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/inout_management_rent_status_name_textView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/inout_management_rent_status_product_name_textView"
+        app:layout_constraintBottom_toBottomOf="@id/inout_management_rent_status_product_name_textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="test"
+        android:ellipsize="marquee" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/inout_management_rent_status_product_name_textView"
+        app:layout_constraintLeft_toRightOf="@id/inout_management_rent_status_name_textView"
+        app:layout_constraintRight_toLeftOf="@id/inout_management_rent_status_start_date_textView"
+        android:ellipsize="marquee"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/inout_management_rent_status_allow_button"
+        android:textColor="@color/colorPrimary"
+        android:layout_margin="10dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textStyle="bold"
+        android:text="test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/inout_management_rent_status_start_date_textView"
+        app:layout_constraintRight_toRightOf="parent"
+        android:ellipsize="marquee"
+        android:layout_margin="10dp"
+        app:layout_constraintTop_toTopOf="@id/inout_management_rent_status_product_name_textView"
+        app:layout_constraintBottom_toBottomOf="@id/inout_management_rent_status_product_name_textView"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:text="test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/inout_management_rent_status_allow_button"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toBottomOf="@id/inout_management_rent_status_name_textView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/inout_management_rent_status_deny_button"
+            android:layout_width="70dp"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/allow"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/inout_management_rent_status_deny_button"
+            style="?android:attr/borderlessButtonStyle"
+            app:layout_constraintTop_toBottomOf="@id/inout_management_rent_status_start_date_textView"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/inout_management_rent_status_allow_button"
+            android:layout_margin="10dp"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="@string/deny"
+            android:textColor="@color/colorPrimary" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
