@@ -20,6 +20,12 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
+if (isset($_REQUEST["test"])) {
+    sendEmail("tiram2sue@naver.com", "HI", "HELLO!");
+    sendEmail("tiram2sue@gmail.com", "HI", "HELLO!");
+    sendEmail("fecave6112@4tmail.net", "HI", "HELLO!");
+}
+
 function validateSession(Mysqli $DB, string $session) {
     $_validation = array();
     $_validation["user_index"] = -1;
@@ -281,12 +287,40 @@ function getSystemSwitch(Mysqli $DB, int $switchType) {
     return -1;
 }
 
-function sendEmail($USER_EMAILS, $MESSAGE) {
-
+function sendEmail($USER_EMAIL, $TITLE, $MESSAGE) {
+    $headers =  'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'From: DEVX <no-reply@devx.kr>' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+    mail($USER_EMAIL, $TITLE, $MESSAGE, $headers);
 }
 
-function sendFCM($USER_UUIDS, $MESSAGE) {
+function sendFCM($USER_UUID, $TITLE, $MESSAGE, $GOOGLE_API_KEY) {
+    $url = 'https://fcm.googleapis.com/fcm/send';
+    $msg = array(
+        'title' => $TITLE,
+        'body'  => $MESSAGE
+    );
 
+    $fields = array(
+        'registration_ids'  => $USER_UUID,
+        'data'  => $msg
+    );
+
+    $headers = array(
+        'Authorization:key ='.$GOOGLE_API_KEY,
+        'Content-Type: application/json'
+    );
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+    $result = curl_exec($ch);
+    curl_close($ch);
 }
 
 ?>

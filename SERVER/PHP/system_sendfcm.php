@@ -57,6 +57,27 @@ if (isset($_REQUEST["user_index"]))
     }
 }
 
+# initialize title
+if (isset($_REQUEST["title"]))
+{
+    $title = $_REQUEST["title"];
+    if (!is_string($title)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "title MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+} else {
+    $output = array();
+    $output["result"] = -1;
+    $output["error"] = "title IS EMPTY";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 # initialize message
 if (isset($_REQUEST["message"]))
 {
@@ -111,7 +132,7 @@ try {
     }
     $DB_STMT->bind_result($TEMP_USER_ID, $TEMP_USER_UUID);
     while ($DB_STMT->fetch()) {
-        array_push($userFCMResult, $TEMP_USER_UUID);
+        sendFCM($TEMP_USER_UUID, $title, $message, $GOOGLE_API_KEY);
     }
     $DB_STMT->close();
 } catch (Exception $e) {
@@ -124,10 +145,8 @@ try {
     exit();
 }
 
-sendFCM($userFCMResult, $message);
-
 # fcm log
-newLog($DB, LogTypes::TYPE_SEND_FCM, 0, $validation["user_index"], $message);
+newLog($DB, LogTypes::TYPE_SEND_FCM, 0, $validation["user_index"], $title);
 
 # send fcm success
 $output = array();

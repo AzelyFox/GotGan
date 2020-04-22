@@ -57,6 +57,27 @@ if (isset($_REQUEST["user_index"]))
     }
 }
 
+# initialize title
+if (isset($_REQUEST["title"]))
+{
+    $title = $_REQUEST["title"];
+    if (!is_string($title)) {
+        $output = array();
+        $output["result"] = -1;
+        $output["error"] = "title MUST BE STRING";
+        $outputJson = json_encode($output);
+        echo urldecode($outputJson);
+        exit();
+    }
+} else {
+    $output = array();
+    $output["result"] = -1;
+    $output["error"] = "title IS EMPTY";
+    $outputJson = json_encode($output);
+    echo urldecode($outputJson);
+    exit();
+}
+
 # initialize message
 if (isset($_REQUEST["message"]))
 {
@@ -111,7 +132,7 @@ try {
     }
     $DB_STMT->bind_result($TEMP_USER_ID, $TEMP_USER_MAIL);
     while ($DB_STMT->fetch()) {
-        array_push($userMailResult, $TEMP_USER_MAIL);
+        sendEmail($TEMP_USER_MAIL,$title,  $message);
     }
     $DB_STMT->close();
 } catch (Exception $e) {
@@ -124,10 +145,8 @@ try {
     exit();
 }
 
-sendEmail($userMailResult, $message);
-
 # email log
-newLog($DB, LogTypes::TYPE_SEND_MAIL, 0, $validation["user_index"], $message);
+newLog($DB, LogTypes::TYPE_SEND_MAIL, 0, $validation["user_index"], $title);
 
 # send mail success
 $output = array();

@@ -138,12 +138,14 @@ try {
 
 foreach ($rentDueJsonResult as $dueObject) {
     if (isset($dueObject["rent_user_email"])) {
-        $emailMessage = "";
-        sendEmail($dueObject["rent_user_email"], $emailMessage);
+        $emailTitle = "대여 반납일 알림";
+        $emailMessage = "오늘은 대여하신 물품의 반납일입니다";
+        sendEmail($dueObject["rent_user_email"], $emailTitle, $emailMessage);
     }
     if (isset($dueObject["rent_user_uuid"])) {
-        $fcmMessage = "";
-        sendFCM($dueObject["rent_user_uuid"], $fcmMessage);
+        $fcmTitle = "대여 반납일 알림";
+        $fcmMessage = "오늘은 대여하신 물품의 반납일입니다";
+        sendFCM($dueObject["rent_user_uuid"], $fcmTitle, $fcmMessage, $GOOGLE_API_KEY);
     }
 }
 
@@ -235,12 +237,14 @@ try {
 
 foreach ($rentLateJsonResult as &$dueObject) {
     if (isset($dueObject["rent_user_email"])) {
-        $emailMessage = "";
-        sendEmail($dueObject["rent_user_email"], $emailMessage);
+        $emailTitle = "대여 미반납 알림";
+        $emailMessage = "대여하신 물품이 반납일이 지났습니다";
+        sendEmail($dueObject["rent_user_email"], $emailTitle, $emailMessage);
     }
     if (isset($dueObject["rent_user_uuid"])) {
-        $fcmMessage = "";
-        sendFCM($dueObject["rent_user_uuid"], $fcmMessage);
+        $fcmTitle = "대여 미반납 알림";
+        $fcmMessage = "대여하신 물품이 반납일이 지났습니다";
+        sendFCM($dueObject["rent_user_uuid"], $fcmTitle, $fcmMessage, $GOOGLE_API_KEY);
     }
 }
 unset($dueObject);
