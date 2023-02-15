@@ -5,17 +5,14 @@
 </h1>
 
 <p align="center">
-    <a href="https://gotgan.devx.kr">
-        <img src="https://img.shields.io/badge/DEVX-gotgan-black?style=flat-square" />
-    </a>
     <a href="#license">
-        <img src="https://img.shields.io/github/license/LIMECAKE/GotGan?style=flat-square" />
+        <img src="https://img.shields.io/github/license/AzelyFox/GotGan?style=flat-square" />
     </a>
-    <a href="https://github.com/LIMECAKE/GotGan/releases">
-        <img src="https://img.shields.io/github/v/release/LIMECAKE/GotGan?style=flat-square" />
+    <a href="https://github.com/AzelyFox/GotGan/releases">
+        <img src="https://img.shields.io/github/v/release/AzelyFox/GotGan?style=flat-square" />
     </a>
-    <a href="https://github.com/LIMECAKE/GotGan/issues">
-        <img src="https://img.shields.io/badge/SUPPORT-LIVE-green?style=flat-square" />
+    <a href="https://github.com/AzelyFox/GotGan/issues">
+        <img src="https://img.shields.io/badge/SUPPORT-END-black?style=flat-square" />
     </a>
 </p>
 
@@ -66,7 +63,7 @@ iOS (Swift)
 </div>
 
 ## Participant
-Server by [LimeCake](https://github.com/LIMECAKE)  
+Server by [AzelyFox](https://github.com/AzelyFox)  
 Web by [Moon Juhan](https://github.com/MoonJuhan)  
 iOS by [7kQon](https://github.com/7kQon)  
 Android by [OChangHan](https://github.com/OChangHan)  
